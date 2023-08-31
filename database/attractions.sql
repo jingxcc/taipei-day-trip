@@ -1,3 +1,10 @@
+DROP TABLE IF EXISTS image_url;
+DROP TABLE IF EXISTS attraction_mrt;
+DROP TABLE IF EXISTS mrt;
+DROP TABLE IF EXISTS attraction;
+DROP TABLE IF EXISTS category;
+
+
 CREATE TABLE category (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
@@ -5,7 +12,7 @@ CREATE TABLE category (
 
 CREATE TABLE attraction (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
     description VARCHAR(3000),
     category_id BIGINT,
     address VARCHAR(150),
@@ -32,16 +39,8 @@ CREATE TABLE attraction_mrt (
     attraction_id BIGINT,
     mrt_id BIGINT,
     FOREIGN KEY (attraction_id) REFERENCES attraction(id),
-    FOREIGN KEY (mrt_id) REFERENCES mrt(id)
+    FOREIGN KEY (mrt_id) REFERENCES mrt(id),
+    CONSTRAINT uni_idx UNIQUE (attraction_id, mrt_id)
 );
 
 
-
-
--- DROP TABLE image_url;
--- DROP TABLE mrt;
--- DROP TABLE attraction_mrt;
--- DROP TABLE attraction;
--- DROP TABLE category;
-
--- SHOW WARNINGS;
