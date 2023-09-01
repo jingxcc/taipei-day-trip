@@ -47,16 +47,16 @@ for attraction in data["result"]["results"]:
             if columns_input_db[column]["table"] == target_table:
                 category_set.add(attraction[column])
 
-insert_rows = 0
+insert_rowcount = 0
 for item in category_set:
     sql = f"INSERT INTO {target_table} (name) \
         VALUES (%s)"
     val = (item,)
     my_cursor.execute(sql, val)
-    insert_rows += my_cursor.rowcount
+    insert_rowcount += my_cursor.rowcount
 
 my_conn.commit()
-print(f"{insert_rows} was inserted in {target_table}")
+print(f"{insert_rowcount} was inserted in {target_table}")
 
 
 # mrt
@@ -85,16 +85,16 @@ process_list += items_add
 mrt_set = set(process_list)
 
 
-insert_rows = 0
+insert_rowcount = 0
 for item in mrt_set:
     sql = f"INSERT INTO {target_table} (name) \
         VALUES (%s)"
     val = (item,)
     my_cursor.execute(sql, val)
-    insert_rows += my_cursor.rowcount
+    insert_rowcount += my_cursor.rowcount
 
 my_conn.commit()
-print(f"{insert_rows} was inserted in {target_table}")
+print(f"{insert_rowcount} was inserted in {target_table}")
 
 
 # add category id into data
@@ -119,7 +119,7 @@ for attraction in data["result"]["results"]:
 
     data_attraction.append(row)
 
-insert_rows = 0
+insert_rowcount = 0
 for attr in data_attraction:
     sql = f"INSERT INTO {target_table} (name, description, category_id, address, transport, latitude, longitude) \
         VALUES (%s, %s, %s, %s, %s, %s, %s)"
@@ -133,10 +133,10 @@ for attr in data_attraction:
         attr["longitude"],
     )
     my_cursor.execute(sql, val)
-    insert_rows += my_cursor.rowcount
+    insert_rowcount += my_cursor.rowcount
 
 my_conn.commit()
-print(f"{insert_rows} was inserted in {target_table}")
+print(f"{insert_rowcount} was inserted in {target_table}")
 
 
 # add attraction id into data
@@ -145,7 +145,7 @@ my_cursor.execute(sql)
 result = my_cursor.fetchall()
 for attraction in data["result"]["results"]:
     for r in result:
-        if r["name"] in attraction["name"]:
+        if r["name"] == attraction["name"]:
             attraction["name_ID"] = r["id"]
             break
 
@@ -173,15 +173,15 @@ for attraction in data["result"]["results"]:
     else:
         data_attraction_mrt.append((attraction["name_ID"], None))
 
-insert_rows = 0
+insert_rowcount = 0
 for item in data_attraction_mrt:
     sql = f"INSERT INTO {target_table} (attraction_id, mrt_id)  \
         VALUES (%s, %s)"
     my_cursor.execute(sql, item)
-    insert_rows += my_cursor.rowcount
+    insert_rowcount += my_cursor.rowcount
 
 my_conn.commit()
-print(f"{insert_rows} was inserted in {target_table}")
+print(f"{insert_rowcount} was inserted in {target_table}")
 
 
 # image_url
@@ -195,15 +195,15 @@ for attraction in data["result"]["results"]:
                 for url in urls_list:
                     data_image_url.append((attraction["name_ID"], url))
 
-insert_rows = 0
+insert_rowcount = 0
 for item in data_image_url:
     sql = f"INSERT INTO {target_table} (attraction_id, url)  \
         VALUES (%s, %s)"
     my_cursor.execute(sql, item)
-    insert_rows += my_cursor.rowcount
+    insert_rowcount += my_cursor.rowcount
 
 my_conn.commit()
-print(f"{insert_rows} was inserted in {target_table}")
+print(f"{insert_rowcount} was inserted in {target_table}")
 
 
 my_conn.close()
