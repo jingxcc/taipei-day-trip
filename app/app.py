@@ -41,7 +41,7 @@ def thankyou():
 # APIs
 @app.route("/api/attractions")
 def api_attractions():
-    records_per_page = 12
+    RECORDS_PER_PAGE = 12
 
     page = request.args.get("page")
     keyword = request.args.get("keyword")
@@ -56,12 +56,14 @@ def api_attractions():
         my_cursor = my_conn.cursor(dictionary=True)
 
         where_sql = ""
+        val = ()
         if keyword is not None: 
-            where_sql = f" WHERE m.name='{keyword}' or a.name LIKE '%{keyword}%'"
+            where_sql = f" WHERE m.name=%s or a.name LIKE %s"
+            val = (keyword, f"%{keyword}%")
 
         page = int(page)
-        records_offset = records_per_page * page
-        limit_sql = f" LIMIT {records_per_page} OFFSET {records_offset}"
+        records_offset = RECORDS_PER_PAGE * page
+        limit_sql = f" LIMIT {RECORDS_PER_PAGE} OFFSET %s"
 
         sql = f"SELECT a.id, a.name, c.name as category, a.description, a.address, a.transport \
                     , GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
@@ -74,18 +76,20 @@ def api_attractions():
                 {where_sql} \
                 GROUP BY a.id, a.name, c.name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
-        my_cursor.execute(sql)
+        
+        my_cursor.execute(sql, val)
         result = my_cursor.fetchall()
         total_rowcount = my_cursor.rowcount
         
-        if int(total_rowcount/records_per_page) >= page + 1:
+        if int(total_rowcount/RECORDS_PER_PAGE) >= page + 1:
             next_page_num = page + 1
         else:
             next_page_num = None
         
 
         sql += limit_sql
-        my_cursor.execute(sql)
+        val += (records_offset, )
+        my_cursor.execute(sql, val)
         result = my_cursor.fetchall()
 
         # concat concatenate data to list
@@ -113,8 +117,8 @@ def api_attraction_id(attractionId):
         my_conn = my_pool.get_connection()
         my_cursor = my_conn.cursor(dictionary=True)
 
-        where_sql = f"WHERE a.id = {attractionId}"
-        sql = f"SELECT a.id, a.name, c.name as category, a.description, a.address, a.transport \
+        # where_sql = f"WHERE a.id = {attractionId}"
+        sql = "SELECT a.id, a.name, c.name as category, a.description, a.address, a.transport \
                     , GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
                     , GROUP_CONCAT(DISTINCT iu.url SEPARATOR ', ') as images \
                 FROM attraction a \
@@ -122,10 +126,10 @@ def api_attraction_id(attractionId):
                 LEFT JOIN mrt m ON m.id = am.mrt_id \
                 LEFT JOIN category c ON c.id = a.category_id \
                 LEFT JOIN image_url iu ON iu.attraction_id = a.id \
-                {where_sql} \
+                WHERE a.id = %s \
                 GROUP BY a.id, a.name, c.name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
-        my_cursor.execute(sql)
+        my_cursor.execute(sql, (attractionId, ))
         result = my_cursor.fetchall()
 
         if len(result) == 0:
