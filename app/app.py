@@ -57,7 +57,7 @@ def api_attractions():
 
         where_sql = ""
         if keyword is not None: 
-            where_sql = f" WHERE a.name LIKE '%{keyword}%'"
+            where_sql = f" WHERE m.name='{keyword}' or a.name LIKE '%{keyword}%'"
 
         page = int(page)
         records_offset = records_per_page * page
@@ -96,18 +96,18 @@ def api_attractions():
                     r[col] = r[col].split(", ")
 
         return jsonify({"nextPage": next_page_num, "data": result})
-    
+
     except Exception as err:
         print(f"ERROR: {err}")
         return jsonify({"error": True, "message": "Internal Server Error"}), 500
-    
+
     finally:
         if "my_conn" in locals():
             my_conn.close()
 
 
-@app.route("/api/attractions/<int:attractionId>")
-def api_attractions_id(attractionId):
+@app.route("/api/attraction/<int:attractionId>")
+def api_attraction_id(attractionId):
 
     try:
         my_conn = my_pool.get_connection()
