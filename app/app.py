@@ -3,6 +3,7 @@ import mysql.connector
 
 app = Flask(__name__)
 app.json.ensure_ascii = False
+app.json.sort_keys = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 db_config = {
