@@ -2,7 +2,7 @@ from flask import *
 import mysql.connector
 
 app = Flask(__name__)
-app.config["JSON_AS_ASCII"] = False
+app.json.ensure_ascii = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 db_config = {
@@ -178,4 +178,5 @@ def api_mrts():
             my_conn.close()
 
 
-app.run(host="0.0.0.0", port=3000, debug=True)
+
+app.run(host="0.0.0.0", port=3000)
