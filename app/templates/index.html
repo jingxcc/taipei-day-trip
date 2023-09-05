@@ -4,46 +4,206 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>台北一日遊</title>
-    <link rel="stylesheet" href="../static/scss/style.scss" />
+    <link rel="stylesheet" href="../static/scss/style.css" />
   </head>
   <body>
-    <header class="container">
-      <h1><a href="./index.html">台北一日遊</a></h1>
-      <nav><a href="#">預定行程</a><a href="#">登入／註冊</a></nav>
+    <header>
+      <nav class="container">
+        <h1 class="headline">
+          <a href="./index.html">台北一日遊</a>
+        </h1>
+        <div class="nav-menu">
+          <a class="nav-menu__item body" href="#">預定行程</a>
+          <a class="nav-menu__item body" href="#">登入/註冊</a>
+        </div>
+      </nav>
     </header>
-    <section class="hero">
-      <h2>輕鬆享受台北一日悠閒</h2>
-      <p>探索每個角落，體驗程式的深度旅遊行程</p>
-      <div class="search">
-        <input type="text" placeholder="輸入景點名稱查詢" />
-        <button>
-          <img src="../static/images/search.png" alt="search" />
-        </button>
+    <section class="hero mb-40">
+      <div class="slogan container">
+        <h2 class="slogan__title mb-15">輕鬆享受台北一日悠閒</h2>
+        <p class="slogan__info body mb-25">
+          探索每個角落，體驗程式的深度旅遊行程
+        </p>
+        <div class="search">
+          <input
+            class="search__input body weight-bold"
+            type=" text"
+            placeholder="輸入景點名稱查詢"
+          />
+          <button class="search__btn">
+            <img
+              class="search__btn-icon"
+              src="../static/images/search.png"
+              alt="search"
+            />
+          </button>
+        </div>
       </div>
     </section>
-    <div class="list-bar container">
-      <div class="list-bar__items">
-        <button class="list-bar__item">mrts</button>
+    <div class="list-bar container mb-20">
+      <button class="list-bar__prev-btn list-bar__btn">
+        <span
+          class="list-bar__prev-btn-icon list-bar__btn-icon"
+          src="../static/images/btn_leftArrow.svg"
+          alt="previous btn"
+        />
+      </button>
+      <div class="list-bar__list">
+        <button class="list-bar__item body">mrt_1</button>
+        <button class="list-bar__item body">mrt_2</button>
+        <button class="list-bar__item body">mrt_3</button>
+        <button class="list-bar__item body">mrt_4</button>
+        <button class="list-bar__item body">mrt_5</button>
+        <button class="list-bar__item body">mrt_6</button>
+        <button class="list-bar__item body">mrt_7</button>
+        <button class="list-bar__item body">mrt_8</button>
+        <button class="list-bar__item body">mrt_9</button>
+        <button class="list-bar__item body">mrt_10</button>
+        <button class="list-bar__item body">mrt_11</button>
+        <button class="list-bar__item body">mrt_12</button>
+        <button class="list-bar__item body">mrt_13</button>
+        <button class="list-bar__item body">mrt_14</button>
+        <button class="list-bar__item body">mrt_15</button>
+        <button class="list-bar__item body">mrt_16</button>
+        <button class="list-bar__item body">mrt_17</button>
+        <button class="list-bar__item body">mrt_18</button>
+        <button class="list-bar__item body">mrt_19</button>
+        <button class="list-bar__item body">mrt_20</button>
       </div>
-      <button class="list-bar__prev-btn">
-        <img src="../static/images/btn_leftArrow.png" alt="previous btn" />
+      <button class="list-bar__next-btn list-bar__btn">
+        <span class="list-bar__next-btn-icon list-bar__btn-icon" />
       </button>
-      <button class="list-bar__next-btn">
-        <img src="../static/images/btn_rightArrow.png" alt="next btn" />
-      </button>
-      <main class="content">
-        <div class="card">
-          <img class="card__img" src="" alt="attraction" />
-          <div class="card__title">attraction name</div>
-          <div class="card__info">
-            <span>mrt</span>
-            <span>category</span>
-          </div>
-        </div>
-      </main>
-      <footer>
-        <span>COPYRIGHT © 2021 台北一日遊</span>
-      </footer>
     </div>
+    <main class="home-content container mb-40">
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card__image-block">
+          <img
+            class="card__img"
+            src="https://placehold.co/600x400"
+            alt="attraction"
+          />
+          <div class="card__title body weight-bold">attraction name</div>
+        </div>
+        <div class="card__info body">
+          <span>mrt</span>
+          <span>category</span>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <span>COPYRIGHT © 2021 台北一日遊</span>
+    </footer>
   </body>
 </html>
