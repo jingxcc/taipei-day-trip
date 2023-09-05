@@ -6,6 +6,7 @@ app.json.ensure_ascii = False
 app.json.sort_keys = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
+
 db_config = {
     "host": "localhost",
     "user": "root",
@@ -45,7 +46,7 @@ def api_attractions():
 
     page = request.args.get("page")
     keyword = request.args.get("keyword")
-    
+
     if not page:
         return jsonify({"error": True, "message": "'page' is required"}), 500
     if not page.isdigit():
@@ -57,7 +58,7 @@ def api_attractions():
 
         where_sql = ""
         val = ()
-        if keyword is not None: 
+        if keyword is not None:
             where_sql = f" WHERE m.name=%s or a.name LIKE %s"
             val = (keyword, f"%{keyword}%")
 
@@ -76,19 +77,18 @@ def api_attractions():
                 {where_sql} \
                 GROUP BY a.id, a.name, c.name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
-        
+
         my_cursor.execute(sql, val)
         result = my_cursor.fetchall()
         total_rowcount = my_cursor.rowcount
-        
-        if int(total_rowcount/RECORDS_PER_PAGE) >= page + 1:
+
+        if int(total_rowcount / RECORDS_PER_PAGE) >= page + 1:
             next_page_num = page + 1
         else:
             next_page_num = None
-        
 
         sql += limit_sql
-        val += (records_offset, )
+        val += (records_offset,)
         my_cursor.execute(sql, val)
         result = my_cursor.fetchall()
 
@@ -112,7 +112,6 @@ def api_attractions():
 
 @app.route("/api/attraction/<int:attractionId>")
 def api_attraction_id(attractionId):
-
     try:
         my_conn = my_pool.get_connection()
         my_cursor = my_conn.cursor(dictionary=True)
@@ -129,12 +128,15 @@ def api_attraction_id(attractionId):
                 WHERE a.id = %s \
                 GROUP BY a.id, a.name, c.name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
-        my_cursor.execute(sql, (attractionId, ))
+        my_cursor.execute(sql, (attractionId,))
         result = my_cursor.fetchall()
 
         if len(result) == 0:
-            return jsonify({"error": True, "message": "Incorrect Attraction Number"}), 400
-        
+            return (
+                jsonify({"error": True, "message": "Incorrect Attraction Number"}),
+                400,
+            )
+
         # concat concatenate data to list
         columns_convert = ["mrt", "images"]
         for col in columns_convert:
@@ -147,7 +149,7 @@ def api_attraction_id(attractionId):
     except Exception as err:
         print(f"ERROR: {err}")
         return jsonify({"error": True, "message": "Internal Server Error"}), 500
-    
+
     finally:
         if "my_conn" in locals():
             my_conn.close()
@@ -170,18 +172,18 @@ def api_mrts():
 
         result_list = []
         for r in result:
-            result_list.append(r['name'])
+            result_list.append(r["name"])
 
         return jsonify({"data": result_list})
 
     except Exception as err:
         print(f"ERROR: {err}")
         return jsonify({"error": True, "message": "Internal Server Error"}), 500
-    
+
     finally:
         if "my_conn" in locals():
             my_conn.close()
 
 
-
-app.run(host="0.0.0.0", port=3000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=3000, debug=True)
