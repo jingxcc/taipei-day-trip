@@ -144,7 +144,6 @@ body {
 *::after,
 *::before {
   box-sizing: border-box;
-  outline: 1px solid orange;
 }
 
 a {
@@ -387,6 +386,10 @@ nav {
   .home-content {
     grid-template-columns: repeat(1, 1fr);
   }
+}
+.home-content .card {
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
 }
 .home-content .card__image-block {
   position: relative;

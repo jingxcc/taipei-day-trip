@@ -1,4 +1,5 @@
-from flask import *
+from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 import mysql.connector
 
 app = Flask(__name__)
@@ -6,6 +7,7 @@ app.json.ensure_ascii = False
 app.json.sort_keys = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 db_config = {
     "host": "localhost",
@@ -186,4 +188,5 @@ def api_mrts():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000, debug=True)
+    # app.debug = True
+    app.run(host="0.0.0.0", port=3000)
