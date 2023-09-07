@@ -61,15 +61,15 @@ def api_attractions():
         where_sql = ""
         val = ()
         if keyword is not None:
-            where_sql = f" WHERE m.name=%s or a.name LIKE %s"
+            where_sql = f" WHERE m.mrt_name=%s or a.attraction_name LIKE %s"
             val = (keyword, f"%{keyword}%")
 
         page = int(page)
         records_offset = RECORDS_PER_PAGE * page
         limit_sql = f" LIMIT {RECORDS_PER_PAGE} OFFSET %s"
 
-        sql = f"SELECT a.id, a.name, c.name as category, a.description, a.address, a.transport \
-                    , GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
+        sql = f"SELECT a.id, a.attraction_name, c.category_name as category, a.description, a.address, a.transport \
+                    , GROUP_CONCAT(DISTINCT m.mrt_name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
                     , GROUP_CONCAT(DISTINCT iu.url SEPARATOR ', ') as images \
                 FROM attraction a \
                 LEFT JOIN attraction_mrt am ON a.id = am.attraction_id \
@@ -77,7 +77,7 @@ def api_attractions():
                 LEFT JOIN category c ON c.id = a.category_id \
                 LEFT JOIN image_url iu ON iu.attraction_id = a.id \
                 {where_sql} \
-                GROUP BY a.id, a.name, c.name, a.description, a.address, a.transport, a.latitude, a.longitude \
+                GROUP BY a.id, a.attraction_name, c.category_name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
 
         my_cursor.execute(sql, val)
@@ -119,8 +119,8 @@ def api_attraction_id(attractionId):
         my_cursor = my_conn.cursor(dictionary=True)
 
         # where_sql = f"WHERE a.id = {attractionId}"
-        sql = "SELECT a.id, a.name, c.name as category, a.description, a.address, a.transport \
-                    , GROUP_CONCAT(DISTINCT m.name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
+        sql = "SELECT a.id, a.attraction_name, c.category_name as category, a.description, a.address, a.transport \
+                    , GROUP_CONCAT(DISTINCT m.mrt_name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
                     , GROUP_CONCAT(DISTINCT iu.url SEPARATOR ', ') as images \
                 FROM attraction a \
                 LEFT JOIN attraction_mrt am ON a.id = am.attraction_id \
@@ -128,7 +128,7 @@ def api_attraction_id(attractionId):
                 LEFT JOIN category c ON c.id = a.category_id \
                 LEFT JOIN image_url iu ON iu.attraction_id = a.id \
                 WHERE a.id = %s \
-                GROUP BY a.id, a.name, c.name, a.description, a.address, a.transport, a.latitude, a.longitude \
+                GROUP BY a.id, a.attraction_name, c.category_name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
         my_cursor.execute(sql, (attractionId,))
         result = my_cursor.fetchall()
@@ -163,18 +163,18 @@ def api_mrts():
         my_conn = my_pool.get_connection()
         my_cursor = my_conn.cursor(dictionary=True)
 
-        sql = "SELECT m.name \
+        sql = "SELECT m.mrt_name \
                 FROM mrt m \
                 LEFT JOIN attraction_mrt am ON am.mrt_id = m.id \
                 LEFT JOIN attraction a ON a.id = am.attraction_id \
-                GROUP BY m.name \
+                GROUP BY m.mrt_name \
                 ORDER BY count(*) DESC"
         my_cursor.execute(sql)
         result = my_cursor.fetchall()
 
         result_list = []
         for r in result:
-            result_list.append(r["name"])
+            result_list.append(r["mrt_name"])
 
         return jsonify({"data": result_list})
 
@@ -188,5 +188,5 @@ def api_mrts():
 
 
 if __name__ == "__main__":
-    # app.debug = True
+    app.debug = True
     app.run(host="0.0.0.0", port=3000)

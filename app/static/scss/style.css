@@ -352,6 +352,7 @@ nav {
 .list-bar__list {
   display: flex;
   overflow-x: scroll;
+  scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
 }
 
@@ -361,6 +362,7 @@ nav {
 }
 
 .list-bar__item {
+  flex-shrink: 0;
   padding: 5px 15px;
   border: 0;
   background-color: transparent;
@@ -394,14 +396,37 @@ nav {
 .home-content .card__image-block {
   position: relative;
 }
+.home-content .card__img {
+  width: 100%;
+  height: 197px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+@media (max-width: 1280px) {
+  .home-content .card__img {
+    height: 300px;
+  }
+}
+@media (max-width: 768px) {
+  .home-content .card__img {
+    height: 235px;
+  }
+}
 .home-content .card__title {
   width: 100%;
-  padding: 10px;
   position: absolute;
   bottom: 0;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.6);
   color: white;
+}
+.home-content .card__title-text {
+  padding: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .home-content .card__info {
   display: flex;
