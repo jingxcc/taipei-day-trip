@@ -1,20 +1,30 @@
-// tmp
-let keyword = "";
-
-let attractionPageNum = 0;
+let attractionPreviousKeyword = "";
+let attractionNextPageNum = 0;
 const DEFAULT_PAGE_NUM = 0;
 const API_DELAY = 600;
 const attractionContent = document.getElementById("attractionContent");
 const footer = document.getElementById("footer");
+
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
+
 const listBarList = document.getElementById("listBarList");
 const listBarPrevBtn = document.getElementById("listBarPrevBtn");
 const listBarNextBtn = document.getElementById("listBarNextBtn");
 
-async function addListAttractionItems(page = DEFAULT_PAGE_NUM, keyword) {
+async function addAttractionItems(keyword) {
+  if (keyword === undefined) {
+    keyword = attractionPreviousKeyword;
+  }
+  if (attractionPreviousKeyword !== keyword) {
+    attractionPreviousKeyword = keyword;
+    attractionNextPageNum = 0;
+  }
+
   let url = new URL(`${window.location.origin}/api/attractions?`);
   let urlParams = new URLSearchParams(url.search);
   let paramValues = {
-    page: page,
+    page: attractionNextPageNum,
     keyword: keyword,
   };
 
@@ -24,122 +34,134 @@ async function addListAttractionItems(page = DEFAULT_PAGE_NUM, keyword) {
     }
   }
   url += urlParams.toString();
+  if (paramValues["page"] !== null) {
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const result = await response.json();
+        const fragment = document.createDocumentFragment();
 
-  try {
-    const response = await fetch(url);
-    if (response.ok) {
-      const result = await response.json();
-      const fragment = document.createDocumentFragment();
-      attractionPageNum = result["nextPage"];
+        console.log(`get next page data : ${attractionNextPageNum}`);
+        attractionNextPageNum = result["nextPage"];
 
-      console.log(`get next page data : ${page}`);
+        console.log(result);
 
-      result["data"].forEach((attraction) => {
-        const card = document.createElement("div");
-        card.innerHTML = `
-          <div class="card">
-            <div class="card__image-block">
-              <img
-                class="card__img"
-                src=""
-                alt="attraction"
-              />
-              <div class="card__title body weight-bold">
-                <p 
-                  class="card__title-text" 
-                  title=""
-                >
-                </p>
-              </div>
-            </div>
-            <div class="card__info body">
-                <span></span>
-                <span></span>
-            </div>
-          
-        `;
-        const cardImg = card.querySelector(".card__image-block > img");
-        if (attraction["images"] !== null) {
-          cardImg.setAttribute("src", attraction["images"][0]);
+        if (result["data"].length > 0) {
+          result["data"].forEach((attraction) => {
+            const card = document.createElement("div");
+            card.innerHTML = `
+              <div class="card">
+                <div class="card__image-block">
+                  <img
+                    class="card__img"
+                    src=""
+                    alt="attraction"
+                  />
+                  <div class="card__title body weight-bold">
+                    <p 
+                      class="card__title-text" 
+                      title=""
+                    >
+                    </p>
+                  </div>
+                </div>
+                <div class="card__info body">
+                    <span></span>
+                    <span></span>
+                </div>
+              
+            `;
+            const cardImg = card.querySelector(".card__image-block > img");
+            if (attraction["images"] !== null) {
+              cardImg.setAttribute("src", attraction["images"][0]);
+            }
+
+            const cardTitleText = card.querySelector(".card__title-text");
+            cardTitleText.setAttribute("title", attraction["attraction_name"]);
+            cardTitleText.textContent = attraction["attraction_name"];
+
+            const cardInfoSpans = card.querySelectorAll(".card__info > span");
+            cardInfoSpans.forEach((cardInfoSpan, idx) => {
+              if (idx === 0 && attraction["mrt"] !== null) {
+                cardInfoSpan.textContent = attraction["mrt"].join("/");
+              } else if (idx === 1) {
+                cardInfoSpan.textContent = attraction["category"];
+              }
+            });
+            fragment.appendChild(card);
+          });
+
+          attractionContent.appendChild(fragment);
+        } else if (paramValues["page"] === 0) {
+          // <div class="card"></div>
+          const attractionNoResult = document.createElement("div");
+          const styleList = ["content"];
+          attractionNoResult.classList.add(...styleList);
+          attractionNoResult.textContent = "找不到資料";
+          attractionContent.appendChild(attractionNoResult);
         }
-
-        const cardTitleText = card.querySelector(".card__title-text");
-        cardTitleText.setAttribute("title", attraction["attraction_name"]);
-        cardTitleText.textContent = attraction["attraction_name"];
-
-        const cardInfoSpans = card.querySelectorAll(".card__info > span");
-        cardInfoSpans.forEach((cardInfoSpan, idx) => {
-          if (idx === 0 && attraction["mrt"] !== null) {
-            cardInfoSpan.textContent = attraction["mrt"].join("/");
-          } else if (idx === 1) {
-            cardInfoSpan.textContent = attraction["category"];
-          }
-        });
-        fragment.appendChild(card);
-      });
-
-      attractionContent.appendChild(fragment);
+      }
+    } catch (err) {
+      console.error(`Error: ${err}`);
     }
-  } catch (err) {
-    console.error(`Error: ${err}`);
   }
 }
 
 // observer
-const observerOptions = {
-  root: null,
-  rootMargin: "0px",
-  threshold: 0.5,
-};
+if (attractionContent.children.length === 0) {
+  const observerOptions = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.5,
+  };
 
-// function debounceScroll(func, delay) {
-//   let timeId;
-//   return () => {
-//     const context = this;
-//     const args = arguments;
+  let observerScrollCallBack = (entries, observerScroll) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && attractionNextPageNum !== null) {
+        setTimeout(() => {
+          addAttractionItems(attractionPreviousKeyword);
+        }, API_DELAY);
 
-//     console.log(context);
-//     console.log(args);
-//     console.log(func);
-//     clearTimeout(timeId);
-//     timeId = setTimeout(() => {
-//       func.apply(context, args);
-//     }, delay);
-//   };
-// }
+        console.log(`go to next page: ${attractionNextPageNum}`);
+      } else if (attractionNextPageNum === null) {
+        observerScroll.disconnect();
+      }
+    });
+    // }
+  };
 
-// function throttle(func, delay) {
-//   let previousTime = 0;
-//   return function (...args) {
-//     const nowTime = new Date().getDate();
+  let observerScroll = new IntersectionObserver(
+    observerScrollCallBack,
+    observerOptions
+  );
 
-//     if (nowTime - previousTime > delay) {
-//       func.apply(this, args);
-//       previousTime = nowTime;
-//     }
-//   };
-// }
+  observerScroll.observe(footer);
+}
 
-let observerScrollCallBack = (entries, observerScroll) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting && attractionPageNum !== null) {
-      setTimeout(() => {
-        addListAttractionItems(attractionPageNum);
-      }, API_DELAY);
+searchInput.addEventListener("keydown", (e) => {
+  // console.log(searchInput.value !== "");
+  if (e.key === "Enter" && searchInput.value !== "") {
+    let contentRange = document.createRange();
+    contentRange.selectNodeContents(attractionContent);
+    contentRange.deleteContents();
 
-      console.log(`go to next page: ${attractionPageNum}`);
-    } else if (attractionPageNum === null) {
-      observerScroll.disconnect();
-    }
-  });
-};
+    let inputKeyword = searchInput.value.trim();
+    attractionPreviousKeyword = "";
+    addAttractionItems(inputKeyword);
+  }
+});
 
-let observerScroll = new IntersectionObserver(
-  observerScrollCallBack,
-  observerOptions
-);
+searchBtn.addEventListener("click", () => {
+  if (searchInput.value !== "") {
+    let contentRange = document.createRange();
+    contentRange.selectNodeContents(attractionContent);
+    contentRange.deleteContents();
 
-observerScroll.observe(footer);
+    let inputKeyword = searchInput.value.trim();
+    attractionPreviousKeyword = "";
+    addAttractionItems(inputKeyword);
+  }
+});
 
 async function addListBarItems() {
   const url = "/api/mrts";
@@ -171,5 +193,16 @@ listBarNextBtn.addEventListener("click", () => {
   listBarList.scrollLeft += 800;
 });
 
-addListAttractionItems();
+listBarList.addEventListener("click", (e) => {
+  console.dir(e.target);
+
+  let contentRange = document.createRange();
+  contentRange.selectNodeContents(attractionContent);
+  contentRange.deleteContents();
+
+  searchInput.value = e.target.textContent;
+  attractionPreviousKeyword = "";
+  addAttractionItems(searchInput.value);
+});
+
 addListBarItems();
