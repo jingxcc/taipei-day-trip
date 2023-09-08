@@ -220,6 +220,10 @@ button {
   font-weight: medium;
 }
 
+.text-center {
+  text-align: center;
+}
+
 .mb-15 {
   margin-bottom: 15px;
 }
