@@ -1,4 +1,3 @@
-USE taipei_trip;
 DROP TABLE IF EXISTS image_url;
 DROP TABLE IF EXISTS attraction_mrt;
 DROP TABLE IF EXISTS mrt;
@@ -8,12 +7,12 @@ DROP TABLE IF EXISTS category;
 
 CREATE TABLE category (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    category_name VARCHAR(50) NOT NULL UNIQUE
+    name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE attraction (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    attraction_name VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL UNIQUE,
     description VARCHAR(3000),
     category_id BIGINT,
     address VARCHAR(150),
@@ -33,7 +32,7 @@ CREATE TABLE image_url (
 
 CREATE TABLE mrt (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    mrt_name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL UNIQUE
 );
 
 CREATE TABLE attraction_mrt (
