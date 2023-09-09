@@ -67,6 +67,7 @@ def api_attractions():
 
         page = int(page)
         records_offset = RECORDS_PER_PAGE * page
+        # add one more record for checking next page number
         limit_sql = f" LIMIT {RECORDS_PER_PAGE + 1} OFFSET %s"
         val_list += [records_offset]
         val = tuple(val_list)
@@ -88,13 +89,14 @@ def api_attractions():
         result = my_cursor.fetchall()
         result_rows = my_cursor.rowcount
 
+        print(sql)
+
+        # checking next page number
         if result_rows > RECORDS_PER_PAGE:
             next_page_num = page + 1
+            result.pop()  # remove one record of data
         else:
             next_page_num = None
-
-        # remove one record of data
-        result.pop()
 
         # concat concatenate data to list
         columns_convert = ["mrt", "images"]
