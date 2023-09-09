@@ -60,13 +60,16 @@ def api_attractions():
 
         where_sql = ""
         val = ()
+        val_list = []
         if keyword is not None:
             where_sql = f" WHERE m.mrt_name=%s or a.attraction_name LIKE %s"
-            val = (keyword, f"%{keyword}%")
+            val_list = [keyword, f"%{keyword}%"]
 
         page = int(page)
         records_offset = RECORDS_PER_PAGE * page
-        limit_sql = f" LIMIT {RECORDS_PER_PAGE} OFFSET %s"
+        limit_sql = f" LIMIT {RECORDS_PER_PAGE + 1} OFFSET %s"
+        val_list += [records_offset]
+        val = tuple(val_list)
 
         sql = f"SELECT a.id, a.attraction_name, c.category_name as category, a.description, a.address, a.transport \
                     , GROUP_CONCAT(DISTINCT m.mrt_name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
@@ -78,21 +81,20 @@ def api_attractions():
                 LEFT JOIN image_url iu ON iu.attraction_id = a.id \
                 {where_sql} \
                 GROUP BY a.id, a.attraction_name, c.category_name, a.description, a.address, a.transport, a.latitude, a.longitude \
-                ORDER BY a.id"
+                ORDER BY a.id \
+                {limit_sql} "
 
         my_cursor.execute(sql, val)
         result = my_cursor.fetchall()
-        total_rowcount = my_cursor.rowcount
+        result_rows = my_cursor.rowcount
 
-        if int(total_rowcount / RECORDS_PER_PAGE) >= page + 1:
+        if result_rows > RECORDS_PER_PAGE:
             next_page_num = page + 1
         else:
             next_page_num = None
 
-        sql += limit_sql
-        val += (records_offset,)
-        my_cursor.execute(sql, val)
-        result = my_cursor.fetchall()
+        # remove one record of data
+        result.pop()
 
         # concat concatenate data to list
         columns_convert = ["mrt", "images"]
