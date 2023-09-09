@@ -25,15 +25,15 @@ my_conn = mysql.connector.connect(
 my_cursor = my_conn.cursor(dictionary=True)
 
 columns_input_db = {
-    "name": {"table": "attraction", "column": "name"},
+    "name": {"table": "attraction", "column": "attraction_name"},
     "description": {"table": "attraction", "column": "description"},
     "CAT_ID": {"table": "attraction", "column": "category_id"},
     "address": {"table": "attraction", "column": "address"},
     "direction": {"table": "attraction", "column": "transport"},
     "latitude": {"table": "attraction", "column": "latitude"},
     "longitude": {"table": "attraction", "column": "longitude"},
-    "MRT": {"table": "mrt", "column": "name"},
-    "CAT": {"table": "category", "column": "name"},
+    "MRT": {"table": "mrt", "column": "mrt_name"},
+    "CAT": {"table": "category", "column": "category_name"},
     "file": {"table": "image_url", "column": "url"},
 }
 
@@ -49,7 +49,7 @@ for attraction in data["result"]["results"]:
 
 insert_rowcount = 0
 for item in category_set:
-    sql = f"INSERT INTO {target_table} (name) \
+    sql = f"INSERT INTO {target_table} (category_name) \
         VALUES (%s)"
     val = (item,)
     my_cursor.execute(sql, val)
@@ -87,7 +87,7 @@ mrt_set = set(process_list)
 
 insert_rowcount = 0
 for item in mrt_set:
-    sql = f"INSERT INTO {target_table} (name) \
+    sql = f"INSERT INTO {target_table} (mrt_name) \
         VALUES (%s)"
     val = (item,)
     my_cursor.execute(sql, val)
@@ -104,7 +104,7 @@ result = my_cursor.fetchall()
 
 for attraction in data["result"]["results"]:
     for r in result:
-        if attraction["CAT"] == r["name"]:
+        if attraction["CAT"] == r["category_name"]:
             attraction["CAT_ID"] = r["id"]
             break
 # attraction
@@ -121,7 +121,7 @@ for attraction in data["result"]["results"]:
 
 insert_rowcount = 0
 for attr in data_attraction:
-    sql = f"INSERT INTO {target_table} (name, description, category_id, address, transport, latitude, longitude) \
+    sql = f"INSERT INTO {target_table} (attraction_name, description, category_id, address, transport, latitude, longitude) \
         VALUES (%s, %s, %s, %s, %s, %s, %s)"
     val = (
         attr["name"],
@@ -145,7 +145,7 @@ my_cursor.execute(sql)
 result = my_cursor.fetchall()
 for attraction in data["result"]["results"]:
     for r in result:
-        if r["name"] == attraction["name"]:
+        if r["attraction_name"] == attraction["name"]:
             attraction["name_ID"] = r["id"]
             break
 
@@ -162,13 +162,13 @@ for attraction in data["result"]["results"]:
         mrt_normal = unicodedata.normalize("NFKC", attraction["MRT"])
         if "/" not in mrt_normal:
             for r in result:
-                if r["name"] == mrt_normal:
+                if r["mrt_name"] == mrt_normal:
                     data_attraction_mrt.append((attraction["name_ID"], r["id"]))
         else:
             mrt_list = mrt_normal.split("/")
             for mrt in mrt_list:
                 for r in result:
-                    if r["name"] == mrt:
+                    if r["mrt_name"] == mrt:
                         data_attraction_mrt.append((attraction["name_ID"], r["id"]))
     else:
         data_attraction_mrt.append((attraction["name_ID"], None))
