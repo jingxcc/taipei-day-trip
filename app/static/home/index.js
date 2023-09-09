@@ -1,4 +1,4 @@
-let attractionPreviousKeyword = "";
+// let attractionPreviousKeyword = "";
 let attractionNextPageNum = 0;
 const DEFAULT_PAGE_NUM = 0;
 let isFetchingData = false;
@@ -14,12 +14,11 @@ const listBarNextBtn = document.getElementById("listBarNextBtn");
 
 async function addAttractionItems(keyword) {
   if (keyword === undefined) {
-    keyword = attractionPreviousKeyword;
+    keyword = "";
   }
-  if (attractionPreviousKeyword !== keyword) {
-    attractionPreviousKeyword = keyword;
-    attractionNextPageNum = 0;
-  }
+  // if (attractionPreviousKeyword !== keyword) {
+  //   attractionNextPageNum = 0;
+  // }
 
   let url = new URL(`${window.location.origin}/api/attractions?`);
   let urlParams = new URLSearchParams(url.search);
@@ -28,11 +27,13 @@ async function addAttractionItems(keyword) {
     keyword: keyword,
   };
 
-  for (const key in paramValues) {
-    if (paramValues[key] !== undefined) {
-      urlParams.set(key, paramValues[key]);
-    }
+  console.log(paramValues);
+
+  urlParams.set("page", paramValues["page"]);
+  if (keyword !== "") {
+    urlParams.set("keyword", paramValues["keyword"]);
   }
+
   url += urlParams.toString();
   if (paramValues["page"] !== null) {
     try {
@@ -41,14 +42,16 @@ async function addAttractionItems(keyword) {
 
       if (response.ok) {
         const result = await response.json();
+
         isFetchingData = false;
+        // attractionPreviousKeyword = keyword;
 
         const fragment = document.createDocumentFragment();
 
         // console.log(`get next page data : ${attractionNextPageNum}`);
         attractionNextPageNum = result["nextPage"];
 
-        // console.log(result);
+        console.log(result);
 
         if (result["data"].length > 0) {
           result["data"].forEach((attraction) => {
@@ -113,7 +116,10 @@ async function addAttractionItems(keyword) {
 }
 
 // observer
+// function scrollAddAttractions(attractionKeyword) {
 if (attractionContent.children.length === 0) {
+  attractionNextPageNum = 0;
+
   const observerOptions = {
     root: null,
     rootMargin: "0px",
@@ -127,7 +133,8 @@ if (attractionContent.children.length === 0) {
         attractionNextPageNum !== null &&
         !isFetchingData
       ) {
-        addAttractionItems(attractionPreviousKeyword);
+        // console.log(`attractionKeyword: ${attractionKeyword}`);
+        addAttractionItems(attractionKeyword);
 
         // console.log(`go to next page: ${attractionNextPageNum}`);
       } else if (attractionNextPageNum === null) {
@@ -141,33 +148,41 @@ if (attractionContent.children.length === 0) {
     observerScrollCallBack,
     observerOptions
   );
-
   observerScroll.observe(footer);
 }
+// }
 
 searchInput.addEventListener("keydown", (e) => {
   // console.log(searchInput.value !== "");
-  if (e.key === "Enter" && searchInput.value !== "") {
+  if (e.key === "Enter") {
     let contentRange = document.createRange();
     contentRange.selectNodeContents(attractionContent);
     contentRange.deleteContents();
 
     let inputKeyword = searchInput.value.trim();
-    attractionPreviousKeyword = "";
+    console.log(`enter inputKeyword: ${inputKeyword}`);
+    // attractionPreviousKeyword = "";
+    // if (observerScroll) {
+    //   observerScroll.disconnect();
+    // }
     addAttractionItems(inputKeyword);
   }
 });
 
 searchBtn.addEventListener("click", () => {
-  if (searchInput.value !== "") {
-    let contentRange = document.createRange();
-    contentRange.selectNodeContents(attractionContent);
-    contentRange.deleteContents();
+  // if (searchInput.value !== "") {
+  let contentRange = document.createRange();
+  contentRange.selectNodeContents(attractionContent);
+  contentRange.deleteContents();
 
-    let inputKeyword = searchInput.value.trim();
-    attractionPreviousKeyword = "";
-    addAttractionItems(inputKeyword);
-  }
+  let inputKeyword = searchInput.value.trim();
+  // attractionPreviousKeyword = "";
+  console.log(`button inputKeyword: ${inputKeyword}`);
+  // if (observerScroll) {
+  //   observerScroll.disconnect();
+  // }
+  addAttractionItems(inputKeyword);
+  // }
 });
 
 async function addListBarItems() {
@@ -202,14 +217,22 @@ listBarNextBtn.addEventListener("click", () => {
 
 listBarList.addEventListener("click", (e) => {
   console.dir(e.target);
+  console.dir(e.target.textContent);
 
   let contentRange = document.createRange();
   contentRange.selectNodeContents(attractionContent);
   contentRange.deleteContents();
 
+  // searchInput.textContent = e.target.textContent;
   searchInput.value = e.target.textContent;
-  attractionPreviousKeyword = "";
+  // attractionPreviousKeyword = "";
+  console.log("hello", searchInput.value);
+  // if (observerScroll) {
+  //   observerScroll.disconnect();
+  // }
+
   addAttractionItems(searchInput.value);
 });
 
+// scrollAddAttractions();
 addListBarItems();
