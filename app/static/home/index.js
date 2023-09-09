@@ -1,4 +1,3 @@
-// let attractionPreviousKeyword = "";
 let attractionNextPageNum = 0;
 const DEFAULT_PAGE_NUM = 0;
 let isFetchingData = false;
@@ -13,13 +12,6 @@ const listBarPrevBtn = document.getElementById("listBarPrevBtn");
 const listBarNextBtn = document.getElementById("listBarNextBtn");
 
 async function addAttractionItems(keyword) {
-  if (keyword === undefined) {
-    keyword = "";
-  }
-  // if (attractionPreviousKeyword !== keyword) {
-  //   attractionNextPageNum = 0;
-  // }
-
   let url = new URL(`${window.location.origin}/api/attractions?`);
   let urlParams = new URLSearchParams(url.search);
   let paramValues = {
@@ -27,7 +19,7 @@ async function addAttractionItems(keyword) {
     keyword: keyword,
   };
 
-  console.log(paramValues);
+  // console.log(paramValues);
 
   urlParams.set("page", paramValues["page"]);
   if (keyword !== "") {
@@ -42,16 +34,13 @@ async function addAttractionItems(keyword) {
 
       if (response.ok) {
         const result = await response.json();
-
         isFetchingData = false;
-        // attractionPreviousKeyword = keyword;
-
-        const fragment = document.createDocumentFragment();
 
         // console.log(`get next page data : ${attractionNextPageNum}`);
-        attractionNextPageNum = result["nextPage"];
+        // console.log(result);
 
-        console.log(result);
+        attractionNextPageNum = result["nextPage"];
+        const fragment = document.createDocumentFragment();
 
         if (result["data"].length > 0) {
           result["data"].forEach((attraction) => {
@@ -116,8 +105,7 @@ async function addAttractionItems(keyword) {
 }
 
 // observer
-// function scrollAddAttractions(attractionKeyword) {
-if (attractionContent.children.length === 0) {
+function scrollAddAttractions(attractionKeyword) {
   attractionNextPageNum = 0;
 
   const observerOptions = {
@@ -133,7 +121,6 @@ if (attractionContent.children.length === 0) {
         attractionNextPageNum !== null &&
         !isFetchingData
       ) {
-        // console.log(`attractionKeyword: ${attractionKeyword}`);
         addAttractionItems(attractionKeyword);
 
         // console.log(`go to next page: ${attractionNextPageNum}`);
@@ -149,40 +136,31 @@ if (attractionContent.children.length === 0) {
     observerOptions
   );
   observerScroll.observe(footer);
+  // }
 }
-// }
 
 searchInput.addEventListener("keydown", (e) => {
-  // console.log(searchInput.value !== "");
   if (e.key === "Enter") {
     let contentRange = document.createRange();
     contentRange.selectNodeContents(attractionContent);
     contentRange.deleteContents();
 
     let inputKeyword = searchInput.value.trim();
-    console.log(`enter inputKeyword: ${inputKeyword}`);
-    // attractionPreviousKeyword = "";
-    // if (observerScroll) {
-    //   observerScroll.disconnect();
-    // }
-    addAttractionItems(inputKeyword);
+    // console.log(`enter inputKeyword: ${inputKeyword}`);
+
+    scrollAddAttractions(inputKeyword);
   }
 });
 
 searchBtn.addEventListener("click", () => {
-  // if (searchInput.value !== "") {
   let contentRange = document.createRange();
   contentRange.selectNodeContents(attractionContent);
   contentRange.deleteContents();
 
   let inputKeyword = searchInput.value.trim();
-  // attractionPreviousKeyword = "";
-  console.log(`button inputKeyword: ${inputKeyword}`);
-  // if (observerScroll) {
-  //   observerScroll.disconnect();
-  // }
-  addAttractionItems(inputKeyword);
-  // }
+  // console.log(`button inputKeyword: ${inputKeyword}`);
+
+  scrollAddAttractions(inputKeyword);
 });
 
 async function addListBarItems() {
@@ -216,8 +194,8 @@ listBarNextBtn.addEventListener("click", () => {
 });
 
 listBarList.addEventListener("click", (e) => {
-  console.dir(e.target);
-  console.dir(e.target.textContent);
+  // console.dir(e.target);
+  // console.dir(e.target.textContent);
 
   let contentRange = document.createRange();
   contentRange.selectNodeContents(attractionContent);
@@ -225,14 +203,13 @@ listBarList.addEventListener("click", (e) => {
 
   // searchInput.textContent = e.target.textContent;
   searchInput.value = e.target.textContent;
-  // attractionPreviousKeyword = "";
-  console.log("hello", searchInput.value);
-  // if (observerScroll) {
-  //   observerScroll.disconnect();
-  // }
 
-  addAttractionItems(searchInput.value);
+  // console.log(`item listBarList: ${searchInput.value}`);
+
+  scrollAddAttractions(searchInput.value);
 });
 
-// scrollAddAttractions();
-addListBarItems();
+document.addEventListener("DOMContentLoaded", () => {
+  scrollAddAttractions("");
+  addListBarItems();
+});

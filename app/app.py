@@ -89,8 +89,6 @@ def api_attractions():
         result = my_cursor.fetchall()
         result_rows = my_cursor.rowcount
 
-        print(sql)
-
         # checking next page number
         if result_rows > RECORDS_PER_PAGE:
             next_page_num = page + 1
