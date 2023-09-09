@@ -285,7 +285,6 @@ nav {
 
 .search {
   display: flex;
-  flex-wrap: nowrap;
 }
 
 .search__input {
@@ -317,7 +316,6 @@ nav {
 
 .list-bar {
   display: flex;
-  flex: auto;
   align-items: center;
 }
 

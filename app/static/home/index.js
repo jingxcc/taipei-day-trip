@@ -1,7 +1,7 @@
 let attractionPreviousKeyword = "";
 let attractionNextPageNum = 0;
 const DEFAULT_PAGE_NUM = 0;
-const API_DELAY = 600;
+let isFetchingData = false;
 const attractionContent = document.getElementById("attractionContent");
 const footer = document.getElementById("footer");
 
@@ -36,15 +36,19 @@ async function addAttractionItems(keyword) {
   url += urlParams.toString();
   if (paramValues["page"] !== null) {
     try {
+      isFetchingData = true;
       const response = await fetch(url);
+
       if (response.ok) {
         const result = await response.json();
+        isFetchingData = false;
+
         const fragment = document.createDocumentFragment();
 
-        console.log(`get next page data : ${attractionNextPageNum}`);
+        // console.log(`get next page data : ${attractionNextPageNum}`);
         attractionNextPageNum = result["nextPage"];
 
-        console.log(result);
+        // console.log(result);
 
         if (result["data"].length > 0) {
           result["data"].forEach((attraction) => {
@@ -93,15 +97,16 @@ async function addAttractionItems(keyword) {
 
           attractionContent.appendChild(fragment);
         } else if (paramValues["page"] === 0) {
-          // <div class="card"></div>
           const attractionNoResult = document.createElement("div");
           const styleList = ["content"];
           attractionNoResult.classList.add(...styleList);
           attractionNoResult.textContent = "找不到資料";
+
           attractionContent.appendChild(attractionNoResult);
         }
       }
     } catch (err) {
+      isFetchingData = false;
       console.error(`Error: ${err}`);
     }
   }
@@ -117,12 +122,14 @@ if (attractionContent.children.length === 0) {
 
   let observerScrollCallBack = (entries, observerScroll) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting && attractionNextPageNum !== null) {
-        setTimeout(() => {
-          addAttractionItems(attractionPreviousKeyword);
-        }, API_DELAY);
+      if (
+        entry.isIntersecting &&
+        attractionNextPageNum !== null &&
+        !isFetchingData
+      ) {
+        addAttractionItems(attractionPreviousKeyword);
 
-        console.log(`go to next page: ${attractionNextPageNum}`);
+        // console.log(`go to next page: ${attractionNextPageNum}`);
       } else if (attractionNextPageNum === null) {
         observerScroll.disconnect();
       }
