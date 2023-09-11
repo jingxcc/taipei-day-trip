@@ -338,17 +338,17 @@ nav {
 }
 
 .list-bar__prev-btn-icon {
-  background-image: url(../images/prevBtn.svg);
+  background-image: url(../images/button/prevBtn.svg);
 }
 .list-bar__prev-btn-icon:hover {
-  background-image: url(../images/prevBtn_black.svg);
+  background-image: url(../images/button/prevBtn_black.svg);
 }
 
 .list-bar__next-btn-icon {
-  background-image: url(../images/nextBtn.svg);
+  background-image: url(../images/button/nextBtn.svg);
 }
 .list-bar__next-btn-icon:hover {
-  background-image: url(../images/nextBtn_black.svg);
+  background-image: url(../images/button/nextBtn_black.svg);
 }
 
 .list-bar__list {
@@ -442,4 +442,25 @@ footer {
   text-align: center;
   background-color: #757575;
   color: white;
+}
+
+.attraction {
+  margin-top: 54px;
+  padding: 0px 15px;
+  display: flex;
+}
+
+.attraction__carousel {
+  flex-grow: 1;
+  height: 406px;
+}
+
+.attraction__carousel-btn {
+  width: 36px;
+  height: 36px;
+}
+
+.attraction__profile {
+  width: 50%;
+  margin-left: 30px;
 }/*# sourceMappingURL=style.css.map */

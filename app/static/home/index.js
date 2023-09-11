@@ -36,7 +36,7 @@ async function addAttractionItems(keyword) {
         const result = await response.json();
         isFetchingData = false;
 
-        // console.log(`get next page data : ${attractionNextPageNum}`);
+        console.log(`get next page data : ${attractionNextPageNum}`);
         // console.log(result);
 
         attractionNextPageNum = result["nextPage"];
@@ -194,9 +194,6 @@ listBarNextBtn.addEventListener("click", () => {
 });
 
 listBarList.addEventListener("click", (e) => {
-  // console.dir(e.target);
-  // console.dir(e.target.textContent);
-
   let contentRange = document.createRange();
   contentRange.selectNodeContents(attractionContent);
   contentRange.deleteContents();

@@ -96,16 +96,16 @@ nav {
 }
 
 .list-bar__prev-btn-icon {
-  background-image: url(../images/prevBtn.svg);
+  background-image: url(../images/button/prevBtn.svg);
   &:hover {
-    background-image: url(../images/prevBtn_black.svg);
+    background-image: url(../images/button/prevBtn_black.svg);
   }
 }
 
 .list-bar__next-btn-icon {
-  background-image: url(../images/nextBtn.svg);
+  background-image: url(../images/button/nextBtn.svg);
   &:hover {
-    background-image: url(../images/nextBtn_black.svg);
+    background-image: url(../images/button/nextBtn_black.svg);
   }
 }
 
