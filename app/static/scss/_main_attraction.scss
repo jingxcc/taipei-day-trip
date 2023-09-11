@@ -1,0 +1,19 @@
+.attraction {
+  margin-top: $head-margin;
+  padding: 0px 15px;
+  display: flex;
+}
+.attraction__carousel {
+  flex-grow: 1;
+  height: 406px;
+}
+
+.attraction__carousel-btn {
+  width: 36px;
+  height: 36px;
+}
+
+.attraction__profile {
+  width: 50%;
+  margin-left: 30px;
+}

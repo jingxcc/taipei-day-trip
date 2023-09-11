@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link rel="stylesheet" href="../static/scss/style.css" />
+    <script defer src="../static/attraction/index.js"></script>
+  </head>
+  <body>
+    <header>
+      <nav class="container">
+        <h1 class="headline">
+          <a href="/">台北一日遊</a>
+        </h1>
+        <div class="nav-menu">
+          <a class="nav-menu__item body" href="#">預定行程</a>
+          <a class="nav-menu__item body" href="#">登入/註冊</a>
+        </div>
+      </nav>
+    </header>
+    <section class="attraction container">
+      <div class="attraction__carousel">
+        <button class="attraction__carousel-prev-btn attraction__carousel-btn">
+          <img
+            src="../static/images/button/noBorder/prevBtn.svg"
+            alt="previous image button"
+          />
+        </button>
+        <img class="attraction__carousel-images" src="" alt="" />
+        <button class="attraction__carousel-next-btn attraction__carousel-btn">
+          <img
+            src="../static/images/button/noBorder/nextBtn.svg"
+            alt="next image button"
+          />
+        </button>
+        <div class="attraction__carousel-dots">
+          <button class="dot-selected"></button>
+          <button class="dot"></button>
+        </div>
+      </div>
+      <div class="attraction__profile">
+        <h2 class="attraction__title dialog__title"></h2>
+        <p class="attraction__info"></p>
+
+        <div class="attraction__form">
+          <p>訂購導覽行程</p>
+          <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
+          <div>
+            <span for="date">選擇日期：</span>
+            <input id="date" type="date" />
+          </div>
+          <div>
+            <span>選擇時間：</span>
+            <span>
+              <label for="timePM">上半天</label>
+              <input id="timeAM" type="radio" />
+            </span>
+            <span>
+              <label for="timePM">下半天</label>
+              <input id="timePM" type="radio" />
+            </span>
+          </div>
+          <div>
+            <span>導覽費用：</span>
+            <span>新台幣 2000 元</span>
+          </div>
+          <button><span>開始預訂行程</span></button>
+        </div>
+      </div>
+    </section>
+    <hr class="container" />
+    <section class="info container">
+      <p class="info__description"></p>
+      <p class="info__address"></p>
+      <p class="info__transport"></p>
+    </section>
+
+    <footer id="footer">
+      <span>COPYRIGHT © 2023 台北一日遊</span>
+    </footer>
+  </body>
+</html>
