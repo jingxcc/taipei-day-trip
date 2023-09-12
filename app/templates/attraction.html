@@ -21,51 +21,98 @@
     </header>
     <section class="attraction container">
       <div class="attraction__carousel">
-        <button class="attraction__carousel-prev-btn attraction__carousel-btn">
+        <div class="carousel__image-block">
+          <img
+            class="carousel__images"
+            src="https://fakeimg.pl/350x200/?text=Hello1"
+            alt=""
+          />
+        </div>
+        <div class="carousel__image-block">
+          <img
+            class="carousel__images"
+            src="https://fakeimg.pl/350x200/?text=Hello2"
+            alt=""
+          />
+        </div>
+        <div class="carousel__image-block">
+          <img
+            class="carousel__images"
+            src="https://fakeimg.pl/350x200/?text=Hello3"
+            alt=""
+          />
+        </div>
+        <div class="carousel__image-block">
+          <img
+            class="carousel__images"
+            src="https://fakeimg.pl/350x200/?text=Hello4"
+            alt=""
+          />
+        </div>
+        <button
+          class="carousel__prev-btn carousel__btn"
+          onclick="changeCarouselIndex(-1)"
+        >
           <img
             src="../static/images/button/noBorder/prevBtn.svg"
             alt="previous image button"
           />
         </button>
-        <img class="attraction__carousel-images" src="" alt="" />
-        <button class="attraction__carousel-next-btn attraction__carousel-btn">
+        <button
+          class="carousel__next-btn carousel__btn"
+          onclick="changeCarouselIndex(1)"
+        >
           <img
             src="../static/images/button/noBorder/nextBtn.svg"
             alt="next image button"
           />
         </button>
         <div class="attraction__carousel-dots">
-          <button class="dot-selected"></button>
+          <button class="dot active"></button>
+          <button class="dot"></button>
+          <button class="dot"></button>
           <button class="dot"></button>
         </div>
       </div>
       <div class="attraction__profile">
-        <h2 class="attraction__title dialog__title"></h2>
-        <p class="attraction__info"></p>
+        <h2 class="attraction__title dialog__title weight-bold mb-15">
+          景點名稱
+        </h2>
+        <p class="attraction__info body mb-20">景點資訊</p>
 
-        <div class="attraction__form">
-          <p>訂購導覽行程</p>
-          <p>以此景點為中心的一日行程，帶您探索城市角落故事</p>
-          <div>
-            <span for="date">選擇日期：</span>
+        <div class="attraction__form body">
+          <p class="mb-15 weight-bold">訂購導覽行程</p>
+          <p class="mb-15">以此景點為中心的一日行程，帶您探索城市角落故事</p>
+          <div class="attraction__formd-date mb-15">
+            <span for="date" class="weight-bold mr-5">選擇日期：</span>
             <input id="date" type="date" />
           </div>
-          <div>
-            <span>選擇時間：</span>
-            <span>
-              <label for="timePM">上半天</label>
-              <input id="timeAM" type="radio" />
-            </span>
-            <span>
+          <div class="attraction__form-time mb-15">
+            <span class="weight-bold mr-5">選擇時間：</span>
+            <!-- <div> -->
+            <div class="form__time-label">
+              <input
+                id="timeAM"
+                class="mr-5"
+                type="radio"
+                name="time"
+                value="am"
+              />
+              <label for="timeAM">上半天</label>
+            </div>
+            <div class="form__time-label">
+              <input id="timePM" type="radio" name="time" value="pm" />
               <label for="timePM">下半天</label>
-              <input id="timePM" type="radio" />
-            </span>
+            </div>
+            <!-- </div> -->
           </div>
-          <div>
-            <span>導覽費用：</span>
+          <div class="attraction__form-price mb-25">
+            <span class="weight-bold mr-5">導覽費用：</span>
             <span>新台幣 2000 元</span>
           </div>
-          <button><span>開始預訂行程</span></button>
+          <button class="attraction__form-btn button">
+            <span>開始預訂行程</span>
+          </button>
         </div>
       </div>
     </section>

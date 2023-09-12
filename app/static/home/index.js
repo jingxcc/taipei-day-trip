@@ -45,8 +45,10 @@ async function addAttractionItems(keyword) {
         if (result["data"].length > 0) {
           result["data"].forEach((attraction) => {
             const card = document.createElement("div");
+            // console.log(card);
+
             card.innerHTML = `
-              <div class="card">
+              <a class="card" href="/attraction/${attraction.id}">
                 <div class="card__image-block">
                   <img
                     class="card__img"
