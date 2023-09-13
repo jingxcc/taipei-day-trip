@@ -474,13 +474,13 @@ footer {
   height: 36px;
 }
 
-.dot {
+.carousel__dot {
   background-color: white;
   height: 15px;
   width: 15px;
   border-radius: 50%;
 }
-.dot .active {
+.carousel__dot .active {
   background-color: #666666;
 }
 

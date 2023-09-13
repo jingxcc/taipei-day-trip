@@ -10,6 +10,7 @@ function changeCarouselIndex(addNum) {
 
 function showCarouselImage(imageNum) {
   const images = document.getElementsByClassName("carousel__images");
+  const dots = document.getElementsByClassName("carousel__dot");
 
   if (imageNum > images.length - 1) {
     currentImageIndex = 0;
@@ -22,7 +23,12 @@ function showCarouselImage(imageNum) {
     images[i].style.display = "none";
   }
 
+  for (let i = 0; i < dots.length; i++) {
+    dots[i].classList.remove("active");
+  }
+
   images[currentImageIndex].style.display = "block";
+  dots[currentImageIndex].classList.add("active");
   console.log(`show images: ${currentImageIndex}`);
 }
 
