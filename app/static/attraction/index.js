@@ -1,5 +1,31 @@
-// get images, information
+async function getAttractionData() {
+  let urlPathName = window.location.pathname;
+  let pathNameSegments = urlPathName.split("/");
+  let attractionId = pathNameSegments[pathNameSegments.length - 1];
+
+  // page num is over then existing data
+
+  let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
+  try {
+    const response = await fetch(apiUrl);
+
+    if (response.ok) {
+      const result = await response.json();
+      return result;
+    } else {
+      window.location.href = window.location.origin;
+    }
+  } catch (err) {
+    console.error(`Error: ${err}`);
+  }
+  return false;
+}
+
 // add images, information in the page
+async function displayAttractionData() {
+  let attractionData = await getAttractionData();
+  console.log(attractionData);
+}
 
 // Carousel
 let currentImageIndex = 0;
@@ -33,3 +59,4 @@ function showCarouselImage(imageNum) {
 }
 
 showCarouselImage(currentImageIndex);
+displayAttractionData();

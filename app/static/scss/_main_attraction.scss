@@ -102,6 +102,7 @@
     width: 100%;
     padding: 0;
     margin: 0px 10px;
+    padding: 0px 0px 40px 0px;
     border-bottom: 1px solid $gray-20;
   }
 }
@@ -153,4 +154,8 @@
 
   //   // background-color: $cyan-70;
   // }
+}
+
+.attraction___info {
+  padding: 10px 10px 60px 10px;
 }
