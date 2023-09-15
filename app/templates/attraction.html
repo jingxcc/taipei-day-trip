@@ -21,28 +21,7 @@
     </header>
     <section class="attraction container mb-40">
       <div class="attraction__carousel">
-        <div class="carousel__image-block">
-          <img
-            class="carousel__images"
-            src="https://fakeimg.pl/350x200/?text=Hello1"
-            alt=""
-          />
-          <img
-            class="carousel__images"
-            src="https://fakeimg.pl/350x200/?text=Hello2"
-            alt=""
-          />
-          <img
-            class="carousel__images"
-            src="https://fakeimg.pl/350x200/?text=Hello3"
-            alt=""
-          />
-          <img
-            class="carousel__images"
-            src="https://fakeimg.pl/350x200/?text=Hello4"
-            alt=""
-          />
-        </div>
+        <div id="carouselImageBlock" class="carousel__image-block"></div>
         <button
           class="carousel__prev-btn carousel__btn"
           onclick="changeCarouselIndex(-1)"
@@ -61,18 +40,18 @@
             alt="next image button"
           />
         </button>
-        <div class="carousel__dot-list">
-          <button class="carousel__dot"></button>
-          <button class="carousel__dot"></button>
-          <button class="carousel__dot"></button>
-          <button class="carousel__dot"></button>
-        </div>
+        <div id="carouselDotList" class="carousel__dot-list"></div>
       </div>
       <div class="attraction__profile">
-        <h2 class="attraction__title dialog__title weight-bold mb-15">
+        <h2
+          id="attractionTitle"
+          class="attraction__title dialog__title weight-bold mb-15"
+        >
           景點名稱
         </h2>
-        <p class="attraction__info body mb-20">景點資訊</p>
+        <p id="attractionCategory" class="attraction__category body mb-20">
+          景點資訊
+        </p>
 
         <div class="attraction__form body">
           <p class="mb-15 weight-bold">訂購導覽行程</p>
@@ -81,7 +60,7 @@
             <span for="date" class="weight-bold mr-5">選擇日期：</span>
             <input id="date" type="date" />
           </div>
-          <div class="attraction__form-time mb-15">
+          <div id="attractionFormTime" class="attraction__form-time mb-15">
             <span class="weight-bold mr-5">選擇時間：</span>
             <div class="form__time-label">
               <input
@@ -108,15 +87,17 @@
         </div>
       </div>
     </section>
-    <section class="attraction___info container mb-40">
-      <p class="info__description mb-20">info__description</p>
+    <section class="attraction__info container mb-40">
+      <p id="infoDescription" class="info__description mb-20">
+        info__description
+      </p>
       <div class="info__address-block">
         <p class="weight-bold">景點地址：</p>
-        <p class="info__address mb-20">info__address</p>
+        <p id="infoAddress" class="info__address mb-20">info__address</p>
       </div>
       <div class="info__transport-block">
         <p class="weight-bold">交通方式：</p>
-        <p class="info__transport mb-20">info__transport</p>
+        <p id="infoTransport" class="info__transport mb-20">info__transport</p>
       </div>
     </section>
 
