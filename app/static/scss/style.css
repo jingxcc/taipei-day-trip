@@ -457,12 +457,13 @@ footer {
 .attraction {
   display: flex;
   flex: auto;
-  margin-top: 64px;
+  margin-top: 104px;
   padding: 0px 15px 40px 15px;
   border-bottom: 1px solid #e8e8e8;
 }
 @media (max-width: 1200px) {
   .attraction {
+    margin-top: 64px;
     flex-wrap: wrap;
     padding: 0;
     border: 0;

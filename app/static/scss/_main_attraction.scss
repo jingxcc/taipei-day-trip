@@ -1,11 +1,12 @@
 .attraction {
   display: flex;
   flex: auto;
-  margin-top: $head-margin;
+  margin-top: calc($head-margin + 40px);
   padding: 0px 15px 40px 15px;
   border-bottom: 1px solid $gray-20;
 
   @media (max-width: 1200px) {
+    margin-top: $head-margin;
     flex-wrap: wrap;
     padding: 0;
     border: 0;
