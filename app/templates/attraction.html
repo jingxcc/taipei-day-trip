@@ -46,40 +46,32 @@
         <h2
           id="attractionTitle"
           class="attraction__title dialog__title weight-bold mb-15"
-        >
-          景點名稱
-        </h2>
-        <p id="attractionCategory" class="attraction__category body mb-20">
-          景點資訊
-        </p>
+        ></h2>
+        <p id="attractionCategory" class="attraction__category body mb-20"></p>
 
         <div class="attraction__form body">
           <p class="mb-15 weight-bold">訂購導覽行程</p>
           <p class="mb-15">以此景點為中心的一日行程，帶您探索城市角落故事</p>
-          <div class="attraction__formd-date mb-15">
+          <div class="attraction__form-date mb-15">
             <span for="date" class="weight-bold mr-5">選擇日期：</span>
-            <input id="date" type="date" />
+            <input id="date" class="form__date body" type="date" />
           </div>
-          <div id="attractionFormTime" class="attraction__form-time mb-15">
-            <span class="weight-bold mr-5">選擇時間：</span>
-            <div class="form__time-label">
+            <div id="attractionFormTime" class="attraction__form-time mb-15">
+              <span class="weight-bold mr-5">選擇時間：</span>
               <input
                 id="timeAM"
-                class="mr-5"
                 type="radio"
                 name="time"
-                value="am"
+                value="am" 
+                checked
               />
               <label for="timeAM">上半天</label>
-            </div>
-            <div class="form__time-label">
               <input id="timePM" type="radio" name="time" value="pm" />
               <label for="timePM">下半天</label>
             </div>
-          </div>
           <div class="attraction__form-price mb-25">
             <span class="weight-bold mr-5">導覽費用：</span>
-            <span>新台幣 2000 元</span>
+            <span id="formPrice" class="form__price">新台幣 2000 元</span>
           </div>
           <button class="attraction__form-btn button">
             <span>開始預訂行程</span>
@@ -88,16 +80,14 @@
       </div>
     </section>
     <section class="attraction__info container mb-40">
-      <p id="infoDescription" class="info__description mb-20">
-        info__description
-      </p>
+      <p id="infoDescription" class="info__description mb-20"></p>
       <div class="info__address-block">
         <p class="weight-bold">景點地址：</p>
-        <p id="infoAddress" class="info__address mb-20">info__address</p>
+        <p id="infoAddress" class="info__address mb-20"></p>
       </div>
       <div class="info__transport-block">
         <p class="weight-bold">交通方式：</p>
-        <p id="infoTransport" class="info__transport mb-20">info__transport</p>
+        <p id="infoTransport" class="info__transport mb-20"></p>
       </div>
     </section>
 

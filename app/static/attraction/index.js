@@ -26,18 +26,31 @@ function showCarouselImage(imageNum) {
 
   images[currentImageIndex].style.display = "block";
   dots[currentImageIndex].classList.add("active");
-  console.log(`show images: ${currentImageIndex}`);
 }
 
 // price
+const timeInputs = document.querySelectorAll(
+  "#attractionFormTime > input[name='time']"
+);
 const timePrices = [
   { time: "am", price: 2000 },
   { time: "pm", price: 2500 },
 ];
 
 function changeTimePrices() {
-  const timeInputs = document.querySelector("#attractionFormTime > input");
-  console.log(timeInputs);
+  const formPrice = document.getElementById("formPrice");
+
+  timeInputs.forEach((input) => {
+    if (input.checked) {
+      let timeSelected = input.value;
+
+      timePrices.forEach((timePrice) => {
+        if (timePrice["time"] === timeSelected) {
+          formPrice.textContent = `新台幣 ${timePrice["price"]} 元`;
+        }
+      });
+    }
+  });
 }
 
 async function getAttractionData() {
@@ -64,7 +77,6 @@ async function getAttractionData() {
 // add images, information in the page
 async function displayAttractionData() {
   let attractionData = await getAttractionData();
-  console.log(attractionData);
 
   const attractionTitle = document.getElementById("attractionTitle");
   const attractionCategory = document.getElementById("attractionCategory");
@@ -112,4 +124,9 @@ async function displayAttractionData() {
 }
 
 displayAttractionData();
-changeTimePrices();
+
+timeInputs.forEach((input) => {
+  input.addEventListener("click", () => {
+    changeTimePrices();
+  });
+});

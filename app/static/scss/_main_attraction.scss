@@ -121,40 +121,53 @@
     background-color: $cyan-70;
     color: white;
   }
+
+  .form__date{
+    width: 195px;
+    font-family: inherit;
+    padding: 5px 10px;
+    border: 0;
+
+    &::-webkit-calendar-picker-indicator{
+      width: 24px;
+      height: 24px;
+
+      background-image: url(../images/calendar.svg);
+      background-repeat: no-repeat;
+    }
+  }
 }
 
 .attraction__form-time {
   display: flex;
+  align-items: center;
 
-  .form__time-label {
-    display: flex;
-    align-items: center;
-    padding: 0px 8px 0px 5px;
+  label{
+    padding: 0px 8px 0px 0px;
+    margin: 0px 5px 0px 0px;
   }
-
-  // input[type="radio"] {
-  //   width: 22px;
-  //   height: 22px;
-  //   margin: 0px 4px 0px 0px;
-
-  //   // appearance: none;
-  //   // -webkit-appearance: none; /* Remove the default styles on some browsers */
-  //   // -moz-appearance: none;
-  //   border: 2px solid red; /* Change the color and width as needed */
-  //   border-radius: 50%; /* Ensure the radio button */
-
-  //   // box-shadow: 0 0 0 2px gray;
-
-  //   // &:checked:before {
-  //   //   background: green;
-  //   // }
-
-  //   // border: 1px solid white;
-  //   // border-radius: 50%;
-
-  //   // background-color: $cyan-70;
-  // }
+  
+  input[type="radio"] {
+    /* Remove the default styles on browsers */
+    appearance: none;
+    -webkit-appearance: none; // Safari, Chrome
+    -moz-appearance: none; // Firefox
+  
+    width: 22px;
+    height: 22px;
+    padding: 0px 0px 0px 5px;
+    margin: 0px 4px 0px 0px;
+  
+    background-color: white;
+    border: 3px solid white;
+    border-radius: 50%;
+  
+    &:checked {
+      background-color: $cyan-70;
+    }
+  }
 }
+
 
 .attraction__info {
   padding: 10px 10px 60px 10px;

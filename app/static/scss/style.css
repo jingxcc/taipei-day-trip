@@ -146,7 +146,6 @@ body {
 *::after,
 *::before {
   box-sizing: border-box;
-  outline: 1px solid orange;
 }
 
 a {
@@ -455,41 +454,114 @@ footer {
 }
 
 .attraction {
-  margin-top: 64px;
-  padding: 0px 15px;
   display: flex;
+  flex: auto;
+  margin-top: 64px;
+  padding: 0px 15px 40px 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+@media (max-width: 1200px) {
+  .attraction {
+    flex-wrap: wrap;
+    padding: 0;
+    border: 0;
+  }
 }
 
 .attraction__carousel {
+  position: relative;
   flex-grow: 1;
   height: 406px;
+  margin-right: 30px;
+}
+@media (max-width: 1200px) {
+  .attraction__carousel {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 20px;
+  }
+}
+@media (max-width: 768px) {
+  .attraction__carousel {
+    height: 350px;
+  }
+}
+
+.carousel__image-block {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .carousel__images {
   display: none;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: 50% 50%;
+     object-position: 50% 50%;
 }
 
 .carousel__btn {
   width: 36px;
   height: 36px;
+  background-color: transparent;
+}
+
+.carousel__prev-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+}
+
+.carousel__next-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+}
+
+.carousel__dot-list {
+  position: absolute;
+  bottom: 13px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .carousel__dot {
-  background-color: white;
-  height: 15px;
-  width: 15px;
+  box-sizing: content-box;
+  height: 12px;
+  width: 12px;
   border-radius: 50%;
+  margin: 0px 6px;
+  opacity: 0.75;
+  background-color: white;
 }
-.carousel__dot .active {
-  background-color: #666666;
+.carousel__dot.active {
+  background-color: black;
+  border: 1px solid white;
 }
 
 .attraction__profile {
-  width: 50%;
+  min-width: 50%;
   display: flex;
   flex-direction: column;
-  margin-left: 30px;
   padding: 0px 0px 8px 0px;
+}
+@media (max-width: 1200px) {
+  .attraction__profile {
+    width: 100%;
+    padding: 0;
+    margin: 0px 10px;
+    padding: 0px 0px 40px 0px;
+    border-bottom: 1px solid #e8e8e8;
+  }
 }
 
 .attraction__form {
@@ -504,12 +576,44 @@ footer {
   background-color: #448899;
   color: white;
 }
+.attraction__form .form__date {
+  width: 195px;
+  font-family: inherit;
+  padding: 5px 10px;
+  border: 0;
+}
+.attraction__form .form__date::-webkit-calendar-picker-indicator {
+  width: 24px;
+  height: 24px;
+  background-image: url(../images/calendar.svg);
+  background-repeat: no-repeat;
+}
 
 .attraction__form-time {
   display: flex;
-}
-.attraction__form-time .form__time-label {
-  display: flex;
   align-items: center;
-  padding: 0px 8px 0px 5px;
+}
+.attraction__form-time label {
+  padding: 0px 8px 0px 0px;
+  margin: 0px 5px 0px 0px;
+}
+.attraction__form-time input[type=radio] {
+  /* Remove the default styles on browsers */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 22px;
+  height: 22px;
+  padding: 0px 0px 0px 5px;
+  margin: 0px 4px 0px 0px;
+  background-color: white;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+.attraction__form-time input[type=radio]:checked {
+  background-color: #448899;
+}
+
+.attraction__info {
+  padding: 10px 10px 60px 10px;
 }/*# sourceMappingURL=style.css.map */
