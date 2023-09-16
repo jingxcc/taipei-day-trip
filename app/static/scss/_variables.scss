@@ -12,7 +12,11 @@ $blue-gray: #aabbcc;
 
 // default
 $size-default: 16px;
-$lh-default: auto;
+$lh-default: normal;
+$weight-default: 500;
 
 // fixed offset
-$head-margin: 54px;
+$head-margin: 64px;
+
+// weight
+$weight-bold: 700;

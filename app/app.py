@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_cors import CORS
 import mysql.connector
 
@@ -28,6 +28,9 @@ def index():
 
 @app.route("/attraction/<id>")
 def attraction(id):
+    if not id.isdigit():
+        return redirect(url_for("index"))
+
     return render_template("attraction.html")
 
 

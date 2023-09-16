@@ -36,7 +36,7 @@ async function addAttractionItems(keyword) {
         const result = await response.json();
         isFetchingData = false;
 
-        // console.log(`get next page data : ${attractionNextPageNum}`);
+        console.log(`get next page data : ${attractionNextPageNum}`);
         // console.log(result);
 
         attractionNextPageNum = result["nextPage"];
@@ -45,8 +45,10 @@ async function addAttractionItems(keyword) {
         if (result["data"].length > 0) {
           result["data"].forEach((attraction) => {
             const card = document.createElement("div");
+            // console.log(card);
+
             card.innerHTML = `
-              <div class="card">
+              <a class="card" href="/attraction/${attraction.id}">
                 <div class="card__image-block">
                   <img
                     class="card__img"
@@ -194,9 +196,6 @@ listBarNextBtn.addEventListener("click", () => {
 });
 
 listBarList.addEventListener("click", (e) => {
-  // console.dir(e.target);
-  // console.dir(e.target.textContent);
-
   let contentRange = document.createRange();
   contentRange.selectNodeContents(attractionContent);
   contentRange.deleteContents();

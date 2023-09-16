@@ -3,6 +3,9 @@
 body {
   font-family: "Noto Sans TC", sans-serif;
   font-size: $size-default;
+  font-weight: $weight-default;
+  line-height: $lh-default;
+
   color: $gray-70;
 }
 
@@ -25,9 +28,9 @@ img {
   height: auto;
 }
 
-// li {
-//   list-style-type: none;
-// }
+li {
+  list-style-type: none;
+}
 
 button {
   border: 0;
@@ -45,6 +48,44 @@ button {
   }
 }
 
+header {
+  width: 100%;
+  padding: 10px;
+  border-bottom: 1px solid $gray-20;
+  position: fixed;
+  top: 0;
+  z-index: 99;
+
+  background-color: white;
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .headline {
+    color: $cyan-70;
+  }
+
+  .nav-menu {
+    display: flex;
+  }
+
+  .nav-menu__item {
+    padding: 10px;
+  }
+}
+
+footer {
+  padding: 40px 0px;
+
+  text-align: center;
+  background-color: $gray-50;
+  color: white;
+  font-weight: $weight-bold;
+}
+
 // typography
 .headline {
   font-weight: bold;
@@ -53,14 +94,14 @@ button {
 }
 
 .slogan__title {
-  font-weight: bold;
+  font-weight: $weight-bold;
   font-size: 28px;
   line-height: 24px;
 }
 
 .dialog__title {
   font-size: 24px;
-  line-height: 24px;
+  line-height: auto;
 }
 
 .button {
@@ -70,14 +111,12 @@ button {
 
 .content {
   font-size: $size-default;
-  line-height: auto;
 }
 
 .body {
   font-size: $size-default;
-  line-height: 13.3px;
+  line-height: auto;
 }
 .category-list {
-  font-size: $size-default;
-  line-height: 13.3px;
+  font-size: 14px;
 }

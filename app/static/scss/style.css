@@ -137,6 +137,8 @@ table {
 body {
   font-family: "Noto Sans TC", sans-serif;
   font-size: 16px;
+  font-weight: 500;
+  line-height: normal;
   color: #666666;
 }
 
@@ -158,6 +160,10 @@ img {
   height: auto;
 }
 
+li {
+  list-style-type: none;
+}
+
 button {
   border: 0;
   padding: 0;
@@ -175,6 +181,38 @@ button {
   }
 }
 
+header {
+  width: 100%;
+  padding: 10px;
+  border-bottom: 1px solid #e8e8e8;
+  position: fixed;
+  top: 0;
+  z-index: 99;
+  background-color: white;
+}
+header nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+header .headline {
+  color: #448899;
+}
+header .nav-menu {
+  display: flex;
+}
+header .nav-menu__item {
+  padding: 10px;
+}
+
+footer {
+  padding: 40px 0px;
+  text-align: center;
+  background-color: #757575;
+  color: white;
+  font-weight: 700;
+}
+
 .headline {
   font-weight: bold;
   font-size: 30px;
@@ -182,14 +220,14 @@ button {
 }
 
 .slogan__title {
-  font-weight: bold;
+  font-weight: 700;
   font-size: 28px;
   line-height: 24px;
 }
 
 .dialog__title {
   font-size: 24px;
-  line-height: 24px;
+  line-height: auto;
 }
 
 .button {
@@ -199,25 +237,27 @@ button {
 
 .content {
   font-size: 16px;
-  line-height: auto;
 }
 
 .body {
   font-size: 16px;
-  line-height: 13.3px;
+  line-height: auto;
 }
 
 .category-list {
-  font-size: 16px;
-  line-height: 13.3px;
+  font-size: 14px;
 }
 
 .weight-bold {
-  font-weight: bold;
+  font-weight: 700;
 }
 
-.weight-medium {
-  font-weight: medium;
+.weight-default {
+  font-weight: 500;
+}
+
+.weight-400 {
+  font-weight: 400;
 }
 
 .text-center {
@@ -229,7 +269,7 @@ button {
 }
 
 .mb-20 {
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .mb-25 {
@@ -244,35 +284,12 @@ button {
   margin-bottom: 40px;
 }
 
-header {
-  width: 100%;
-  padding: 10px;
-  position: fixed;
-  top: 0;
-  z-index: 99;
-  background-color: white;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.headline {
-  color: #448899;
-}
-
-.nav-menu {
-  display: flex;
-}
-
-.nav-menu__item {
-  padding: 10px;
+.mr-5 {
+  margin-right: 5px;
 }
 
 .hero {
-  margin-top: 54px;
+  margin-top: 64px;
   padding: 76px 0px;
   background-image: url("../images/welcome_image.png");
   background-size: cover;
@@ -338,17 +355,17 @@ nav {
 }
 
 .list-bar__prev-btn-icon {
-  background-image: url(../images/prevBtn.svg);
+  background-image: url(../images/button/prevBtn.svg);
 }
 .list-bar__prev-btn-icon:hover {
-  background-image: url(../images/prevBtn_black.svg);
+  background-image: url(../images/button/prevBtn_black.svg);
 }
 
 .list-bar__next-btn-icon {
-  background-image: url(../images/nextBtn.svg);
+  background-image: url(../images/button/nextBtn.svg);
 }
 .list-bar__next-btn-icon:hover {
-  background-image: url(../images/nextBtn_black.svg);
+  background-image: url(../images/button/nextBtn_black.svg);
 }
 
 .list-bar__list {
@@ -437,9 +454,168 @@ nav {
   color: #757575;
 }
 
-footer {
-  padding: 40px 0px;
-  text-align: center;
-  background-color: #757575;
+.attraction {
+  display: flex;
+  flex: auto;
+  margin-top: 104px;
+  padding: 0px 15px 40px 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+@media (max-width: 1200px) {
+  .attraction {
+    margin-top: 64px;
+    flex-wrap: wrap;
+    padding: 0;
+    border: 0;
+  }
+}
+
+.attraction__carousel {
+  position: relative;
+  flex-grow: 1;
+  height: 406px;
+  margin-right: 30px;
+}
+@media (max-width: 1200px) {
+  .attraction__carousel {
+    width: 100%;
+    margin: 0;
+    margin-bottom: 20px;
+  }
+}
+@media (max-width: 768px) {
+  .attraction__carousel {
+    height: 350px;
+  }
+}
+
+.carousel__image-block {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel__images {
+  display: none;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: 50% 50%;
+     object-position: 50% 50%;
+}
+
+.carousel__btn {
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+}
+
+.carousel__prev-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+}
+
+.carousel__next-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+}
+
+.carousel__dot-list {
+  position: absolute;
+  bottom: 13px;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel__dot {
+  box-sizing: content-box;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  margin: 0px 6px;
+  opacity: 0.75;
+  background-color: white;
+}
+.carousel__dot.active {
+  background-color: black;
+  border: 1px solid white;
+}
+
+.attraction__profile {
+  min-width: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 0px 0px 8px 0px;
+}
+@media (max-width: 1200px) {
+  .attraction__profile {
+    width: 100%;
+    padding: 0;
+    margin: 0px 10px;
+    padding: 0px 0px 40px 0px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+}
+
+.attraction__form {
+  flex-grow: 1;
+  padding: 15px 20px 40px 20px;
+  border-radius: 5px;
+  background-color: #e8e8e8;
+}
+.attraction__form button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #448899;
   color: white;
+}
+.attraction__form .form__date {
+  width: 195px;
+  font-family: inherit;
+  padding: 5px 10px;
+  border: 0;
+}
+.attraction__form .form__date::-webkit-calendar-picker-indicator {
+  width: 24px;
+  height: 24px;
+  background-image: url(../images/calendar.svg);
+  background-repeat: no-repeat;
+}
+
+.attraction__form-time {
+  display: flex;
+  align-items: center;
+}
+.attraction__form-time label {
+  padding: 0px 8px 0px 0px;
+  margin: 0px 5px 0px 0px;
+}
+.attraction__form-time input[type=radio] {
+  /* Remove the default styles on browsers */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 22px;
+  height: 22px;
+  padding: 0px 0px 0px 5px;
+  margin: 0px 4px 0px 0px;
+  background-color: white;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+.attraction__form-time input[type=radio]:checked {
+  background-color: #448899;
+}
+
+.attraction__info {
+  padding: 10px 10px 60px 10px;
 }/*# sourceMappingURL=style.css.map */
