@@ -87,8 +87,7 @@ async function displayAttractionData() {
     mrtText = `at ${attractionData["data"][0]["mrt"].join("/")}`;
   }
 
-  attractionCategory.textContent =
-    attractionData["data"][0]["category"] + mrtText;
+  attractionCategory.textContent = `${attractionData["data"][0]["category"]} ${mrtText}`;
 
   const infoDescription = document.getElementById("infoDescription");
   const infoAddress = document.getElementById("infoAddress");
