@@ -152,6 +152,7 @@ a {
   display: block;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 img {
@@ -187,7 +188,7 @@ header {
   border-bottom: 1px solid #e8e8e8;
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 9;
   background-color: white;
 }
 header nav {
@@ -203,6 +204,35 @@ header .nav-menu {
 }
 header .nav-menu__item {
   padding: 10px;
+}
+
+.dialog__mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  opacity: 0.25;
+  z-index: 10;
+}
+
+.dialog__window {
+  width: 340px;
+  border-radius: 6px;
+  background-color: white;
+  z-index: 11;
+}
+.dialog__window .dialog__close-btn {
+  box-sizing: content-box;
+  display: block;
+  width: 16px;
+  height: 16px;
+  padding: 7px;
+  background-image: url(../images/dialog/closeBtn.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
 }
 
 footer {
@@ -248,20 +278,12 @@ footer {
   font-size: 14px;
 }
 
-.weight-bold {
-  font-weight: 700;
+.hidden {
+  display: none;
 }
 
-.weight-default {
-  font-weight: 500;
-}
-
-.weight-400 {
-  font-weight: 400;
-}
-
-.text-center {
-  text-align: center;
+.block {
+  display: block;
 }
 
 .mb-15 {
@@ -286,6 +308,18 @@ footer {
 
 .mr-5 {
   margin-right: 5px;
+}
+
+.weight-bold {
+  font-weight: 700;
+}
+
+.weight-default {
+  font-weight: 500;
+}
+
+.weight-400 {
+  font-weight: 400;
 }
 
 .hero {

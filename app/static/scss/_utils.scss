@@ -1,19 +1,14 @@
-.weight-bold {
-  font-weight: $weight-bold;
+// display
+.hidden {
+  display: none;
 }
 
-.weight-default {
-  font-weight: $weight-default;
+.block {
+  display: block;
 }
 
-.weight-400 {
-  font-weight: 400;
-}
 
-.text-center {
-  text-align: center;
-}
-
+// margin
 .mb-15 {
   margin-bottom: 15px;
 }
@@ -32,4 +27,18 @@
 
 .mr-5 {
   margin-right: 5px;
+}
+
+
+// font weight
+.weight-bold {
+  font-weight: $weight-bold;
+}
+
+.weight-default {
+  font-weight: $weight-default;
+}
+
+.weight-400 {
+  font-weight: 400;
 }
