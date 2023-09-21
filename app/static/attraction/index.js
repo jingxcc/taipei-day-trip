@@ -111,7 +111,7 @@ async function displayAttractionData() {
 
       imageFragment.appendChild(image);
 
-      const dot = document.createElement("dot");
+      const dot = document.createElement("span");
       dot.classList.add("carousel__dot");
       dotFragment.appendChild(dot);
     });
