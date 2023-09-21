@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for
+from flask import Blueprint, request, jsonify
 from db import my_pool
 
 attraction_bp = Blueprint("attraction_bp", __name__)
