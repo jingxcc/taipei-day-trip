@@ -151,6 +151,33 @@ LOCK TABLES `mrt` WRITE;
 INSERT INTO `mrt` VALUES (11,'世貿'),(22,'中山'),(20,'中正紀念堂'),(12,'公館'),(31,'劍潭'),(16,'動物園'),(5,'北投'),(30,'台北101'),(14,'唭哩岸'),(23,'國父紀念館'),(13,'圓山'),(27,'士林'),(4,'大安森林公園'),(7,'大湖公園'),(25,'大直'),(32,'市政府'),(17,'忠孝新生'),(18,'忠義'),(33,'文德'),(26,'新北投'),(6,'木柵'),(19,'松山'),(15,'松江南京'),(9,'石牌'),(21,'臺大醫院'),(29,'芝山'),(1,'葫洲'),(8,'行天宮'),(10,'西門'),(24,'象山'),(2,'關渡'),(28,'雙連'),(3,'龍山寺');
 /*!40000 ALTER TABLE `mrt` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `user`
+--
+
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(50) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(60) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user`
+--
+
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES (1,'彭彭彭','ply@ply.com','1234'),(5,'彭彭彭2','ply2@ply.com','12345678'),(6,'彭彭彭3','ply3@ply.com','12345678'),(7,'aaa','aaa@aaa.com','aaa'),(8,'bbb','bbb@bbb.com','bbb'),(9,'bbb1','bbb1@bbb.com','bbb'),(13,'ccc','ccc@ccc.com','ccc'),(14,'ddd','ddd@ddd.com','ddd'),(15,'eee','eee@eee.com','eee'),(16,'eee','eee1@eee.com','eee');
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -161,4 +188,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-06 23:47:09
+-- Dump completed on 2023-09-22 20:05:09
