@@ -6,6 +6,7 @@ import jwt
 user_bp = Blueprint("user_bp", __name__)
 
 
+# sign up
 @user_bp.route("/api/user", methods=["POST"])
 def api_signup():
     request_data = request.get_json()
@@ -59,6 +60,7 @@ def api_user_auth():
     JWT_KEY = "secret"
     JWT_ALGORITHM = "HS256"
 
+    # check log in status
     if request.method == "GET":
         reponse_columns = ["id", "name", "email"]
         try:
@@ -86,6 +88,7 @@ def api_user_auth():
 
         return jsonify(response_data)
 
+    # log in
     elif request.method == "PUT":
         request_data = request.get_json()
         email = request_data["email"]

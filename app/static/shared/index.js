@@ -1,9 +1,11 @@
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
 const dialogMask = document.getElementById("dialogMask");
 const dialogLogIn = document.getElementById("dialogLogIn");
-const dialogSignUp = document.getElementById("dialogSignUp");
 const logInBtn = document.getElementById("logInBtn");
+const dialogSignUp = document.getElementById("dialogSignUp");
 const signUpBtn = document.getElementById("signUpBtn");
+let activeDialog = "dialogLogIn";
+let isLoginIn = false;
 
 // sign up
 async function getSignUpData() {
@@ -16,7 +18,21 @@ async function getSignUpData() {
     password: password.value,
   };
 
-  console.log(requestBody);
+  let isEmptyField = false;
+  Object.keys(requestBody).forEach((item) => {
+    requestBody[item] = requestBody[item].trim();
+    if (requestBody[item] === "") {
+      isEmptyField = true;
+    }
+  });
+
+  if (isEmptyField) {
+    message = "Please fill in all fields";
+    return {
+      error: true,
+      message: message,
+    };
+  }
 
   const apiUrl = `/api/user`;
   try {
@@ -27,7 +43,6 @@ async function getSignUpData() {
       },
       body: JSON.stringify(requestBody),
     });
-    // console.log(response);
     const result = await response.json();
     return result;
   } catch (err) {
@@ -42,10 +57,12 @@ signUpBtn.addEventListener("click", async () => {
   console.log(result);
 
   if (!result["error"]) {
-    let activeDialog = "dialogSignUp";
-    closeDialog(activeDialog);
+    const dialogSignUpMsg = dialogSignUp.querySelector(".dialog__message");
+    dialogSignUpMsg.classList.add("success");
+    dialogSignUpMsg.textContent = "註冊成功";
   } else if (result["error"]) {
     console.error(result["message"]);
+    showDialogMessage(result["message"]);
   }
 });
 
@@ -57,8 +74,6 @@ async function getLogInData() {
     email: email.value,
     password: password.value,
   };
-
-  console.log(requestBody);
 
   const apiUrl = `/api/user/auth`;
   try {
@@ -84,11 +99,12 @@ logInBtn.addEventListener("click", async () => {
   if (!result["error"]) {
     localStorage.setItem("logInToken", result["token"]);
 
-    let activeDialog = "dialogLogIn";
+    activeDialog = "dialogLogIn";
     closeDialog(activeDialog);
     location.reload();
   } else if (result["error"]) {
     console.error(result["message"]);
+    showDialogMessage(result["message"]);
   }
 });
 
@@ -103,7 +119,7 @@ async function decodeLogInToken(token) {
         Authorization: `Bearer ${token}`,
       },
     });
-    // console.log(response);
+
     const result = await response.json();
     return result;
   } catch (err) {
@@ -118,11 +134,14 @@ async function checkLogInStatus() {
   if (logInToken !== null) {
     let result = await decodeLogInToken(logInToken);
     if (result["data"]) {
+      isLoginIn = true;
       console.log("I already log in");
     } else {
+      isLoginIn = false;
       console.log("I do not log in");
     }
-    console.log(`check logInToken: ${logInToken}`);
+
+    navMenuItemLogIn.textContent = isLoginIn ? "登出系統" : "登入/註冊";
   }
 }
 
@@ -134,23 +153,33 @@ function logOut() {
 
 // dialog
 navMenuItemLogIn.addEventListener("click", () => {
-  dialogMask.classList.add("block");
-  dialogLogIn.classList.add("block");
-  document.body.style.overflowY = "hidden";
-
-  document.addEventListener("click", (e) => {
-    if (e.target === dialogMask) {
-      const dialogBlockChildren =
-        document.getElementById("dialogBlock").children;
-      for (let i = 0; i < dialogBlockChildren.length; i++) {
-        dialogBlockChildren[i].classList.remove("block");
-      }
-      document.body.style.overflowY = "visible";
-    }
-  });
+  if (!isLoginIn) {
+    activeDialog = "dialogLogIn";
+    dialogMask.classList.add("block");
+    dialogLogIn.classList.add("block");
+    document.body.style.overflowY = "hidden";
+  } else {
+    logOut();
+  }
 });
 
-function toggleDialog(activeDialog) {
+dialogMask.addEventListener("click", (e) => {
+  // if (e.target === dialogMask) {
+  // const dialogBlockChildren = document.getElementById("dialogBlock").children;
+  // for (let i = 0; i < dialogBlockChildren.length; i++) {
+  //   dialogBlockChildren[i].classList.remove("block");
+  // }
+
+  closeDialog(activeDialog);
+  document.body.style.overflowY = "visible";
+  // }
+});
+
+function toggleDialog(targetDialog) {
+  if (targetDialog !== undefined) {
+    activeDialog = targetDialog;
+  }
+
   if (activeDialog === "dialogLogIn") {
     dialogLogIn.classList.add("block");
     dialogSignUp.classList.remove("block");
@@ -160,7 +189,14 @@ function toggleDialog(activeDialog) {
   }
 }
 
-function closeDialog(activeDialog) {
+function closeDialog(targetDialog) {
+  if (targetDialog !== undefined) {
+    activeDialog = targetDialog;
+  }
+  document
+    .getElementById(activeDialog)
+    .querySelector(".dialog__message").textContent = "";
+
   if (activeDialog === "dialogLogIn") {
     dialogLogIn.classList.remove("block");
   } else if (activeDialog === "dialogSignUp") {
@@ -173,3 +209,13 @@ function closeDialog(activeDialog) {
 document.addEventListener("DOMContentLoaded", () => {
   checkLogInStatus();
 });
+
+function showDialogMessage(msg) {
+  if (activeDialog === "dialogLogIn") {
+    dialogLogIn.querySelector(".dialog__message").classList.remove("success");
+    dialogLogIn.querySelector(".dialog__message").textContent = msg;
+  } else if (activeDialog === "dialogSignUp") {
+    dialogSignUp.querySelector(".dialog__message").classList.remove("success");
+    dialogSignUp.querySelector(".dialog__message").textContent = msg;
+  }
+}

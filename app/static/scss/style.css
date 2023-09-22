@@ -278,7 +278,7 @@ footer {
   border-radius: 5px;
   background-color: #448899;
 }
-.dialog__main input, .dialog__main button {
+.dialog__main input, .dialog__main button, .dialog__main a {
   width: 100%;
   margin-bottom: 10px;
 }
@@ -287,6 +287,14 @@ footer {
   padding: 10px 20px;
   font-weight: 400;
   color: white;
+}
+.dialog__main .dialog__message {
+  font-size: 12px;
+  color: red;
+}
+.dialog__main .dialog__message.success {
+  color: green;
+  font-size: 16px;
 }
 
 .headline {
