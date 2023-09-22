@@ -152,6 +152,7 @@ a {
   display: block;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 img {
@@ -168,6 +169,12 @@ button {
   border: 0;
   padding: 0;
   cursor: pointer;
+}
+
+dialog {
+  padding: 0;
+  border: 0;
+  box-shadow: 0px 0px 20px 0px #aaa;
 }
 
 .container {
@@ -187,7 +194,7 @@ header {
   border-bottom: 1px solid #e8e8e8;
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 9;
   background-color: white;
 }
 header nav {
@@ -211,6 +218,83 @@ footer {
   background-color: #757575;
   color: white;
   font-weight: 700;
+}
+
+.dialog__mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  opacity: 0.25;
+  z-index: 10;
+}
+
+.dialog__window {
+  width: 340px;
+  max-width: 95%;
+  border-radius: 6px;
+  z-index: 11;
+  background-color: white;
+  text-align: center;
+}
+.dialog__window .dialog__decorator-bar {
+  height: 10px;
+  background: linear-gradient(270deg, #337788 40%, #66AABB);
+}
+.dialog__window .dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+.dialog__window .dialog__title {
+  flex-grow: 1;
+}
+.dialog__window .dialog__close-btn {
+  box-sizing: content-box;
+  display: block;
+  width: 16px;
+  height: 16px;
+  padding: 7px;
+  background-image: url(../images/dialog/closeBtn.svg);
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.dialog__main {
+  padding: 15px;
+  color: #666666;
+}
+.dialog__main input {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: #757575;
+}
+.dialog__main button {
+  border-radius: 5px;
+  background-color: #448899;
+}
+.dialog__main input, .dialog__main button, .dialog__main a {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.dialog__main .dialog_btn-text {
+  display: block;
+  padding: 10px 20px;
+  font-weight: 400;
+  color: white;
+}
+.dialog__main .dialog__message {
+  font-size: 12px;
+  color: red;
+}
+.dialog__main .dialog__message.success {
+  color: green;
+  font-size: 16px;
 }
 
 .headline {
@@ -248,20 +332,20 @@ footer {
   font-size: 14px;
 }
 
-.weight-bold {
-  font-weight: 700;
+.hidden {
+  display: none;
 }
 
-.weight-default {
-  font-weight: 500;
+.block {
+  display: block;
 }
 
-.weight-400 {
-  font-weight: 400;
+.mr-5 {
+  margin-right: 5px;
 }
 
-.text-center {
-  text-align: center;
+.mb-10 {
+  margin-bottom: 10px;
 }
 
 .mb-15 {
@@ -280,12 +364,16 @@ footer {
   margin-bottom: 40px;
 }
 
-.mb-40 {
-  margin-bottom: 40px;
+.weight-bold {
+  font-weight: 700;
 }
 
-.mr-5 {
-  margin-right: 5px;
+.weight-default {
+  font-weight: 500;
+}
+
+.weight-400 {
+  font-weight: 400;
 }
 
 .hero {

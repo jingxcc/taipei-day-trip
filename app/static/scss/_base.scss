@@ -20,6 +20,7 @@ a {
   display: block;
   text-decoration: none;
   color: inherit;
+  cursor: pointer;
 }
 
 img {
@@ -38,6 +39,12 @@ button {
   cursor: pointer;
 }
 
+dialog {
+  padding: 0;
+  border:0;
+  box-shadow: 0px 0px 20px 0px #aaa
+}
+
 .container {
   width: 1200px;
   margin-left: auto;
@@ -48,13 +55,14 @@ button {
   }
 }
 
+// shared components
 header {
   width: 100%;
   padding: 10px;
   border-bottom: 1px solid $gray-20;
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 9;
 
   background-color: white;
 
@@ -85,6 +93,101 @@ footer {
   color: white;
   font-weight: $weight-bold;
 }
+
+// dialog
+.dialog__mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  opacity: 0.25;
+  z-index: 10;
+}
+
+.dialog__window {
+  width: 340px;
+  max-width: 95%;
+  border-radius: 6px;
+
+  z-index: 11;
+  background-color: white;
+  text-align: center;
+
+  .dialog__decorator-bar {
+    height: 10px;
+    background: $cyan-dark-gradient;
+  }
+
+  .dialog__header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    margin-bottom: 15px;
+  }
+  
+  .dialog__title {
+    flex-grow: 1;
+  }
+  
+  .dialog__close-btn {
+    box-sizing: content-box;
+    display: block;
+    width: 16px;
+    height: 16px;
+    padding: 7px;
+  
+    background-image: url(../images/dialog/closeBtn.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+  }
+}
+
+.dialog__main { 
+  padding: 15px;
+  color: $gray-70;
+
+  input {
+    padding: 15px;
+    border: 1px solid #ccc;
+    
+    border-radius: 5px;
+    color: $gray-50;
+  }
+  
+  button {
+    border-radius: 5px;
+  
+    background-color: $cyan-70;
+  }
+  
+  input, button, a {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .dialog_btn-text {
+    display: block;
+    padding: 10px 20px;
+  
+    font-weight: 400;
+    color: white;
+  }
+
+  .dialog__message {
+    font-size: 12px;
+    color:red;
+
+    &.success{
+      color: green;
+      font-size: 16px;
+    }
+  }
+}
+
 
 // typography
 .headline {
