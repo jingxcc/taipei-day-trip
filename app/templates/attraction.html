@@ -26,33 +26,37 @@
         <div class="dialog__decorator-bar"></div>
         <div class="dialog__main">
           <div class="dialog__header">
-            <h3 class="dialog__title">登入會員帳號</h3>
+            <h3 class="dialog__title weight-bold">登入會員帳號</h3>
             <span onclick="closeDialog('dialogLogIn');" class="dialog__close-btn"></span>
           </div>
-          <div class="login-form">
+          <div class="login-form body">
             <input type="email" value="ply@ply.com" class="login-form__email" placeholder="輸入電子信箱" required/>
             <input type="password" value="1234" class="login-form__password" placeholder="輸入密碼" required/>
-            <button id="logInBtn" class="login-form__btn dialog__btn block">登入帳戶</button>
+            <button id="logInBtn" class="login-form__btn dialog__btn button">
+              <span class="dialog_btn-text">登入帳戶</span>
+            </button>
+            <a onclick="toggleDialog('dialogSignUp');" class="dialog__link login-form__link">還沒有帳戶？點此註冊</a>
+            <p class="dialog__message body"></p>
           </div>
-          <a onclick="toggleDialog('dialogSignUp');" class="dialog__link login-form__link">還沒有帳戶？點此註冊</a>
-          <p class="dialog__message"></p>
         </div>
       </dialog>
       <dialog id = "dialogSignUp" class="dialog__window hidden">
         <div class="dialog__decorator-bar"></div>
         <div class="dialog__main">
           <div class="dialog__header">
-            <h3 class="dialog__title">註冊會員帳號</h3>
+            <h3 class="dialog__title weight-bold">註冊會員帳號</h3>
             <span onclick="closeDialog('dialogSignUp');" class="dialog__close-btn"></span>
           </div>
-          <div class="signup-form">
+          <div class="signup-form body">
             <input type="name" name="name" class="signup-form__name" placeholder="輸入姓名" required/>
             <input type="email" name="email" class="signup-form__email" placeholder="輸入電子信箱" required/>
             <input type="password" name="password" class="signup-form__password" placeholder="輸入密碼" required/>
-            <button id="signUpBtn" class="signup-form__btn dialog__btn block">註冊新帳戶</button>
+            <button id="signUpBtn" class="signup-form__btn dialog__btn button">
+              <span class="dialog_btn-text">註冊新帳戶</span>
+            </button>
+            <a onclick="toggleDialog('dialogLogIn');" class="dialog__link signup-form__link">已經有帳戶了？點此登入</a>
+            <p class="dialog__message"></p>
           </div>
-          <a onclick="toggleDialog('dialogLogIn');" class="dialog__link signup-form__link">已經有帳戶了？點此登入</a>
-          <p class="dialog__message"></p>
         </div>
       </dialog>
     </section>
