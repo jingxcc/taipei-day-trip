@@ -27,7 +27,7 @@ CREATE TABLE `attraction` (
   `attraction_name` varchar(255) NOT NULL,
   `description` varchar(3000) DEFAULT NULL,
   `category_id` bigint DEFAULT NULL,
-  `address` varchar(150) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
   `transport` varchar(1000) DEFAULT NULL,
   `latitude` double(9,6) DEFAULT NULL,
   `longitude` double(9,6) DEFAULT NULL,
@@ -73,6 +73,70 @@ LOCK TABLES `attraction_mrt` WRITE;
 /*!40000 ALTER TABLE `attraction_mrt` DISABLE KEYS */;
 INSERT INTO `attraction_mrt` VALUES (1,26),(2,28),(3,27),(4,27),(5,26),(6,31),(7,14),(8,4),(9,26),(10,24),(11,3),(12,8),(13,26),(14,20),(15,32),(16,16),(17,26),(18,2),(19,17),(20,21),(21,11),(21,30),(22,15),(23,28),(24,26),(25,22),(26,23),(27,NULL),(28,16),(29,33),(30,13),(31,7),(32,25),(33,2),(34,31),(35,9),(36,22),(37,22),(38,13),(39,18),(40,16),(41,20),(42,2),(43,10),(44,19),(45,2),(46,5),(47,1),(48,21),(49,31),(50,6),(51,17),(52,32),(53,13),(54,29),(55,31),(56,3),(57,12),(58,3);
 /*!40000 ALTER TABLE `attraction_mrt` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking`
+--
+
+DROP TABLE IF EXISTS `booking`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `attraction_id` bigint NOT NULL,
+  `booking_price_id` bigint NOT NULL,
+  `booking_date` date NOT NULL,
+  `booking_num` int NOT NULL,
+  `booking_status` varchar(20) NOT NULL DEFAULT 'PEND',
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_idx` (`user_id`),
+  KEY `attraction_id` (`attraction_id`),
+  KEY `booking_price_id` (`booking_price_id`),
+  CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `booking_ibfk_2` FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`),
+  CONSTRAINT `booking_ibfk_3` FOREIGN KEY (`booking_price_id`) REFERENCES `booking_price` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking`
+--
+
+LOCK TABLES `booking` WRITE;
+/*!40000 ALTER TABLE `booking` DISABLE KEYS */;
+INSERT INTO `booking` VALUES (12,7,1,2,'2023-11-09',1,'PEND','2023-10-01 15:25:42');
+/*!40000 ALTER TABLE `booking` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `booking_price`
+--
+
+DROP TABLE IF EXISTS `booking_price`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `booking_price` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `time` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uni_idx` (`time`,`price`,`start_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `booking_price`
+--
+
+LOCK TABLES `booking_price` WRITE;
+/*!40000 ALTER TABLE `booking_price` DISABLE KEYS */;
+INSERT INTO `booking_price` VALUES (1,'beforenoon',2000.00,'2023-09-01',NULL),(2,'afternoon',2500.00,'2023-09-01',NULL);
+/*!40000 ALTER TABLE `booking_price` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -163,7 +227,7 @@ CREATE TABLE `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_name` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `password` varchar(60) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -188,4 +252,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-22 20:05:09
+-- Dump completed on 2023-10-01 23:38:01

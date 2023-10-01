@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>台北一日遊</title>
     <link rel="stylesheet" href="../static/scss/style.css" />
-    <script defer src="../static/attraction/index.js"></script>
     <script defer src="../static/shared/index.js"></script>
+    <script defer src="../static/attraction/index.js"></script>
   </head>
   <body>
     <header>
@@ -15,11 +15,12 @@
           <a href="/">台北一日遊</a>
         </h1>
         <div class="nav-menu">
-          <a class="nav-menu__item body" href="#">預定行程</a>
+          <a id="navMenuItemBooking" class="nav-menu__item body">預定行程</a>
           <a id="navMenuItemLogIn" class="nav-menu__item body">登入/註冊</a>
         </div>
       </nav>
     </header>
+
     <section id="dialogBlock" class="dialog__block block">
       <div id = "dialogMask" class="dialog__mask hidden"></div>
       <dialog id = "dialogLogIn" class="dialog__window hidden">
@@ -93,7 +94,7 @@
         <div class="attraction__form body">
           <p class="mb-15 weight-bold">訂購導覽行程</p>
           <p class="mb-15">以此景點為中心的一日行程，帶您探索城市角落故事</p>
-          <div class="attraction__form-date mb-15">
+          <div id="attractionFormDate" class="attraction__form-date mb-15">
             <span for="date" class="weight-bold mr-5">選擇日期：</span>
             <input id="date" class="form__date body" type="date" />
           </div>
@@ -103,18 +104,18 @@
                 id="timeAM"
                 type="radio"
                 name="time"
-                value="am" 
+                value="beforenoon" 
                 checked
               />
               <label for="timeAM">上半天</label>
-              <input id="timePM" type="radio" name="time" value="pm" />
+              <input id="timePM" type="radio" name="time" value="afternoon" />
               <label for="timePM">下半天</label>
             </div>
           <div class="attraction__form-price mb-25">
             <span class="weight-bold mr-5">導覽費用：</span>
             <span id="formPrice" class="form__price">新台幣 2000 元</span>
           </div>
-          <button class="attraction__form-btn button">
+          <button id="attractionBookBtn" class="attraction__form-btn default-button button">
             <span>開始預訂行程</span>
           </button>
         </div>

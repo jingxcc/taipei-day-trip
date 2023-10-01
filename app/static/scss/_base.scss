@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap");
 
-body {
+body, input, ::placeholder {
   font-family: "Noto Sans TC", sans-serif;
   font-size: $size-default;
   font-weight: $weight-default;
@@ -37,6 +37,15 @@ button {
   border: 0;
   padding: 0;
   cursor: pointer;
+  background-color: transparent;
+}
+
+.default-button {
+  padding: 10px 20px;
+
+  border-radius: 5px;
+  background-color: $cyan-70;
+  color: white;
 }
 
 dialog {
@@ -94,10 +103,15 @@ footer {
   font-weight: $weight-bold;
 }
 
+.seperator {
+  border-top: 1px;
+  border-color: $gray-20;
+  margin-bottom: 40px;
+}
+
 // dialog
 .dialog__mask {
   position: fixed;
-  left: 0;
   top: 0;
   width: 100vw;
   height: 100vh;
@@ -107,6 +121,9 @@ footer {
 }
 
 .dialog__window {
+  position: fixed;
+  top: 80px;
+
   width: 340px;
   max-width: 95%;
   border-radius: 6px;
@@ -218,7 +235,7 @@ footer {
 
 .body {
   font-size: $size-default;
-  line-height: auto;
+  line-height: 13.3px;
 }
 .category-list {
   font-size: 14px;

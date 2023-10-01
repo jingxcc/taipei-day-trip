@@ -1,11 +1,12 @@
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
+const navMenuItemBooking = document.getElementById("navMenuItemBooking");
 const dialogMask = document.getElementById("dialogMask");
 const dialogLogIn = document.getElementById("dialogLogIn");
 const logInBtn = document.getElementById("logInBtn");
 const dialogSignUp = document.getElementById("dialogSignUp");
 const signUpBtn = document.getElementById("signUpBtn");
 let activeDialog = "dialogLogIn";
-let isLoginIn = false;
+let isLogin;
 
 // sign up
 async function getSignUpData() {
@@ -129,37 +130,42 @@ async function decodeLogInToken(token) {
 }
 
 async function checkLogInStatus() {
+  isLogin = false;
   let logInToken = localStorage.getItem("logInToken");
-
+  console.log("checkLogInStatus");
   if (logInToken !== null) {
     let result = await decodeLogInToken(logInToken);
+    // console.log(result);
     if (result["data"]) {
-      isLoginIn = true;
+      isLogin = true;
       console.log("I already log in");
     } else {
-      isLoginIn = false;
-      console.log("I do not log in");
+      // isLogin = false;
+      clearLocalStorage();
+      console.log("local storage is clear when checking log-in status");
     }
 
-    navMenuItemLogIn.textContent = isLoginIn ? "登出系統" : "登入/註冊";
+    navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
+  }
+  if (!isLogin) {
+    if (window.location.pathname === "/booking") {
+      window.location.href = window.location.origin;
+    }
   }
 }
 
-// log out
-function logOut() {
+// clear local storage data
+function clearLocalStorage() {
   localStorage.clear();
   location.reload();
 }
 
 // dialog
 navMenuItemLogIn.addEventListener("click", () => {
-  if (!isLoginIn) {
-    activeDialog = "dialogLogIn";
-    dialogMask.classList.add("block");
-    dialogLogIn.classList.add("block");
-    document.body.style.overflowY = "hidden";
+  if (!isLogin) {
+    showDialog();
   } else {
-    logOut();
+    clearLocalStorage();
   }
 });
 
@@ -174,6 +180,13 @@ dialogMask.addEventListener("click", (e) => {
   document.body.style.overflowY = "visible";
   // }
 });
+
+function showDialog() {
+  activeDialog = "dialogLogIn";
+  dialogMask.classList.add("block");
+  dialogLogIn.classList.add("block");
+  document.body.style.overflowY = "hidden";
+}
 
 function toggleDialog(targetDialog) {
   if (targetDialog !== undefined) {
@@ -206,10 +219,6 @@ function closeDialog(targetDialog) {
   document.body.style.overflowY = "visible";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  checkLogInStatus();
-});
-
 function showDialogMessage(msg) {
   if (activeDialog === "dialogLogIn") {
     dialogLogIn.querySelector(".dialog__message").classList.remove("success");
@@ -219,3 +228,17 @@ function showDialogMessage(msg) {
     dialogSignUp.querySelector(".dialog__message").textContent = msg;
   }
 }
+
+// booking
+navMenuItemBooking.addEventListener("click", (e) => {
+  if (!isLogin) {
+    e.preventDefault();
+    showDialog();
+  }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  checkLogInStatus();
+
+  navMenuItemBooking.href = `${window.location.origin}/booking`;
+});

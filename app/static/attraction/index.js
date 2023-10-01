@@ -33,8 +33,8 @@ const timeInputs = document.querySelectorAll(
   "#attractionFormTime > input[name='time']"
 );
 const timePrices = [
-  { time: "am", price: 2000 },
-  { time: "pm", price: 2500 },
+  { time: "beforenoon", price: 2000 },
+  { time: "afternoon", price: 2500 },
 ];
 
 function changeTimePrices() {
@@ -54,9 +54,7 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let urlPathName = window.location.pathname;
-  let pathNameSegments = urlPathName.split("/");
-  let attractionId = pathNameSegments[pathNameSegments.length - 1];
+  let attractionId = getUrlSourceNum();
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
@@ -129,3 +127,92 @@ timeInputs.forEach((input) => {
     changeTimePrices();
   });
 });
+
+// booking in attraction page
+const attractionBookBtn = document.getElementById("attractionBookBtn");
+attractionBookBtn.addEventListener("click", async () => {
+  await checkLogInStatus();
+
+  if (!isLogin) {
+    showDialog();
+  } else {
+    let date = document.querySelector("#attractionFormDate > #date").value;
+    let time = "";
+    for (i = 0; i < timeInputs.length; i++) {
+      if (timeInputs[i].checked) {
+        time = timeInputs[i].value;
+        break;
+      }
+    }
+    let price = "";
+    let priceText = document.querySelector(
+      ".attraction__form #formPrice"
+    ).textContent;
+    const regexpPrice = /\d+/;
+    if (priceText.match(regexpPrice)) {
+      price = priceText.match(regexpPrice)[0];
+    }
+
+    // console.log(`price: ${price}`);
+
+    let attractionId = getUrlSourceNum();
+    let requestBody = {
+      attractionId: !isNaN(parseInt(attractionId))
+        ? parseInt(attractionId)
+        : undefined,
+      date: date,
+      time: time,
+      price: !isNaN(parseInt(price)) ? parseInt(price) : undefined,
+    };
+    console.log(requestBody);
+
+    let isEmptyField = false;
+    Object.keys(requestBody).forEach((item) => {
+      if (requestBody[item] === "" || requestBody[item] === undefined) {
+        isEmptyField = true;
+      }
+    });
+
+    if (!isEmptyField) {
+      let result = await addBooking(requestBody);
+      console.log(result);
+
+      if (result["ok"]) {
+        window.location.href = `${window.location.origin}/booking`;
+        alert("預定成功");
+      } else {
+        alert(result["message"]);
+      }
+    } else {
+      alert("Please fill in all fields !");
+    }
+  }
+});
+
+function getUrlSourceNum() {
+  let urlPathName = window.location.pathname;
+  let pathNameSegments = urlPathName.split("/");
+
+  return pathNameSegments[pathNameSegments.length - 1];
+}
+
+async function addBooking(requestBody) {
+  let apiUrl = `/api/booking`;
+  let logInToken = localStorage.getItem("logInToken");
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${logInToken}`,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (err) {
+    console.error(`Error: ${err}`);
+  }
+  return false;
+}
