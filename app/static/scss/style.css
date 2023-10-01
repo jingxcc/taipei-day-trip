@@ -408,7 +408,7 @@ footer {
 }
 
 .hero {
-  margin-top: 64px;
+  margin-top: 55px;
   padding: 76px 0px;
   background-image: url("../images/welcome_image.png");
   background-size: cover;
@@ -576,13 +576,13 @@ footer {
 .attraction {
   display: flex;
   flex: auto;
-  margin-top: 104px;
+  margin-top: 95px;
   padding: 0px 15px 40px 15px;
   border-bottom: 1px solid #e8e8e8;
 }
 @media (max-width: 1200px) {
   .attraction {
-    margin-top: 64px;
+    margin-top: 55px;
     flex-wrap: wrap;
     padding: 0;
     border: 0;
@@ -737,7 +737,7 @@ footer {
   display: flex;
   width: 1000px;
   padding: 0px 10px;
-  margin-top: 104px;
+  margin-top: 95px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -782,23 +782,26 @@ footer {
 }
 @media (max-width: 1000px) {
   .attraction-list {
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 }
 .attraction-list .attraction-list__info-block {
   flex-grow: 1;
 }
 .attraction-list .attraction-list__title {
+  display: flex;
   padding: 5px 0px;
   color: #448899;
 }
 .attraction-list .attraction-list__info {
+  display: flex;
+  align-items: center;
   padding: 5px 0px;
+  margin-bottom: 10px;
 }
 .attraction-list .attraction-list__info-title {
   font-weight: 700;
   margin-right: 5px;
-  margin-bottom: 10px;
 }
 
 .attraction-list__image-block {
@@ -806,9 +809,9 @@ footer {
 }
 @media (max-width: 1000px) {
   .attraction-list__image-block {
+    width: 100%;
     margin-right: 0px;
     margin-bottom: 30px;
-    width: 100%;
   }
 }
 .attraction-list__image-block img {
@@ -824,6 +827,10 @@ footer {
     width: 100%;
     height: 256px;
   }
+}
+
+.attraction-list__delete-btn {
+  align-self: flex-end;
 }
 
 .attraction-list__delete-icon {
@@ -862,6 +869,7 @@ footer {
   padding-bottom: 22px;
 }
 .confirm .confirm-info {
+  display: flex;
   margin-bottom: 22px;
 }
 

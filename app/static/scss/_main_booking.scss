@@ -44,7 +44,7 @@
   align-items: flex-start;
 
   @media (max-width: 1000px) {
-    flex-wrap: wrap;
+    flex-direction: column;
   }
 
   .attraction-list__info-block {
@@ -52,16 +52,20 @@
     
   }
   .attraction-list__title {
+    display: flex;
     padding: 5px 0px;
     color: $cyan-70;
   }
   .attraction-list__info {
+    display: flex;
+    align-items: center;
     padding: 5px 0px;
+    margin-bottom: 10px;
   }
   .attraction-list__info-title {
     font-weight: $weight-bold;
     margin-right: 5px;
-    margin-bottom: 10px;
+    
   }
 }
 
@@ -70,9 +74,9 @@
   margin-right: 30px;
 
   @media (max-width: 1000px) {
+    width: 100%;
     margin-right: 0px;
     margin-bottom: 30px;
-    width: 100%;
   }
 
   img {
@@ -87,6 +91,10 @@
       height: 256px;
     }
   }
+}
+
+.attraction-list__delete-btn {
+  align-self: flex-end;
 }
 
 .attraction-list__delete-icon{
@@ -127,6 +135,7 @@
   padding-bottom: 22px;
 
   .confirm-info {
+    display: flex;
     margin-bottom: 22px;
   }
 }
