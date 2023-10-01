@@ -1,9 +1,15 @@
 from flask import Blueprint, request, jsonify
-from db import my_pool
 from datetime import datetime, timedelta, timezone
 import jwt
+from db import my_pool
+
+# tmp
+# from config import SECRET_KEY
+SECRET_KEY = "secret"
 
 user_bp = Blueprint("user_bp", __name__)
+JWT_KEY = SECRET_KEY
+JWT_ALGORITHM = "HS256"
 
 
 # sign up
@@ -55,33 +61,29 @@ def api_signup():
             my_conn.close()
 
 
+# check log in status, log in
 @user_bp.route("/api/user/auth", methods=["GET", "PUT"])
 def api_user_auth():
-    JWT_KEY = "secret"
-    JWT_ALGORITHM = "HS256"
-
     # check log in status
     if request.method == "GET":
         reponse_columns = ["id", "name", "email"]
         try:
-            if "Authorization" in request.headers:
+            if (
+                "Authorization" in request.headers
+                and request.headers["Authorization"] != ""
+            ):
                 bearer = request.headers["Authorization"]
                 token = bearer.split()[1]
                 response_data = {"data": None}
 
-                try:
-                    decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
+                decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
 
-                    response_data = {"data": {}}
-                    for key in decode_result:
-                        if key in reponse_columns:
-                            response_data["data"][key] = decode_result[key]
+                response_data = {"data": {}}
+                for key in decode_result:
+                    if key in reponse_columns:
+                        response_data["data"][key] = decode_result[key]
 
-                    return jsonify(response_data)
-
-                except jwt.ExpiredSignatureError:
-                    message = "Log-in token expires"
-                    print(f"ERROR: {message}")
+                return jsonify(response_data)
 
         except Exception as err:
             print(f"ERROR: {err}")
@@ -116,6 +118,7 @@ def api_user_auth():
                 )
 
             else:
+                # token_expiration = datetime.now(tz=timezone.utc) + timedelta(seconds=10)
                 token_expiration = datetime.now(tz=timezone.utc) + timedelta(days=7)
                 token_payload = result[0]
                 token_payload["exp"] = token_expiration

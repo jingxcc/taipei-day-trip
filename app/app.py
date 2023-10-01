@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from routes.attraction import attraction_bp
 from routes.user import user_bp
+from routes.booking import booking_bp
 
 from flask_cors import CORS
 
@@ -8,6 +9,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 app.register_blueprint(attraction_bp)
 app.register_blueprint(user_bp)
+app.register_blueprint(booking_bp)
 
 app.json.ensure_ascii = False
 app.json.sort_keys = False
