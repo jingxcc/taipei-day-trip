@@ -1,6 +1,11 @@
+from dotenv import load_dotenv
+import os
 import json
 import re, unicodedata
 import mysql.connector
+
+load_dotenv()
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
 
 
 def get_image_urls(text):
@@ -20,7 +25,7 @@ with open("taipei-attractions.json", mode="r", encoding="utf-8") as file:
 
 # db connect
 my_conn = mysql.connector.connect(
-    host="localhost", user="root", password="okok", database="taipei_trip"
+    host="localhost", user="root", password=MYSQL_PASSWORD, database="taipei_trip"
 )
 my_cursor = my_conn.cursor(dictionary=True)
 

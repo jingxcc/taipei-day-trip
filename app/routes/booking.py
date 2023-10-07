@@ -1,69 +1,11 @@
 from flask import Blueprint, request, jsonify
-from functools import wraps
-import jwt
 from db import my_pool
+from .user import login_required
 
 # tmp
-# from config import SECRET_KEY
-SECRET_KEY = "secret"
-
 booking_bp = Blueprint("booking_bp", __name__)
-JWT_KEY = SECRET_KEY
-JWT_ALGORITHM = "HS256"
 
 TMP_BOOKING_NUM = 1
-
-
-# @booking_bp.route("/api/booking", methods=["GET", "POST", "DELETE"])
-# def api_booking():
-#     try:
-#         if request.method == "GET":
-#             result = get_booking(request)
-#             return result
-
-#         elif request.method == "POST":
-#             # result = check_login(request)
-#             result = add_booking(request)
-#             return result
-
-#         elif request.method == "DELETE":
-#             result = delete_booking(request)
-#             return result
-
-#     except Exception as err:
-#         print(f"ERROR: {err}")
-
-
-def login_required(func):
-    @wraps(func)
-    def wrapper(*arg, **kwargs):
-        reponse_columns = ["id", "name", "email"]
-        try:
-            if (
-                "Authorization" in request.headers
-                and request.headers["Authorization"] != ""
-            ):
-                bearer = request.headers["Authorization"]
-                token = bearer.split()[1]
-                decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
-                # print(f"{decode_result}")
-
-                response_data = {"data": {}}
-                for key in decode_result:
-                    if key in reponse_columns:
-                        response_data["data"][key] = decode_result[key]
-
-                result = func(login_data=response_data, *arg, **kwargs)
-                # return jsonify(response_data)
-                return result
-
-        except Exception as err:
-            print(f"ERROR: {err}")
-
-        message = "Access denied. Please log in."
-        return jsonify({"error": True, "message": message}), 403
-
-    return wrapper
 
 
 @booking_bp.route("/api/booking", methods=["GET"])
@@ -90,21 +32,6 @@ def get_booking(login_data):
 
         if len(result) > 0:
             print(result)
-            # response_data = (
-            #     {
-            #         "data": {
-            #             "attraction": {
-            #                 "id": result[0]["id"],
-            #                 "name": result[0]["attraction_name"],
-            #                 "address": result[0]["address"],
-            #                 "image": result[0]["image_url"],
-            #             },
-            #             "date": result[0]["booking_date"],
-            #             "time": result[0]["time"],
-            #             "price": int(result[0]["price"]),
-            #         }
-            #     },
-            # )
             response_data = {"data": {}}
             response_data["data"] = {
                 "attraction": {
@@ -142,7 +69,7 @@ def add_booking(login_data):
         my_cursor.execute(sql, val)
         booking_price_data = my_cursor.fetchall()
         # [{'id': 2, 'time': 'afternoon', 'price': Decimal('2500.00'), 'start_date': datetime.date(2023, 9, 1), 'end_date': None}]
-        print(booking_price_data)
+        # print(booking_price_data)
 
         if len(booking_price_data) > 0:
             columns_mapping = {

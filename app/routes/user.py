@@ -1,15 +1,55 @@
 from flask import Blueprint, request, jsonify
+from dotenv import load_dotenv
+import os
 from datetime import datetime, timedelta, timezone
+from functools import wraps
 import jwt
 from db import my_pool
 
 # tmp
 # from config import SECRET_KEY
-SECRET_KEY = "secret"
+# SECRET_KEY = "secret"
 
 user_bp = Blueprint("user_bp", __name__)
-JWT_KEY = SECRET_KEY
-JWT_ALGORITHM = "HS256"
+# JWT_KEY = SECRET_KEY
+# JWT_ALGORITHM = "HS256"
+load_dotenv()
+JWT_KEY = os.getenv("JWT_KEY")
+JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+
+
+# tmp: could combine with 'check log in status'
+# decorator with wrapper
+def login_required(func):
+    @wraps(func)
+    def wrapper(*arg, **kwargs):
+        reponse_columns = ["id", "name", "email"]
+        try:
+            if (
+                "Authorization" in request.headers
+                and request.headers["Authorization"] != ""
+            ):
+                bearer = request.headers["Authorization"]
+                token = bearer.split()[1]
+                decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
+                # print(f"{decode_result}")
+
+                response_data = {"data": {}}
+                for key in decode_result:
+                    if key in reponse_columns:
+                        response_data["data"][key] = decode_result[key]
+
+                result = func(login_data=response_data, *arg, **kwargs)
+                # return jsonify(response_data)
+                return result
+
+        except Exception as err:
+            print(f"ERROR: {err}")
+
+        message = "Access denied. Please log in."
+        return jsonify({"error": True, "message": message}), 403
+
+    return wrapper
 
 
 # sign up

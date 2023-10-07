@@ -1,0 +1,40 @@
+.thankyou {
+    margin-top: $head-margin;
+    height: 90vh;    
+    padding: 10px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 500px;
+    height: 500px;
+    margin-top: 60px;
+    // margin-top: auto;
+    // margin-bottom: auto;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 80px 0px;
+    border: 1px solid $gray-20;
+
+    border-radius: 5px;
+    
+    * {
+        margin-bottom: 20px;
+    }
+}
+
+.message__icon {
+    display: block;
+    width: 160px;
+    height: 160px;
+    
+
+    background-image: url('../images/order/complete.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+
+
+}

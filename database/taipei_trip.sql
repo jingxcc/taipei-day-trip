@@ -89,16 +89,15 @@ CREATE TABLE `booking` (
   `booking_price_id` bigint NOT NULL,
   `booking_date` date NOT NULL,
   `booking_num` int NOT NULL,
-  `booking_status` varchar(20) NOT NULL DEFAULT 'PEND',
   `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uni_idx` (`user_id`),
+  KEY `user_id` (`user_id`),
   KEY `attraction_id` (`attraction_id`),
   KEY `booking_price_id` (`booking_price_id`),
   CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   CONSTRAINT `booking_ibfk_2` FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`),
   CONSTRAINT `booking_ibfk_3` FOREIGN KEY (`booking_price_id`) REFERENCES `booking_price` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +106,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (12,7,1,2,'2023-11-09',1,'PEND','2023-10-01 15:25:42');
+INSERT INTO `booking` VALUES (14,7,2,1,'2023-10-11',1,'2023-10-07 16:49:25');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,6 +216,72 @@ INSERT INTO `mrt` VALUES (11,'世貿'),(22,'中山'),(20,'中正紀念堂'),(12,
 UNLOCK TABLES;
 
 --
+-- Table structure for table `order`
+--
+
+DROP TABLE IF EXISTS `order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `order` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `order_no` varchar(20) DEFAULT NULL,
+  `user_id` bigint NOT NULL,
+  `attraction_id` bigint NOT NULL,
+  `order_status` int NOT NULL DEFAULT '0' COMMENT 'Unpaid/Paid, 0 is Unpaid',
+  `order_date` date NOT NULL,
+  `order_time` varchar(50) NOT NULL,
+  `order_price` decimal(10,2) NOT NULL,
+  `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_no` (`order_no`),
+  UNIQUE KEY `order_no_2` (`order_no`),
+  KEY `user_id` (`user_id`),
+  KEY `attraction_id` (`attraction_id`),
+  CONSTRAINT `order_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `order_ibfk_2` FOREIGN KEY (`attraction_id`) REFERENCES `attraction` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order`
+--
+
+LOCK TABLES `order` WRITE;
+/*!40000 ALTER TABLE `order` DISABLE KEYS */;
+INSERT INTO `order` VALUES (3,'2023100702080200003',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:08:02'),(4,'2023100702283800004',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:28:38'),(5,'2023100702285700005',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:28:57'),(6,'2023100702313000006',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:31:30'),(7,'2023100702480200007',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:48:02'),(8,'2023100702490900008',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:49:09'),(9,'2023100702510700009',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:51:07'),(10,'2023100702542800010',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:54:28'),(11,'2023100702543900011',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:54:39'),(12,'2023100702550600012',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:55:06'),(13,'2023100702551800013',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:55:18'),(14,'2023100702563400014',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:56:34'),(15,'2023100702583200015',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 18:58:32'),(16,'2023100703002100016',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:00:21'),(17,'2023100703010100017',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:01:01'),(18,'2023100703063400018',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:06:34'),(19,'2023100703080200019',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:08:02'),(20,'2023100703091200020',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:09:12'),(21,'2023100703120100021',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:12:01'),(22,'2023100703294600022',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:29:46'),(23,'2023100703514400023',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:51:44'),(24,'2023100703521900024',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:52:19'),(25,'2023100703525400025',7,2,0,'2023-10-19','afternoon',2500.00,'2023-10-06 19:52:54'),(26,'2023100703532900026',7,2,1,'2023-10-19','afternoon',2500.00,'2023-10-06 19:53:29'),(27,'2023100703573500027',7,2,1,'2023-10-19','afternoon',2500.00,'2023-10-06 19:57:35'),(28,'2023100703593300028',7,3,1,'2023-10-18','beforenoon',2000.00,'2023-10-06 19:59:33'),(29,'2023100718501100029',7,6,1,'2023-10-25','afternoon',2500.00,'2023-10-07 10:50:11'),(30,'2023100718511200030',7,7,1,'2023-10-26','beforenoon',2000.00,'2023-10-07 10:51:12'),(31,'2023100718560200031',7,7,1,'2023-10-26','beforenoon',2000.00,'2023-10-07 10:56:02'),(32,'2023100719005500032',7,5,1,'2023-10-26','beforenoon',2000.00,'2023-10-07 11:00:55'),(33,'2023100719165900033',7,6,1,'2023-10-19','beforenoon',2000.00,'2023-10-07 11:16:59'),(34,'2023100719180400034',7,6,1,'2023-10-13','afternoon',2500.00,'2023-10-07 11:18:04'),(35,'2023100719185700035',7,2,1,'2023-11-03','afternoon',2500.00,'2023-10-07 11:18:57'),(36,'2023100720171800036',7,2,1,'2023-11-10','afternoon',2500.00,'2023-10-07 12:17:18'),(37,'2023100720252100037',7,2,1,'2023-10-19','afternoon',2500.00,'2023-10-07 12:25:21'),(38,'2023100723560100038',7,41,1,'2023-10-11','afternoon',2500.00,'2023-10-07 15:56:01'),(39,'2023100800445500039',7,2,1,'2023-10-25','afternoon',2500.00,'2023-10-07 16:44:55');
+/*!40000 ALTER TABLE `order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `order_contact`
+--
+
+DROP TABLE IF EXISTS `order_contact`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `order_contact` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL,
+  `contact_name` varchar(50) NOT NULL,
+  `contact_email` varchar(255) NOT NULL,
+  `contact_phone` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `order_contact_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `order_contact`
+--
+
+LOCK TABLES `order_contact` WRITE;
+/*!40000 ALTER TABLE `order_contact` DISABLE KEYS */;
+INSERT INTO `order_contact` VALUES (1,7,'aaa','aaa@aaa.com','123456'),(2,7,'aaa','aaa@aaa.com','123456'),(3,7,'aaa','aaa@aaa.com','123456'),(4,7,'aaa','aaa@aaa.com','123456'),(5,7,'aaa','aaa@aaa.com','123456'),(6,7,'aaa','aaa@aaa.com','123456'),(7,7,'aaa','aaa@aaa.com','123456'),(8,7,'aaa','aaa@aaa.com','123456'),(9,7,'aaa','aaa@aaa.com','123456'),(10,7,'aaa','aaa@aaa.com','123456'),(11,7,'aaa','aaa@aaa.com','123456'),(12,7,'aaa','aaa@aaa.com','123456'),(13,7,'aaa','aaa@aaa.com','123456'),(14,7,'aaa','aaa@aaa.com','123456'),(15,7,'aaa','aaa@aaa.com','123456'),(16,7,'aaa','aaa@aaa.com','123456'),(17,7,'aaa','aaa@aaa.com','123456'),(18,7,'aaa','aaa@aaa.com','123456'),(19,7,'aaa','aaa@aaa.com','0912345678'),(20,7,'aaa','aaa@aaa.com','0912345678'),(21,7,'aaa','aaa@aaa.com','0912345678'),(22,7,'aaa','aaa@aaa.com','0912345678'),(23,7,'aaa','aaa@aaa.com','0912345678'),(24,7,'aaa','aaa@aaa.com','0912345678'),(25,7,'aaa','aaa@aaa.com','0912345678'),(26,7,'aaa','aaa@aaa.com','0912345678'),(27,7,'aaa','aaa@aaa.com','0912345678'),(28,7,'aaa','aaa@aaa.com','0912345678'),(29,7,'aaa','aaa@aaa.com','0912345678'),(30,7,'aaa','aaa@aaa.com','0912345678'),(31,7,'aaa','aaa@aaa.com','0912345678'),(32,7,'aaa','aaa@aaa.com','0912345678'),(33,7,'aaa','aaa@aaa.com','0912345678'),(34,7,'aaa','aaa@aaa.com','0912345678'),(35,7,'aaa','aaa@aaa.com','0912345678'),(36,7,'aaa','aaa@aaa.com','0912345678'),(37,7,'aaa','aaa@aaa.com','0912345678');
+/*!40000 ALTER TABLE `order_contact` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user`
 --
 
@@ -252,4 +317,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-01 23:38:01
+-- Dump completed on 2023-10-08  0:54:24

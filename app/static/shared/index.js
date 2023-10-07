@@ -28,7 +28,7 @@ async function getSignUpData() {
   });
 
   if (isEmptyField) {
-    message = "Please fill in all fields";
+    message = "Please fill in all fields !";
     return {
       error: true,
       message: message,
@@ -135,7 +135,7 @@ async function checkLogInStatus() {
   console.log("checkLogInStatus");
   if (logInToken !== null) {
     let result = await decodeLogInToken(logInToken);
-    // console.log(result);
+    console.log(result);
     if (result["data"]) {
       isLogin = true;
       console.log("I already log in");
