@@ -1,3 +1,8 @@
+const bookingDisplayTime = {
+  beforenoon: "08:00 - 11:00",
+  afternoon: "13:00 - 16:00",
+};
+
 async function getBookingData() {
   let apiUrl = `/api/booking`;
   let logInToken = localStorage.getItem("logInToken");
@@ -21,17 +26,17 @@ async function displayBookingData() {
   const messageEmptyState = document.getElementById("messageEmptyState");
   const footer = document.getElementById("footer");
 
-  console.log(messageEmptyState);
+  // console.log(messageEmptyState);
 
   let bookingData = await getBookingData();
   console.log(bookingData);
+  localStorage.setItem("bookingData", JSON.stringify(bookingData));
 
   if (bookingData["data"]) {
     mainContent.classList.remove("hidden");
     footer.classList.remove("booking-footer--empty");
     messageEmptyState.classList.add("hidden");
 
-    console.log("remove");
     const bookingImg = document.querySelector(".attraction-list__image");
     const bookingAttractionName = document.querySelector(
       ".attraction-list__attraction"
@@ -49,7 +54,9 @@ async function displayBookingData() {
     bookingAttractionName.textContent =
       bookingData["data"]["attraction"]["name"];
     bookingDate.textContent = bookingData["data"]["date"];
-    bookingTime.textContent = "早上 9 點到下午 4 點"; // tmp
+    bookingTime.textContent = "beforenoon"
+      ? bookingDisplayTime["beforenoon"]
+      : bookingDisplayTime["afternoon"]; // tmp
     bookingPrice.textContent = `新台幣 ${bookingData["data"]["price"]} 元`;
     bookingAttractionAddress.textContent =
       bookingData["data"]["attraction"]["address"];
@@ -74,7 +81,7 @@ async function getLoginData() {
 
 async function displayLoginData() {
   let result = await getLoginData();
-  console.log(result, "login data");
+  // console.log(result, "login data");
   const bookingUsername = document.querySelector(".header__username");
   const contactName = document.querySelector(".contact-form .info-form__name");
   const contactEmail = document.querySelector(
@@ -122,7 +129,5 @@ bookingDeleteBtn.addEventListener("click", async () => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  displayLoginData();
-  displayBookingData();
-});
+displayLoginData();
+displayBookingData();

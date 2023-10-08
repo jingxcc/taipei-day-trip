@@ -1,3 +1,5 @@
+import lib from "../shared/lib.js";
+
 // Carousel
 let currentImageIndex = 0;
 
@@ -54,7 +56,7 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let attractionId = getUrlSourceNum();
+  let attractionId = lib.getUrlSourceNum(window.location.pathname);
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
@@ -81,6 +83,7 @@ async function displayAttractionData() {
 
   attractionTitle.textContent = attractionData["data"][0]["attraction_name"];
 
+  let mrtText = "";
   if (attractionData["data"][0]["mrt"] !== null) {
     mrtText = `at ${attractionData["data"][0]["mrt"].join("/")}`;
   }
@@ -129,6 +132,7 @@ timeInputs.forEach((input) => {
 });
 
 // booking in attraction page
+
 const attractionBookBtn = document.getElementById("attractionBookBtn");
 attractionBookBtn.addEventListener("click", async () => {
   await checkLogInStatus();
@@ -138,31 +142,27 @@ attractionBookBtn.addEventListener("click", async () => {
   } else {
     let date = document.querySelector("#attractionFormDate > #date").value;
     let time = "";
-    for (i = 0; i < timeInputs.length; i++) {
+    for (let i = 0; i < timeInputs.length; i++) {
       if (timeInputs[i].checked) {
         time = timeInputs[i].value;
         break;
       }
     }
-    let price = "";
+
     let priceText = document.querySelector(
       ".attraction__form #formPrice"
     ).textContent;
-    const regexpPrice = /\d+/;
-    if (priceText.match(regexpPrice)) {
-      price = priceText.match(regexpPrice)[0];
-    }
+    let price = lib.getNumFromStr(priceText);
 
-    // console.log(`price: ${price}`);
+    let attractionId = lib.getNumFromStr(
+      lib.getUrlSourceNum(window.location.pathname)
+    );
 
-    let attractionId = getUrlSourceNum();
     let requestBody = {
-      attractionId: !isNaN(parseInt(attractionId))
-        ? parseInt(attractionId)
-        : undefined,
+      attractionId: attractionId,
       date: date,
       time: time,
-      price: !isNaN(parseInt(price)) ? parseInt(price) : undefined,
+      price: price,
     };
     console.log(requestBody);
 
@@ -188,13 +188,6 @@ attractionBookBtn.addEventListener("click", async () => {
     }
   }
 });
-
-function getUrlSourceNum() {
-  let urlPathName = window.location.pathname;
-  let pathNameSegments = urlPathName.split("/");
-
-  return pathNameSegments[pathNameSegments.length - 1];
-}
 
 async function addBooking(requestBody) {
   let apiUrl = `/api/booking`;

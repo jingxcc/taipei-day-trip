@@ -1,0 +1,15 @@
+
+.tpfield {
+  // .info-form__info input
+  width: 200px;
+  height: 38px;
+  padding: 10px;
+  border: 1px solid $gray-20;
+  border-radius: 5px;
+
+  color: black;
+  
+  &::placeholder {
+    color: $gray-50;
+  }
+}

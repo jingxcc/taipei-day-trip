@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap");
 
-body, input, ::placeholder {
+body {
   font-family: "Noto Sans TC", sans-serif;
   font-size: $size-default;
   font-weight: $weight-default;
@@ -46,12 +46,26 @@ button {
   border-radius: 5px;
   background-color: $cyan-70;
   color: white;
+
+  &.disabled{
+    background-color: $gray-70;
+    cursor: default;
+  }
 }
 
 dialog {
   padding: 0;
   border:0;
   box-shadow: 0px 0px 20px 0px #aaa
+}
+
+input, input::placeholder {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: $size-default;
+  font-weight: $weight-default;
+  line-height: 13.3px;
+  
+  color: $gray-70;
 }
 
 .container {

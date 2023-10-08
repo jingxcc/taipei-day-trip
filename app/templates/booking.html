@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="../static/scss/style.css" />
     <script defer src="../static/shared/index.js"></script>
     <script defer src="../static/booking/index.js"></script>
+    <script defer src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <script type="module" src="../static/booking/tappay.js"></script>
   </head>
   <body>
     <header>
@@ -112,13 +114,26 @@
         </p>
         <p class="info-form__info">
           <span>手機號碼：</span>
-          <input type="tel" class="info-form__phone"></input>
+          <!-- <input type="tel" class="info-form__phone"></input> -->
+          <input type="tel" class="info-form__phone" value="0912345678"></input>
         </p>
         <p class="weight-bold mt-20">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</p>
       </section>
       <hr class="seperator"/>
       <section class="info-form payment-form booking-container mb-40">
-        <h3 class="info-form__title weight-bold">信用卡付款資訊</h3>
+        <div class="info-form__info body">
+          <span>卡片號碼：</span>
+          <div class="tpfield" id="card-number"></div>
+        </div>
+        <div class="info-form__info body">
+          <span>過期時間：</span>
+          <div class="tpfield" id="card-expiration-date"></div>
+        </div>
+        <div class="info-form__info body">
+          <span>驗證密碼：</span>
+          <div class="tpfield" id="card-ccv"></div>
+        </div>
+        <!-- <h3 class="info-form__title weight-bold">信用卡付款資訊</h3>
         <p class="info-form__info">
           <span>卡片號碼：</span>
           <input type="password" class="info-form__cardno" minlength="19" maxlength="19" placeholder="**** **** **** ****"></input>
@@ -130,7 +145,7 @@
         <p class="info-form__info">
           <span>驗證密碼：</span>
           <input type="text" class="info-form__verification-code" minlength="3" maxlength="3" placeholder="CVV"></input>
-        </p>
+        </p> -->
       </section>
       <hr class="seperator"/>
       <section class="confirm booking-container mb-40">
@@ -138,7 +153,8 @@
           <span class="weight-bold">總價：</span>
           <span class="confirm-info__total weight-bold">總價：</span>
         </p>
-        <button id="corfirmBtn" class="confirm-info__btn dialog__btn default-button button">
+        <button id="confirmBtn" class="confirm-info__btn dialog__btn default-button button disabled">
+        <!-- <button id="confirmBtn" class="confirm-info__btn dialog__btn default-button button"> -->
           <span class="confirm-info__btn-text">確認訂購並付款</span>
         </button>
       </section>
@@ -148,4 +164,6 @@
       <span>COPYRIGHT © 2023 台北一日遊</span>
     </footer>
   </body>
+  <script>
+  </script>
 </html>

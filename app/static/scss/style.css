@@ -134,15 +134,7 @@ table {
   border-spacing: 0;
 }
 
-::-moz-placeholder {
-  font-family: "Noto Sans TC", sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: normal;
-  color: #666666;
-}
-
-body, input, ::placeholder {
+body {
   font-family: "Noto Sans TC", sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -186,11 +178,31 @@ button {
   background-color: #448899;
   color: white;
 }
+.default-button.disabled {
+  background-color: #666666;
+  cursor: default;
+}
 
 dialog {
   padding: 0;
   border: 0;
   box-shadow: 0px 0px 20px 0px #aaa;
+}
+
+input::-moz-placeholder {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 13.3px;
+  color: #666666;
+}
+
+input, input::placeholder {
+  font-family: "Noto Sans TC", sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 13.3px;
+  color: #666666;
 }
 
 .container {
@@ -845,17 +857,22 @@ footer {
   margin-bottom: 20px;
 }
 
+.info-form__info {
+  display: flex;
+  align-items: center;
+}
 .info-form__info input {
-  width: 180px;
+  width: 200px;
+  height: 38px;
   padding: 10px;
   border: 1px solid #e8e8e8;
   border-radius: 5px;
   color: black;
 }
-.info-form__info ::-moz-placeholder {
+.info-form__info input::-moz-placeholder {
   color: #757575;
 }
-.info-form__info ::placeholder {
+.info-form__info input::placeholder {
   color: #757575;
 }
 .info-form__info:not(:last-child) {
@@ -875,4 +892,52 @@ footer {
 
 .booking-footer--empty {
   height: 80vh;
+}
+
+.tpfield {
+  width: 200px;
+  height: 38px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  color: black;
+}
+.tpfield::-moz-placeholder {
+  color: #757575;
+}
+.tpfield::placeholder {
+  color: #757575;
+}
+
+.thankyou {
+  margin-top: 55px;
+  height: 90vh;
+  padding: 10px;
+}
+
+.message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 500px;
+  height: 500px;
+  margin-top: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 80px 0px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+}
+.message * {
+  margin-bottom: 20px;
+}
+
+.message__icon {
+  display: block;
+  width: 160px;
+  height: 160px;
+  background-image: url("../images/order/complete.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }/*# sourceMappingURL=style.css.map */
