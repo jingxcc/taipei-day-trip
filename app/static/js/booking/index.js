@@ -29,7 +29,7 @@ async function displayBookingData() {
   // console.log(messageEmptyState);
 
   let bookingData = await getBookingData();
-  console.log(bookingData);
+  // console.log(bookingData);
   localStorage.setItem("bookingData", JSON.stringify(bookingData));
 
   if (bookingData["data"]) {

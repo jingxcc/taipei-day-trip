@@ -135,7 +135,7 @@ async function checkLogInStatus() {
   console.log("checkLogInStatus");
   if (logInToken !== null) {
     let result = await decodeLogInToken(logInToken);
-    console.log(result);
+    // console.log(result);
     if (result["data"]) {
       isLogin = true;
       console.log("I already log in");
@@ -144,9 +144,8 @@ async function checkLogInStatus() {
       clearLocalStorage();
       console.log("local storage is clear when checking log-in status");
     }
-
-    navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
   }
+  navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
   if (!isLogin) {
     if (window.location.pathname === "/booking") {
       window.location.href = window.location.origin;
@@ -237,8 +236,5 @@ navMenuItemBooking.addEventListener("click", (e) => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  checkLogInStatus();
-
-  navMenuItemBooking.href = `${window.location.origin}/booking`;
-});
+checkLogInStatus();
+navMenuItemBooking.href = `${window.location.origin}/booking`;

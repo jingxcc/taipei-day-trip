@@ -1,6 +1,7 @@
 import lib from "../shared/lib.js";
-
 // Carousel
+const carouselPrevBtn = document.getElementById("carouselPrevBtn");
+const carouselNextBtn = document.getElementById("carouselNextBtn");
 let currentImageIndex = 0;
 
 function changeCarouselIndex(addNum) {
@@ -123,13 +124,21 @@ async function displayAttractionData() {
   showCarouselImage(currentImageIndex);
 }
 
-displayAttractionData();
+carouselPrevBtn.addEventListener("click", () => {
+  changeCarouselIndex(-1);
+});
+
+carouselNextBtn.addEventListener("click", () => {
+  changeCarouselIndex(1);
+});
 
 timeInputs.forEach((input) => {
   input.addEventListener("click", () => {
     changeTimePrices();
   });
 });
+
+displayAttractionData();
 
 // booking in attraction page
 

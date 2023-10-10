@@ -1,9 +1,6 @@
 // tappay
 import lib from "../shared/lib.js";
 import env from "../shared/env.js";
-// const TP_APP_ID = "137100";
-// const TP_API_KEY =
-//   "app_obrw78Lneq0srItqySarBnmMEt6icjTH0iJCeMkpDX2oBc4CA7kn3kATb3x6";
 
 const TP_APP_ID = env.TP_APP_ID;
 const TP_API_KEY = env.TP_API_KEY;
