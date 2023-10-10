@@ -82,6 +82,7 @@
 }
 
 .list-bar__list {
+  flex-grow: 1;
   display: flex;
   overflow-x: scroll;
   scroll-behavior: smooth;
@@ -107,7 +108,9 @@
 }
 
 .home-content {
+  flex-grow: 1;
   display: grid;
+  min-height: 60vh;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 30px;
   padding: 15px;
