@@ -135,6 +135,9 @@ table {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   font-family: "Noto Sans TC", sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -238,6 +241,10 @@ header .nav-menu {
 }
 header .nav-menu__item {
   padding: 10px;
+  text-align: center;
+}
+header #navMenuItemLogIn {
+  width: 92px;
 }
 
 footer {
@@ -343,15 +350,25 @@ footer {
   font-size: 28px;
   line-height: 24px;
 }
+@media (max-width: 768px) {
+  .slogan__title {
+    line-height: normal;
+  }
+}
 
 .dialog__title {
   font-size: 24px;
-  line-height: auto;
+  line-height: normal;
 }
 
 .button {
   font-size: 19px;
   line-height: 16px;
+}
+@media (max-width: 768px) {
+  .button {
+    line-height: normal;
+  }
 }
 
 .content {
@@ -361,6 +378,11 @@ footer {
 .body {
   font-size: 16px;
   line-height: 13.3px;
+}
+@media (max-width: 768px) {
+  .body {
+    line-height: normal;
+  }
 }
 
 .category-list {
@@ -500,6 +522,7 @@ footer {
 }
 
 .list-bar__list {
+  flex-grow: 1;
   display: flex;
   overflow-x: scroll;
   scroll-behavior: smooth;
@@ -523,7 +546,9 @@ footer {
 }
 
 .home-content {
+  flex-grow: 1;
   display: grid;
+  min-height: 60vh;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 30px;
   padding: 15px;
@@ -708,6 +733,7 @@ footer {
   font-family: inherit;
   padding: 5px 10px;
   border: 0;
+  line-height: 1.2;
 }
 .attraction__form .form__date::-webkit-calendar-picker-indicator {
   width: 24px;
@@ -891,7 +917,7 @@ footer {
 }
 
 .booking-footer--empty {
-  height: 80vh;
+  flex-grow: 1;
 }
 
 .tpfield {

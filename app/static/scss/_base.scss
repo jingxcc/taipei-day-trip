@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap");
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
   font-family: "Noto Sans TC", sans-serif;
   font-size: $size-default;
   font-weight: $weight-default;
@@ -105,6 +109,11 @@ header {
 
   .nav-menu__item {
     padding: 10px;
+    text-align: center;
+  }
+
+  #navMenuItemLogIn{
+    width: 92px;
   }
 }
 
@@ -231,16 +240,24 @@ footer {
   font-weight: $weight-bold;
   font-size: 28px;
   line-height: 24px;
+
+  @media (max-width: 768px){
+    line-height: $lh-default;
+  }
 }
 
 .dialog__title {
   font-size: 24px;
-  line-height: auto;
+  line-height: $lh-default;
 }
 
 .button {
   font-size: 19px;
   line-height: 16px;
+
+  @media (max-width: 768px){
+    line-height: $lh-default;
+  }
 }
 
 .content {
@@ -250,6 +267,10 @@ footer {
 .body {
   font-size: $size-default;
   line-height: 13.3px;
+  
+  @media (max-width: 768px){
+    line-height: $lh-default;
+  }
 }
 .category-list {
   font-size: 14px;
