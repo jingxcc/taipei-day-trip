@@ -1,10 +1,17 @@
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
 const navMenuItemBooking = document.getElementById("navMenuItemBooking");
 const dialogMask = document.getElementById("dialogMask");
+
 const dialogLogIn = document.getElementById("dialogLogIn");
+const logInCloseBtn = dialogLogIn.querySelector(".dialog__close-btn");
+const logInToSignUp = dialogLogIn.querySelector(".dialog__link");
 const logInBtn = document.getElementById("logInBtn");
+
 const dialogSignUp = document.getElementById("dialogSignUp");
+const signUpCloseBtn = dialogSignUp.querySelector(".dialog__close-btn");
+const signUpToLogIn = dialogSignUp.querySelector(".dialog__link");
 const signUpBtn = document.getElementById("signUpBtn");
+
 let activeDialog = "dialogLogIn";
 let isLogin;
 
@@ -109,7 +116,7 @@ logInBtn.addEventListener("click", async () => {
   }
 });
 
-// ------
+// check log in status
 async function decodeLogInToken(token) {
   const apiUrl = `/api/user/auth`;
   try {
@@ -132,9 +139,11 @@ async function decodeLogInToken(token) {
 async function checkLogInStatus() {
   isLogin = false;
   let logInToken = localStorage.getItem("logInToken");
+  let result;
   console.log("checkLogInStatus");
   if (logInToken !== null) {
-    let result = await decodeLogInToken(logInToken);
+    result = await decodeLogInToken(logInToken);
+    // let result = await decodeLogInToken(logInToken);
     // console.log(result);
     if (result["data"]) {
       isLogin = true;
@@ -146,11 +155,15 @@ async function checkLogInStatus() {
     }
   }
   navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
+
+  const requireAuthPages = ["/booking", "/thankyou"];
   if (!isLogin) {
-    if (window.location.pathname === "/booking") {
+    console.log(requireAuthPages.includes(`${window.location.pathname}`));
+    if (requireAuthPages.includes(`${window.location.pathname}`)) {
       window.location.href = window.location.origin;
     }
   }
+  return { status: isLogin, userInfo: result };
 }
 
 // clear local storage data
@@ -201,6 +214,14 @@ function toggleDialog(targetDialog) {
   }
 }
 
+logInToSignUp.addEventListener("click", () => {
+  toggleDialog("dialogSignUp");
+});
+
+signUpToLogIn.addEventListener("click", () => {
+  toggleDialog("dialogLogIn");
+});
+
 function closeDialog(targetDialog) {
   if (targetDialog !== undefined) {
     activeDialog = targetDialog;
@@ -218,6 +239,14 @@ function closeDialog(targetDialog) {
   document.body.style.overflowY = "visible";
 }
 
+logInCloseBtn.addEventListener("click", () => {
+  closeDialog("dialogLogIn");
+});
+
+signUpCloseBtn.addEventListener("click", () => {
+  closeDialog("dialogSignUp");
+});
+
 function showDialogMessage(msg) {
   if (activeDialog === "dialogLogIn") {
     dialogLogIn.querySelector(".dialog__message").classList.remove("success");
@@ -233,8 +262,9 @@ navMenuItemBooking.addEventListener("click", (e) => {
   if (!isLogin) {
     e.preventDefault();
     showDialog();
+  } else {
+    navMenuItemBooking.href = `${window.location.origin}/booking`;
   }
 });
 
-checkLogInStatus();
-navMenuItemBooking.href = `${window.location.origin}/booking`;
+export default { checkLogInStatus: checkLogInStatus, showDialog: showDialog };

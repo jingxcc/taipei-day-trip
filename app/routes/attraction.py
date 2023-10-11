@@ -36,7 +36,7 @@ def api_attractions():
 
         sql = f"SELECT a.id, a.attraction_name, c.category_name as category, a.description, a.address, a.transport \
                     , GROUP_CONCAT(DISTINCT m.mrt_name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
-                    , GROUP_CONCAT(DISTINCT iu.url SEPARATOR ', ') as images \
+                    , GROUP_CONCAT(DISTINCT iu.url ORDER BY iu.id SEPARATOR ', ') as images \
                 FROM attraction a \
                 LEFT JOIN attraction_mrt am ON a.id = am.attraction_id \
                 LEFT JOIN mrt m ON m.id = am.mrt_id \
@@ -62,6 +62,7 @@ def api_attractions():
         columns_convert = ["mrt", "images"]
         for col in columns_convert:
             for r in result:
+                print(r)
                 if r[col] is not None:
                     r[col] = r[col].split(", ")
 
@@ -85,7 +86,7 @@ def api_attraction_id(attractionId):
         # where_sql = f"WHERE a.id = {attractionId}"
         sql = "SELECT a.id, a.attraction_name, c.category_name as category, a.description, a.address, a.transport \
                     , GROUP_CONCAT(DISTINCT m.mrt_name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
-                    , GROUP_CONCAT(DISTINCT iu.url SEPARATOR ', ') as images \
+                    , GROUP_CONCAT(DISTINCT iu.url ORDER BY iu.id SEPARATOR ', ') as images \
                 FROM attraction a \
                 LEFT JOIN attraction_mrt am ON a.id = am.attraction_id \
                 LEFT JOIN mrt m ON m.id = am.mrt_id \

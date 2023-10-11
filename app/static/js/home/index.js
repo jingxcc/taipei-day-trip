@@ -1,3 +1,5 @@
+import auth from "../shared/auth.js";
+
 const DEFAULT_PAGE_NUM = 0;
 let attractionNextPageNum = 0;
 let isFetchingData = false;
@@ -10,7 +12,7 @@ const searchBtn = document.getElementById("searchBtn");
 const listBarList = document.getElementById("listBarList");
 const listBarPrevBtn = document.getElementById("listBarPrevBtn");
 const listBarNextBtn = document.getElementById("listBarNextBtn");
-let listBarScrollWidth = window.innerWidth * 0.7;
+let listBarScrollWidth = window.innerWidth * 0.5;
 
 async function addAttractionItems(keyword) {
   let url = new URL(`${window.location.origin}/api/attractions?`);
@@ -124,7 +126,7 @@ function scrollAddAttractions(attractionKeyword) {
   let observerScrollCallBack = (entries, observerScroll) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        console.log("addAttractions: in observer callback", attractionKeyword);
+        // console.log("addAttractions: in observer callback", attractionKeyword);
         addAttractions(attractionKeyword);
       }
       if (attractionNextPageNum === null) {
@@ -213,8 +215,7 @@ listBarList.addEventListener("click", (e) => {
   scrollAddAttractions(searchInput.value);
 });
 
-console.log(123321);
+auth.checkLogInStatus();
+
 addListBarItems();
-// if (searchInput.value === "") {
 scrollAddAttractions("");
-// }

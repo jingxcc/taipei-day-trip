@@ -1,4 +1,7 @@
 import utils from "../shared/utils.js";
+import auth from "../shared/auth.js";
+let loginInfo;
+
 // Carousel
 const carouselPrevBtn = document.getElementById("carouselPrevBtn");
 const carouselNextBtn = document.getElementById("carouselNextBtn");
@@ -144,10 +147,8 @@ displayAttractionData();
 
 const attractionBookBtn = document.getElementById("attractionBookBtn");
 attractionBookBtn.addEventListener("click", async () => {
-  await checkLogInStatus();
-
-  if (!isLogin) {
-    showDialog();
+  if (loginInfo["status"] !== true) {
+    auth.showDialog();
   } else {
     let date = document.querySelector("#attractionFormDate > #date").value;
     let time = "";
@@ -218,3 +219,5 @@ async function addBooking(requestBody) {
   }
   return false;
 }
+
+loginInfo = await auth.checkLogInStatus();
