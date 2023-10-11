@@ -1,4 +1,4 @@
-import lib from "../shared/lib.js";
+import utils from "../shared/utils.js";
 // Carousel
 const carouselPrevBtn = document.getElementById("carouselPrevBtn");
 const carouselNextBtn = document.getElementById("carouselNextBtn");
@@ -57,7 +57,7 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let attractionId = lib.getUrlSourceNum(window.location.pathname);
+  let attractionId = utils.getUrlSourceNum(window.location.pathname);
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
@@ -161,10 +161,10 @@ attractionBookBtn.addEventListener("click", async () => {
     let priceText = document.querySelector(
       ".attraction__form #formPrice"
     ).textContent;
-    let price = lib.getNumFromStr(priceText);
+    let price = utils.getNumFromStr(priceText);
 
-    let attractionId = lib.getNumFromStr(
-      lib.getUrlSourceNum(window.location.pathname)
+    let attractionId = utils.getNumFromStr(
+      utils.getUrlSourceNum(window.location.pathname)
     );
 
     let requestBody = {

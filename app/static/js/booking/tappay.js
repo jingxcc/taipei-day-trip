@@ -1,5 +1,5 @@
 // tappay
-import lib from "../shared/lib.js";
+import utils from "../shared/utils.js";
 import env from "../shared/env.js";
 
 const TP_APP_ID = env.TP_APP_ID;
@@ -148,7 +148,7 @@ confirmBtn.addEventListener("click", async () => {
       let totalPrice = document.querySelector(
         ".confirm-info__total"
       ).textContent;
-      totalPrice = lib.getNumFromStr(totalPrice);
+      totalPrice = utils.getNumFromStr(totalPrice);
 
       let bookingData = localStorage.getItem("bookingData");
       bookingData = !(bookingData === "")
