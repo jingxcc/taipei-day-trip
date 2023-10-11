@@ -125,7 +125,8 @@ bookingDeleteBtn.addEventListener("click", async () => {
     alert("刪除成功");
     location.reload();
   } else {
-    alert("Unknown Error. Please try again later.");
+    // alert("Unknown Error. Please try again later.");
+    alert("刪除失敗，請稍後再試 !");
   }
 });
 

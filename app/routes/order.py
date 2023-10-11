@@ -16,6 +16,8 @@ TP_MRECHANT_ID = os.getenv("TP_MRECHANT_ID")
 
 order_bp = Blueprint("order_bp", __name__)
 
+error_msg = {"500": "伺服器內部錯誤", "orders_400": "訂單建立失敗，輸入不正確或其他原因"}
+
 
 @order_bp.route("/api/orders", methods=["POST"])
 @login_required
@@ -136,7 +138,8 @@ def create_order_paid(login_data):
         response_send_prime = send_prime(request_data)
 
         if response_send_prime == False:
-            message = "Order Creation Failed. Incorrect input or other reasons."
+            message = error_msg["orders_400"]
+            # message = "Order Creation Failed. Incorrect input or other reasons."
             return jsonify({"error": True, "message": message}), 400
 
         # pay by prime
@@ -144,7 +147,8 @@ def create_order_paid(login_data):
         response_pay_by_prime = pay_by_prime(request_data, order_no)
 
         if response_pay_by_prime == False:
-            message = "Order Creation Failed. Incorrect input or other reasons."
+            message = error_msg["orders_400"]
+            # message = "Order Creation Failed. Incorrect input or other reasons."
             return jsonify({"error": True, "message": message}), 400
 
         response_data = {
@@ -186,7 +190,8 @@ def create_order_paid(login_data):
 
     except Exception as err:
         print(f"ERROR: {err}")
-        message = "Internal Server Error"
+        # message = "Internal Server Error"
+        message = error_msg["500"]
         return jsonify({"error": True, "message": message}), 500
 
     finally:

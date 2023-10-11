@@ -7,6 +7,8 @@ booking_bp = Blueprint("booking_bp", __name__)
 
 TMP_BOOKING_NUM = 1
 
+error_msg = {"500": "伺服器內部錯誤", "booking_400": "建立失敗，輸入不正確或其他原因"}
+
 
 @booking_bp.route("/api/booking", methods=["GET"])
 @login_required
@@ -108,12 +110,14 @@ def add_booking(login_data):
 
             return jsonify({"ok": True})
 
-        message = "Booking Failed. Incorrect input or other reasons."
+        message = error_msg["booking_400"]
+        # message = "Booking Failed. Incorrect input or other reasons."
         return jsonify({"error": True, "message": message}), 400
 
     except Exception as err:
         print(f"ERROR: {err}")
-        message = "Internal Server Error"
+        message = error_msg["500"]
+        # message = "Internal Server Error"
         return jsonify({"error": True, "message": message}), 500
 
     finally:

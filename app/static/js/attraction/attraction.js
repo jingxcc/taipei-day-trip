@@ -1,5 +1,7 @@
 import utils from "../shared/utils.js";
 import auth from "../shared/auth.js";
+
+const dateInput = document.querySelector("#attractionFormDate > #date");
 let loginInfo;
 
 // Carousel
@@ -141,16 +143,22 @@ timeInputs.forEach((input) => {
   });
 });
 
+function setDateInputMin() {
+  console.log(utils.todayStr());
+  dateInput.setAttribute("min", utils.todayStr());
+  // dateInput.setAttribute("min", utils.todayStr());
+}
+
 displayAttractionData();
+setDateInputMin();
 
 // booking in attraction page
-
 const attractionBookBtn = document.getElementById("attractionBookBtn");
 attractionBookBtn.addEventListener("click", async () => {
   if (loginInfo["status"] !== true) {
     auth.showDialog();
   } else {
-    let date = document.querySelector("#attractionFormDate > #date").value;
+    let date = dateInput.value;
     let time = "";
     for (let i = 0; i < timeInputs.length; i++) {
       if (timeInputs[i].checked) {
@@ -174,16 +182,11 @@ attractionBookBtn.addEventListener("click", async () => {
       time: time,
       price: price,
     };
-    console.log(requestBody);
+    // console.log(requestBody);
 
-    let isEmptyField = false;
-    Object.keys(requestBody).forEach((item) => {
-      if (requestBody[item] === "" || requestBody[item] === undefined) {
-        isEmptyField = true;
-      }
-    });
+    let checkEmptyResult = utils.checkEmptyFields(requestBody);
 
-    if (!isEmptyField) {
+    if (!checkEmptyResult["error"]) {
       let result = await addBooking(requestBody);
       console.log(result);
 
@@ -191,10 +194,11 @@ attractionBookBtn.addEventListener("click", async () => {
         window.location.href = `${window.location.origin}/booking`;
         alert("預定成功");
       } else {
-        alert(result["message"]);
+        alert(`預定失敗\n${result["message"]}`);
       }
     } else {
-      alert("Please fill in all fields !");
+      // alert("Please fill in all fields !");
+      alert(checkEmptyResult["message"]);
     }
   }
 });

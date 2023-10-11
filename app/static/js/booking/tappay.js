@@ -167,6 +167,22 @@ confirmBtn.addEventListener("click", async () => {
         },
       };
 
+      let checkEmailResult = utils.checkValidEmail(
+        orderData["contact"]["email"]
+      );
+      if (checkEmailResult["error"]) {
+        alert(checkEmailResult["message"]);
+        return false;
+      }
+
+      let checkPhoneResult = utils.checkValidPhoneNumber(
+        orderData["contact"]["phone"]
+      );
+      if (checkPhoneResult["error"]) {
+        alert(checkPhoneResult["message"]);
+        return false;
+      }
+
       delete orderData["trip"]["price"];
 
       const TPPrime = await getTPPrime();
@@ -186,6 +202,7 @@ confirmBtn.addEventListener("click", async () => {
       }
     }
   } else {
-    alert("Please fill in all fields !");
+    // alert("Please fill in all fields !");
+    alert("請填寫必要資訊");
   }
 });

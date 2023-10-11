@@ -3,6 +3,8 @@ from db import my_pool
 
 attraction_bp = Blueprint("attraction_bp", __name__)
 
+error_msg = {"500": "伺服器內部錯誤", "attraction_400": "景點編號不正確"}
+
 
 @attraction_bp.route("/api/attractions")
 def api_attractions():
@@ -12,9 +14,13 @@ def api_attractions():
     keyword = request.args.get("keyword")
 
     if not page:
-        return jsonify({"error": True, "message": "'page' is required"}), 500
+        message = error_msg["500"]
+        # message = "'page' is required"
+        return jsonify({"error": True, "message": message}), 500
     if not page.isdigit():
-        return jsonify({"error": True, "message": "'page' type error"}), 500
+        message = error_msg["500"]
+        # message = "'page' type error"
+        return jsonify({"error": True, "message": message}), 500
 
     try:
         my_conn = my_pool.get_connection()
@@ -70,7 +76,8 @@ def api_attractions():
 
     except Exception as err:
         print(f"ERROR: {err}")
-        return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        message = error_msg["500"]
+        return jsonify({"error": True, "message": message}), 500
 
     finally:
         if "my_conn" in locals():
@@ -99,6 +106,8 @@ def api_attraction_id(attractionId):
         result = my_cursor.fetchall()
 
         if len(result) == 0:
+            message = error_msg["attraction_400"]
+            # message ="Incorrect Attraction Number"
             return (
                 jsonify({"error": True, "message": "Incorrect Attraction Number"}),
                 400,
@@ -115,7 +124,9 @@ def api_attraction_id(attractionId):
 
     except Exception as err:
         print(f"ERROR: {err}")
-        return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        # message = "Internal Server Error"
+        message = error_msg["500"]
+        return jsonify({"error": True, "message": message}), 500
 
     finally:
         if "my_conn" in locals():
@@ -145,7 +156,9 @@ def api_mrts():
 
     except Exception as err:
         print(f"ERROR: {err}")
-        return jsonify({"error": True, "message": "Internal Server Error"}), 500
+        message = error_msg["500"]
+        # message = "Internal Server Error"
+        return jsonify({"error": True, "message": message}), 500
 
     finally:
         if "my_conn" in locals():

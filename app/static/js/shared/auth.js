@@ -1,3 +1,5 @@
+import utils from "./utils.js";
+
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
 const navMenuItemBooking = document.getElementById("navMenuItemBooking");
 const dialogMask = document.getElementById("dialogMask");
@@ -26,20 +28,14 @@ async function getSignUpData() {
     password: password.value,
   };
 
-  let isEmptyField = false;
-  Object.keys(requestBody).forEach((item) => {
-    requestBody[item] = requestBody[item].trim();
-    if (requestBody[item] === "") {
-      isEmptyField = true;
-    }
-  });
+  let checkEmptyResult = utils.checkEmptyFields(requestBody);
+  if (checkEmptyResult["error"]) {
+    return checkEmptyResult;
+  }
 
-  if (isEmptyField) {
-    message = "Please fill in all fields !";
-    return {
-      error: true,
-      message: message,
-    };
+  let checkEmailResult = utils.checkValidEmail(requestBody["email"]);
+  if (checkEmailResult["error"]) {
+    return checkEmailResult;
   }
 
   const apiUrl = `/api/user`;
@@ -82,6 +78,16 @@ async function getLogInData() {
     email: email.value,
     password: password.value,
   };
+
+  let checkEmptyResult = utils.checkEmptyFields(requestBody);
+  if (checkEmptyResult["error"]) {
+    return checkEmptyResult;
+  }
+
+  let checkEmailResult = utils.checkValidEmail(requestBody["email"]);
+  if (checkEmailResult["error"]) {
+    return checkEmailResult;
+  }
 
   const apiUrl = `/api/user/auth`;
   try {
