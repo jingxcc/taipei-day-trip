@@ -134,6 +134,56 @@ table {
   border-spacing: 0;
 }
 
+.headline {
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 34px;
+}
+
+.slogan__title {
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 24px;
+}
+@media (max-width: 768px) {
+  .slogan__title {
+    line-height: normal;
+  }
+}
+
+.dialog__title {
+  font-size: 24px;
+  line-height: normal;
+}
+
+.button {
+  font-size: 19px;
+  line-height: 16px;
+}
+@media (max-width: 768px) {
+  .button {
+    line-height: normal;
+  }
+}
+
+.content {
+  font-size: 16px;
+}
+
+.body {
+  font-size: 16px;
+  line-height: 13.3px;
+}
+@media (max-width: 768px) {
+  .body {
+    line-height: normal;
+  }
+}
+
+.category-list {
+  font-size: 14px;
+}
+
 body {
   display: flex;
   flex-direction: column;
@@ -206,6 +256,10 @@ input, input::placeholder {
   font-weight: 500;
   line-height: 13.3px;
   color: #666666;
+}
+
+input[type=password] {
+  font: caption;
 }
 
 .container {
@@ -300,7 +354,7 @@ footer {
   width: 16px;
   height: 16px;
   padding: 7px;
-  background-image: url(../images/dialog/closeBtn.svg);
+  background-image: url(../../images/icons/dialog/close.svg);
   background-repeat: no-repeat;
   background-position: center;
   cursor: pointer;
@@ -337,56 +391,6 @@ footer {
 .dialog__main .dialog__message.success {
   color: green;
   font-size: 16px;
-}
-
-.headline {
-  font-weight: bold;
-  font-size: 30px;
-  line-height: 34px;
-}
-
-.slogan__title {
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 24px;
-}
-@media (max-width: 768px) {
-  .slogan__title {
-    line-height: normal;
-  }
-}
-
-.dialog__title {
-  font-size: 24px;
-  line-height: normal;
-}
-
-.button {
-  font-size: 19px;
-  line-height: 16px;
-}
-@media (max-width: 768px) {
-  .button {
-    line-height: normal;
-  }
-}
-
-.content {
-  font-size: 16px;
-}
-
-.body {
-  font-size: 16px;
-  line-height: 13.3px;
-}
-@media (max-width: 768px) {
-  .body {
-    line-height: normal;
-  }
-}
-
-.category-list {
-  font-size: 14px;
 }
 
 .hidden {
@@ -441,10 +445,25 @@ footer {
   font-weight: 400;
 }
 
+.tpfield {
+  width: 200px;
+  height: 38px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  color: black;
+}
+.tpfield::-moz-placeholder {
+  color: #757575;
+}
+.tpfield::placeholder {
+  color: #757575;
+}
+
 .hero {
   margin-top: 55px;
   padding: 76px 0px;
-  background-image: url("../images/welcome_image.png");
+  background-image: url("../../images/home/welcome.svg");
   background-size: cover;
   color: white;
 }
@@ -508,17 +527,17 @@ footer {
 }
 
 .list-bar__prev-btn-icon {
-  background-image: url(../images/button/prevBtn.svg);
+  background-image: url(../../images/icons/list/prev_gray.svg);
 }
 .list-bar__prev-btn-icon:hover {
-  background-image: url(../images/button/prevBtn_black.svg);
+  background-image: url(../../images/icons/list/prev_white.svg);
 }
 
 .list-bar__next-btn-icon {
-  background-image: url(../images/button/nextBtn.svg);
+  background-image: url(../../images/icons/list/next_gray.svg);
 }
 .list-bar__next-btn-icon:hover {
-  background-image: url(../images/button/nextBtn_black.svg);
+  background-image: url(../../images/icons/list/next_white.svg);
 }
 
 .list-bar__list {
@@ -738,7 +757,7 @@ footer {
 .attraction__form .form__date::-webkit-calendar-picker-indicator {
   width: 24px;
   height: 24px;
-  background-image: url(../images/calendar.svg);
+  background-image: url(../../images/icons/calendar.svg);
   background-repeat: no-repeat;
 }
 
@@ -769,6 +788,21 @@ footer {
 
 .attraction__info {
   padding: 10px 10px 60px 10px;
+}
+
+.tpfield {
+  width: 200px;
+  height: 38px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+  color: black;
+}
+.tpfield::-moz-placeholder {
+  color: #757575;
+}
+.tpfield::placeholder {
+  color: #757575;
 }
 
 .booking-headline {
@@ -872,7 +906,7 @@ footer {
 }
 
 .attraction-list__delete-icon {
-  background-image: url(../images/delete.svg);
+  background-image: url(../../images/icons/delete.svg);
   background-repeat: no-repeat;
   display: block;
   width: 30px;
@@ -920,21 +954,6 @@ footer {
   flex-grow: 1;
 }
 
-.tpfield {
-  width: 200px;
-  height: 38px;
-  padding: 10px;
-  border: 1px solid #e8e8e8;
-  border-radius: 5px;
-  color: black;
-}
-.tpfield::-moz-placeholder {
-  color: #757575;
-}
-.tpfield::placeholder {
-  color: #757575;
-}
-
 .thankyou {
   margin-top: 55px;
   height: 90vh;
@@ -947,7 +966,7 @@ footer {
   align-items: center;
   max-width: 500px;
   height: 500px;
-  margin-top: 60px;
+  margin-top: 40px;
   margin-left: auto;
   margin-right: auto;
   padding: 80px 0px;
@@ -962,7 +981,7 @@ footer {
   display: block;
   width: 160px;
   height: 160px;
-  background-image: url("../images/order/complete.svg");
+  background-image: url("../../images/order/complete.svg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

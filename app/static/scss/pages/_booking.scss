@@ -1,3 +1,5 @@
+@import "../vendors/tappay";
+
 .booking-headline {
   display: flex;
   width: 1000px;
@@ -98,7 +100,7 @@
 }
 
 .attraction-list__delete-icon{
-    background-image: url(../images/delete.svg);
+    background-image: url(../../images/icons/delete.svg);
     background-repeat: no-repeat;
     display: block;
     width: 30px;
