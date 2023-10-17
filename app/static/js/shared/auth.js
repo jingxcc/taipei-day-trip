@@ -1,10 +1,19 @@
+import utils from "./utils.js";
+
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
 const navMenuItemBooking = document.getElementById("navMenuItemBooking");
 const dialogMask = document.getElementById("dialogMask");
+
 const dialogLogIn = document.getElementById("dialogLogIn");
+const logInCloseBtn = dialogLogIn.querySelector(".dialog__close-btn");
+const logInToSignUp = dialogLogIn.querySelector(".dialog__link");
 const logInBtn = document.getElementById("logInBtn");
+
 const dialogSignUp = document.getElementById("dialogSignUp");
+const signUpCloseBtn = dialogSignUp.querySelector(".dialog__close-btn");
+const signUpToLogIn = dialogSignUp.querySelector(".dialog__link");
 const signUpBtn = document.getElementById("signUpBtn");
+
 let activeDialog = "dialogLogIn";
 let isLogin;
 
@@ -19,20 +28,14 @@ async function getSignUpData() {
     password: password.value,
   };
 
-  let isEmptyField = false;
-  Object.keys(requestBody).forEach((item) => {
-    requestBody[item] = requestBody[item].trim();
-    if (requestBody[item] === "") {
-      isEmptyField = true;
-    }
-  });
+  let checkEmptyResult = utils.checkEmptyFields(requestBody);
+  if (checkEmptyResult["error"]) {
+    return checkEmptyResult;
+  }
 
-  if (isEmptyField) {
-    message = "Please fill in all fields !";
-    return {
-      error: true,
-      message: message,
-    };
+  let checkEmailResult = utils.checkValidEmail(requestBody["email"]);
+  if (checkEmailResult["error"]) {
+    return checkEmailResult;
   }
 
   const apiUrl = `/api/user`;
@@ -76,6 +79,16 @@ async function getLogInData() {
     password: password.value,
   };
 
+  let checkEmptyResult = utils.checkEmptyFields(requestBody);
+  if (checkEmptyResult["error"]) {
+    return checkEmptyResult;
+  }
+
+  let checkEmailResult = utils.checkValidEmail(requestBody["email"]);
+  if (checkEmailResult["error"]) {
+    return checkEmailResult;
+  }
+
   const apiUrl = `/api/user/auth`;
   try {
     const response = await fetch(apiUrl, {
@@ -109,7 +122,7 @@ logInBtn.addEventListener("click", async () => {
   }
 });
 
-// ------
+// check log in status
 async function decodeLogInToken(token) {
   const apiUrl = `/api/user/auth`;
   try {
@@ -132,10 +145,12 @@ async function decodeLogInToken(token) {
 async function checkLogInStatus() {
   isLogin = false;
   let logInToken = localStorage.getItem("logInToken");
+  let result;
   console.log("checkLogInStatus");
   if (logInToken !== null) {
-    let result = await decodeLogInToken(logInToken);
-    console.log(result);
+    result = await decodeLogInToken(logInToken);
+    // let result = await decodeLogInToken(logInToken);
+    // console.log(result);
     if (result["data"]) {
       isLogin = true;
       console.log("I already log in");
@@ -144,14 +159,17 @@ async function checkLogInStatus() {
       clearLocalStorage();
       console.log("local storage is clear when checking log-in status");
     }
-
-    navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
   }
+  navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
+
+  const requireAuthPages = ["/booking", "/thankyou"];
   if (!isLogin) {
-    if (window.location.pathname === "/booking") {
+    console.log(requireAuthPages.includes(`${window.location.pathname}`));
+    if (requireAuthPages.includes(`${window.location.pathname}`)) {
       window.location.href = window.location.origin;
     }
   }
+  return { status: isLogin, userInfo: result };
 }
 
 // clear local storage data
@@ -202,6 +220,14 @@ function toggleDialog(targetDialog) {
   }
 }
 
+logInToSignUp.addEventListener("click", () => {
+  toggleDialog("dialogSignUp");
+});
+
+signUpToLogIn.addEventListener("click", () => {
+  toggleDialog("dialogLogIn");
+});
+
 function closeDialog(targetDialog) {
   if (targetDialog !== undefined) {
     activeDialog = targetDialog;
@@ -219,6 +245,14 @@ function closeDialog(targetDialog) {
   document.body.style.overflowY = "visible";
 }
 
+logInCloseBtn.addEventListener("click", () => {
+  closeDialog("dialogLogIn");
+});
+
+signUpCloseBtn.addEventListener("click", () => {
+  closeDialog("dialogSignUp");
+});
+
 function showDialogMessage(msg) {
   if (activeDialog === "dialogLogIn") {
     dialogLogIn.querySelector(".dialog__message").classList.remove("success");
@@ -234,11 +268,9 @@ navMenuItemBooking.addEventListener("click", (e) => {
   if (!isLogin) {
     e.preventDefault();
     showDialog();
+  } else {
+    navMenuItemBooking.href = `${window.location.origin}/booking`;
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  checkLogInStatus();
-
-  navMenuItemBooking.href = `${window.location.origin}/booking`;
-});
+export default { checkLogInStatus: checkLogInStatus, showDialog: showDialog };

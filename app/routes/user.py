@@ -17,6 +17,13 @@ load_dotenv()
 JWT_KEY = os.getenv("JWT_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 
+error_msg = {
+    "login_require_403": "未登入系統，拒絕存取",
+    "signup_400": "註冊失敗，重複的 Email 或其他原因",
+    "login_put_400": "登入失敗，帳號或密碼錯誤或其他原因",
+    "500": "伺服器內部錯誤",
+}
+
 
 # tmp: could combine with 'check log in status'
 # decorator with wrapper
@@ -46,7 +53,8 @@ def login_required(func):
         except Exception as err:
             print(f"ERROR: {err}")
 
-        message = "Access denied. Please log in."
+        # message = "Access denied. Please log in."
+        message = error_msg["login_require_403"]
         return jsonify({"error": True, "message": message}), 403
 
     return wrapper
@@ -80,7 +88,8 @@ def api_signup():
 
             return jsonify({"ok": True})
         else:
-            message = "Sign-up failed. Duplicate email or other reasons"
+            message = error_msg["signup_400"]
+            # message = "Sign-up failed. Duplicate email or other reasons"
             return (
                 jsonify(
                     {
@@ -93,7 +102,8 @@ def api_signup():
 
     except Exception as err:
         print(f"ERROR: {err}")
-        message = "Internal Server Error"
+        # message = "Internal Server Error"
+        message = error_msg["500"]
         return jsonify({"error": True, "message": message}), 500
 
     finally:
@@ -146,7 +156,8 @@ def api_user_auth():
             result = my_curosr.fetchall()
 
             if len(result) == 0:
-                message = "Log-in failed. Incorrect account, password or other reasons"
+                message = error_msg["login_put_400"]
+                # message = "Log-in failed. Incorrect account, password or other reasons"
                 return (
                     jsonify(
                         {
@@ -170,7 +181,8 @@ def api_user_auth():
 
         except Exception as err:
             print(f"ERROR: {err}")
-            message = "Internal Server Error"
+            message = error_msg["500"]
+            # message = "Internal Server Error"
             return jsonify({"error": True, "message": message}), 500
 
         finally:

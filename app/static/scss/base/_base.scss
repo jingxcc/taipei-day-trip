@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap");
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
   font-family: "Noto Sans TC", sans-serif;
   font-size: $size-default;
   font-weight: $weight-default;
@@ -68,6 +72,10 @@ input, input::placeholder {
   color: $gray-70;
 }
 
+input[type="password"] {
+  font: caption;
+}
+
 .container {
   width: 1200px;
   margin-left: auto;
@@ -105,6 +113,11 @@ header {
 
   .nav-menu__item {
     padding: 10px;
+    text-align: center;
+  }
+
+  #navMenuItemLogIn{
+    width: 92px;
   }
 }
 
@@ -170,7 +183,7 @@ footer {
     height: 16px;
     padding: 7px;
   
-    background-image: url(../images/dialog/closeBtn.svg);
+    background-image: url(../../images/icons/dialog/close.svg);
     background-repeat: no-repeat;
     background-position: center;
     cursor: pointer;
@@ -219,38 +232,3 @@ footer {
   }
 }
 
-
-// typography
-.headline {
-  font-weight: bold;
-  font-size: 30px;
-  line-height: 34px;
-}
-
-.slogan__title {
-  font-weight: $weight-bold;
-  font-size: 28px;
-  line-height: 24px;
-}
-
-.dialog__title {
-  font-size: 24px;
-  line-height: auto;
-}
-
-.button {
-  font-size: 19px;
-  line-height: 16px;
-}
-
-.content {
-  font-size: $size-default;
-}
-
-.body {
-  font-size: $size-default;
-  line-height: 13.3px;
-}
-.category-list {
-  font-size: 14px;
-}

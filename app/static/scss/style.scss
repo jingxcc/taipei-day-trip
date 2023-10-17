@@ -1,13 +1,16 @@
-@import "reset";
+// Base
+@import "base/reset";
+@import "base/variables";
+@import "base/typography";
+@import "base/base";
+@import "base/utils";
 
-@import "variables";
-@import "base";
-@import "utils";
+// Vendors
+@import "vendors/tappay";
 
-@import "main";
-// TODO
-@import "main_attraction";
-@import "main_booking";
-@import "tappay";
-@import "main_thankyou";
+// Pages
+@import "pages/home";
+@import "pages/attraction";
+@import "pages/booking";
+@import "pages/thankyou";
 

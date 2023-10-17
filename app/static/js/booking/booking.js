@@ -1,3 +1,6 @@
+import auth from "../shared/auth.js";
+
+let loginInfo;
 const bookingDisplayTime = {
   beforenoon: "08:00 - 11:00",
   afternoon: "13:00 - 16:00",
@@ -29,7 +32,7 @@ async function displayBookingData() {
   // console.log(messageEmptyState);
 
   let bookingData = await getBookingData();
-  console.log(bookingData);
+  // console.log(bookingData);
   localStorage.setItem("bookingData", JSON.stringify(bookingData));
 
   if (bookingData["data"]) {
@@ -70,27 +73,24 @@ async function displayBookingData() {
   }
 }
 
-// combine with checkLogInStatus
-async function getLoginData() {
-  isLogin = false;
-  let logInToken = localStorage.getItem("logInToken");
-  let result = await decodeLogInToken(logInToken);
-
-  return result;
-}
-
 async function displayLoginData() {
-  let result = await getLoginData();
-  // console.log(result, "login data");
-  const bookingUsername = document.querySelector(".header__username");
-  const contactName = document.querySelector(".contact-form .info-form__name");
-  const contactEmail = document.querySelector(
-    ".contact-form .info-form__email"
-  );
+  if (loginInfo["status"] === true) {
+    let result = loginInfo["userInfo"];
+    console.log(result);
 
-  bookingUsername.textContent = result["data"]["name"];
-  contactName.value = result["data"]["name"];
-  contactEmail.value = result["data"]["email"];
+    // console.log(result, "login data");
+    const bookingUsername = document.querySelector(".header__username");
+    const contactName = document.querySelector(
+      ".contact-form .info-form__name"
+    );
+    const contactEmail = document.querySelector(
+      ".contact-form .info-form__email"
+    );
+
+    bookingUsername.textContent = result["data"]["name"];
+    contactName.value = result["data"]["name"];
+    contactEmail.value = result["data"]["email"];
+  }
 }
 
 const bookingDeleteBtn = document.getElementById("bookingDeleteBtn");
@@ -125,9 +125,12 @@ bookingDeleteBtn.addEventListener("click", async () => {
     alert("刪除成功");
     location.reload();
   } else {
-    alert("Unknown Error. Please try again later.");
+    // alert("Unknown Error. Please try again later.");
+    alert("刪除失敗，請稍後再試 !");
   }
 });
 
+// auth.checkLogInStatus();
+loginInfo = await auth.checkLogInStatus();
 displayLoginData();
 displayBookingData();

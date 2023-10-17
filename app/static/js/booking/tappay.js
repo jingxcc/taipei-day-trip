@@ -1,9 +1,6 @@
 // tappay
-import lib from "../shared/lib.js";
+import utils from "../shared/utils.js";
 import env from "../shared/env.js";
-// const TP_APP_ID = "137100";
-// const TP_API_KEY =
-//   "app_obrw78Lneq0srItqySarBnmMEt6icjTH0iJCeMkpDX2oBc4CA7kn3kATb3x6";
 
 const TP_APP_ID = env.TP_APP_ID;
 const TP_API_KEY = env.TP_API_KEY;
@@ -151,7 +148,7 @@ confirmBtn.addEventListener("click", async () => {
       let totalPrice = document.querySelector(
         ".confirm-info__total"
       ).textContent;
-      totalPrice = lib.getNumFromStr(totalPrice);
+      totalPrice = utils.getNumFromStr(totalPrice);
 
       let bookingData = localStorage.getItem("bookingData");
       bookingData = !(bookingData === "")
@@ -169,6 +166,22 @@ confirmBtn.addEventListener("click", async () => {
           phone: contactInfo[2]["value"],
         },
       };
+
+      let checkEmailResult = utils.checkValidEmail(
+        orderData["contact"]["email"]
+      );
+      if (checkEmailResult["error"]) {
+        alert(checkEmailResult["message"]);
+        return false;
+      }
+
+      let checkPhoneResult = utils.checkValidPhoneNumber(
+        orderData["contact"]["phone"]
+      );
+      if (checkPhoneResult["error"]) {
+        alert(checkPhoneResult["message"]);
+        return false;
+      }
 
       delete orderData["trip"]["price"];
 
@@ -189,6 +202,7 @@ confirmBtn.addEventListener("click", async () => {
       }
     }
   } else {
-    alert("Please fill in all fields !");
+    // alert("Please fill in all fields !");
+    alert("請填寫必要資訊");
   }
 });

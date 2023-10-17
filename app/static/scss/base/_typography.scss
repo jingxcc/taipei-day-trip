@@ -1,0 +1,46 @@
+.headline {
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 34px;
+  }
+  
+  .slogan__title {
+    font-weight: $weight-bold;
+    font-size: 28px;
+    line-height: 24px;
+  
+    @media (max-width: 768px){
+      line-height: $lh-default;
+    }
+  }
+  
+  .dialog__title {
+    font-size: 24px;
+    line-height: $lh-default;
+  }
+  
+  .button {
+    font-size: 19px;
+    line-height: 16px;
+  
+    @media (max-width: 768px){
+      line-height: $lh-default;
+    }
+  }
+  
+  .content {
+    font-size: $size-default;
+  }
+  
+  .body {
+    font-size: $size-default;
+    line-height: 13.3px;
+    
+    @media (max-width: 768px){
+      line-height: $lh-default;
+    }
+  }
+  .category-list {
+    font-size: 14px;
+  }
+  

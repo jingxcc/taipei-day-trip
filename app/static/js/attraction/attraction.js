@@ -1,6 +1,12 @@
-import lib from "../shared/lib.js";
+import utils from "../shared/utils.js";
+import auth from "../shared/auth.js";
+
+const dateInput = document.querySelector("#attractionFormDate > #date");
+let loginInfo;
 
 // Carousel
+const carouselPrevBtn = document.getElementById("carouselPrevBtn");
+const carouselNextBtn = document.getElementById("carouselNextBtn");
 let currentImageIndex = 0;
 
 function changeCarouselIndex(addNum) {
@@ -56,7 +62,7 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let attractionId = lib.getUrlSourceNum(window.location.pathname);
+  let attractionId = utils.getUrlSourceNum(window.location.pathname);
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
@@ -123,7 +129,13 @@ async function displayAttractionData() {
   showCarouselImage(currentImageIndex);
 }
 
-displayAttractionData();
+carouselPrevBtn.addEventListener("click", () => {
+  changeCarouselIndex(-1);
+});
+
+carouselNextBtn.addEventListener("click", () => {
+  changeCarouselIndex(1);
+});
 
 timeInputs.forEach((input) => {
   input.addEventListener("click", () => {
@@ -131,16 +143,22 @@ timeInputs.forEach((input) => {
   });
 });
 
-// booking in attraction page
+function setDateInputMin() {
+  console.log(utils.todayStr());
+  dateInput.setAttribute("min", utils.todayStr());
+  // dateInput.setAttribute("min", utils.todayStr());
+}
 
+displayAttractionData();
+setDateInputMin();
+
+// booking in attraction page
 const attractionBookBtn = document.getElementById("attractionBookBtn");
 attractionBookBtn.addEventListener("click", async () => {
-  await checkLogInStatus();
-
-  if (!isLogin) {
-    showDialog();
+  if (loginInfo["status"] !== true) {
+    auth.showDialog();
   } else {
-    let date = document.querySelector("#attractionFormDate > #date").value;
+    let date = dateInput.value;
     let time = "";
     for (let i = 0; i < timeInputs.length; i++) {
       if (timeInputs[i].checked) {
@@ -152,10 +170,10 @@ attractionBookBtn.addEventListener("click", async () => {
     let priceText = document.querySelector(
       ".attraction__form #formPrice"
     ).textContent;
-    let price = lib.getNumFromStr(priceText);
+    let price = utils.getNumFromStr(priceText);
 
-    let attractionId = lib.getNumFromStr(
-      lib.getUrlSourceNum(window.location.pathname)
+    let attractionId = utils.getNumFromStr(
+      utils.getUrlSourceNum(window.location.pathname)
     );
 
     let requestBody = {
@@ -164,16 +182,11 @@ attractionBookBtn.addEventListener("click", async () => {
       time: time,
       price: price,
     };
-    console.log(requestBody);
+    // console.log(requestBody);
 
-    let isEmptyField = false;
-    Object.keys(requestBody).forEach((item) => {
-      if (requestBody[item] === "" || requestBody[item] === undefined) {
-        isEmptyField = true;
-      }
-    });
+    let checkEmptyResult = utils.checkEmptyFields(requestBody);
 
-    if (!isEmptyField) {
+    if (!checkEmptyResult["error"]) {
       let result = await addBooking(requestBody);
       console.log(result);
 
@@ -181,10 +194,11 @@ attractionBookBtn.addEventListener("click", async () => {
         window.location.href = `${window.location.origin}/booking`;
         alert("預定成功");
       } else {
-        alert(result["message"]);
+        alert(`預定失敗\n${result["message"]}`);
       }
     } else {
-      alert("Please fill in all fields !");
+      // alert("Please fill in all fields !");
+      alert(checkEmptyResult["message"]);
     }
   }
 });
@@ -209,3 +223,5 @@ async function addBooking(requestBody) {
   }
   return false;
 }
+
+loginInfo = await auth.checkLogInStatus();

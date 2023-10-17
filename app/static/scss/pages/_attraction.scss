@@ -128,12 +128,13 @@
     font-family: inherit;
     padding: 5px 10px;
     border: 0;
+    line-height: 1.2;
 
     &::-webkit-calendar-picker-indicator{
       width: 24px;
       height: 24px;
 
-      background-image: url(../images/calendar.svg);
+      background-image: url(../../images/icons/calendar.svg);
       background-repeat: no-repeat;
     }
   }

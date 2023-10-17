@@ -2,7 +2,7 @@
   margin-top: $head-margin;
   padding: 76px 0px;
 
-  background-image: url("../images/welcome_image.png");
+  background-image: url("../../images/home/welcome.svg");
   background-size: cover;
   color: white;
 }
@@ -68,20 +68,21 @@
 }
 
 .list-bar__prev-btn-icon {
-  background-image: url(../images/button/prevBtn.svg);
+  background-image: url(../../images/icons/list/prev_gray.svg);
   &:hover {
-    background-image: url(../images/button/prevBtn_black.svg);
+    background-image: url(../../images/icons/list/prev_white.svg);
   }
 }
 
 .list-bar__next-btn-icon {
-  background-image: url(../images/button/nextBtn.svg);
+  background-image: url(../../images/icons/list/next_gray.svg);
   &:hover {
-    background-image: url(../images/button/nextBtn_black.svg);
+    background-image: url(../../images/icons/list/next_white.svg);
   }
 }
 
 .list-bar__list {
+  flex-grow: 1;
   display: flex;
   overflow-x: scroll;
   scroll-behavior: smooth;
@@ -107,7 +108,9 @@
 }
 
 .home-content {
+  flex-grow: 1;
   display: grid;
+  min-height: 60vh;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 30px;
   padding: 15px;
