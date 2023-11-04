@@ -82,19 +82,6 @@
           <span>驗證密碼：</span>
           <div class="tpfield" id="card-ccv"></div>
         </div>
-        <!-- <h3 class="info-form__title weight-bold">信用卡付款資訊</h3>
-        <p class="info-form__info">
-          <span>卡片號碼：</span>
-          <input type="password" class="info-form__cardno" minlength="19" maxlength="19" placeholder="**** **** **** ****"></input>
-        </p>
-        <p class="info-form__info">
-          <span>過期時間：</span>
-          <input type="text" class="info-form__expire-date" minlength="7" maxlength="7" placeholder="MM / YY"></input>
-        </p>
-        <p class="info-form__info">
-          <span>驗證密碼：</span>
-          <input type="text" class="info-form__verification-code" minlength="3" maxlength="3" placeholder="CVV"></input>
-        </p> -->
       </section>
       <hr class="seperator" />
       <section class="confirm booking-container mb-40">
@@ -109,6 +96,7 @@
       </section>
     </main>
     <p id="messageEmptyState" class="booking__message--empty body mb-40">目前沒有任何待預訂的行程</p>
+    {% include './shared/loading.html' %}
     {% include './shared/footer.html' %}
 </body>
 <script>

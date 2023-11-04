@@ -1,6 +1,7 @@
 // tappay
 import utils from "../shared/utils.js";
 import env from "../shared/env.js";
+import loading from "../shared/loading.js";
 
 const TP_APP_ID = env.TP_APP_ID;
 const TP_API_KEY = env.TP_API_KEY;
@@ -192,12 +193,14 @@ confirmBtn.addEventListener("click", async () => {
       };
       // console.log("requestBody");
 
+      loading.showLoader();
       const createOrderResult = await createOrdersAndPay(requestBody);
       console.log("createOrderResult", createOrderResult);
 
       if ("data" in createOrderResult) {
         window.location.href = `${window.location.origin}/thankyou?number=${createOrderResult["data"]["number"]}`;
       } else {
+        loading.hideLoader();
         alert(`請稍後再試 ! \n${createOrderResult[message]}`);
       }
     }
