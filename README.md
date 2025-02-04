@@ -23,7 +23,7 @@ A Taipei travel attraction website features searching, booking, and payment with
 - Back-end
   - Python Flask
     - Blueprint: helps in organizing codes
-    - JWT token: helps in usememorizing log-in status
+    - JWT token: utilizes for memorizing log-in status
   - MySQL
   - AWS
     - EC2, Elastic IP
