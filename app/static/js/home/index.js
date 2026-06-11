@@ -138,7 +138,7 @@ function scrollAddAttractions(attractionKeyword) {
 
   let observerScroll = new IntersectionObserver(
     observerScrollCallBack,
-    observerOptions
+    observerOptions,
   );
   observerScroll.observe(footer);
   // }
@@ -193,12 +193,12 @@ async function addListBarItems() {
 }
 
 listBarPrevBtn.addEventListener("click", () => {
-  console.log(listBarScrollWidth);
+  // console.log(listBarScrollWidth);
   listBarList.scrollLeft -= listBarScrollWidth;
 });
 
 listBarNextBtn.addEventListener("click", () => {
-  console.log(listBarScrollWidth);
+  // console.log(listBarScrollWidth);
   listBarList.scrollLeft += listBarScrollWidth;
 });
 

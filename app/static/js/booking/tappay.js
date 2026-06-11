@@ -147,7 +147,7 @@ confirmBtn.addEventListener("click", async () => {
   if (!isEmptyField) {
     if (!confirmBtn.classList.contains("disabled")) {
       let totalPrice = document.querySelector(
-        ".confirm-info__total"
+        ".confirm-info__total",
       ).textContent;
       totalPrice = utils.getNumFromStr(totalPrice);
 
@@ -169,7 +169,7 @@ confirmBtn.addEventListener("click", async () => {
       };
 
       let checkEmailResult = utils.checkValidEmail(
-        orderData["contact"]["email"]
+        orderData["contact"]["email"],
       );
       if (checkEmailResult["error"]) {
         alert(checkEmailResult["message"]);
@@ -177,7 +177,7 @@ confirmBtn.addEventListener("click", async () => {
       }
 
       let checkPhoneResult = utils.checkValidPhoneNumber(
-        orderData["contact"]["phone"]
+        orderData["contact"]["phone"],
       );
       if (checkPhoneResult["error"]) {
         alert(checkPhoneResult["message"]);

@@ -6,6 +6,20 @@ const bookingDisplayTime = {
   afternoon: "13:00 - 16:00",
 };
 
+const demoData = {
+  contact: {
+    phone: "0912345678",
+  },
+  card: {
+    number: "4242424242424242",
+    expirationDate: "12/34",
+    ccv: "123",
+  },
+};
+
+const bookingDeleteBtn = document.getElementById("bookingDeleteBtn");
+const fillDemoDataBtn = document.getElementById("fillDemoDataBtn");
+
 async function getBookingData() {
   let apiUrl = `/api/booking`;
   let logInToken = localStorage.getItem("logInToken");
@@ -42,13 +56,13 @@ async function displayBookingData() {
 
     const bookingImg = document.querySelector(".attraction-list__image");
     const bookingAttractionName = document.querySelector(
-      ".attraction-list__attraction"
+      ".attraction-list__attraction",
     );
     const bookingDate = document.querySelector(".attraction-list__date");
     const bookingTime = document.querySelector(".attraction-list__time");
     const bookingPrice = document.querySelector(".attraction-list__price");
     const bookingAttractionAddress = document.querySelector(
-      ".attraction-list__address"
+      ".attraction-list__address",
     );
     const confirmTotal = document.querySelector(".confirm-info__total");
 
@@ -66,25 +80,24 @@ async function displayBookingData() {
 
     confirmTotal.textContent = `新台幣 ${bookingData["data"]["price"]} 元`; // tmp
   } else {
-    console.log("add");
+    // console.log("add");
     mainContent.classList.add("hidden");
     footer.classList.add("booking-footer--empty");
     messageEmptyState.classList.remove("hidden");
   }
 }
 
-async function displayLoginData() {
+async function displayUserData() {
   if (loginInfo["status"] === true) {
     let result = loginInfo["userInfo"];
-    console.log(result);
+    // console.log("login data", result );
 
-    // console.log(result, "login data");
     const bookingUsername = document.querySelector(".header__username");
     const contactName = document.querySelector(
-      ".contact-form .info-form__name"
+      ".contact-form .info-form__name",
     );
     const contactEmail = document.querySelector(
-      ".contact-form .info-form__email"
+      ".contact-form .info-form__email",
     );
 
     bookingUsername.textContent = result["data"]["name"];
@@ -92,8 +105,6 @@ async function displayLoginData() {
     contactEmail.value = result["data"]["email"];
   }
 }
-
-const bookingDeleteBtn = document.getElementById("bookingDeleteBtn");
 
 async function deleteBookingData() {
   let apiUrl = `/api/booking`;
@@ -106,7 +117,7 @@ async function deleteBookingData() {
         Authorization: `Bearer ${logInToken}`,
       },
     });
-    console.log(response);
+    // console.log(response);
     if (response.ok) {
       const result = await response.json();
       return result;
@@ -119,7 +130,7 @@ async function deleteBookingData() {
 
 bookingDeleteBtn.addEventListener("click", async () => {
   let deleteResult = await deleteBookingData();
-  console.log(deleteResult);
+  deleteResult;
   if (deleteResult) {
     // displayBookingData();
     alert("刪除成功");
@@ -130,7 +141,20 @@ bookingDeleteBtn.addEventListener("click", async () => {
   }
 });
 
+fillDemoDataBtn.addEventListener("click", () => {
+  document.querySelector(".info-form__phone").value = demoData.contact.phone;
+});
+
+function displayCardDemoData() {
+  document.getElementById("demo-card-number").textContent =
+    demoData.card.number;
+  document.getElementById("demo-card-expiration-date").textContent =
+    demoData.card.expirationDate;
+  document.getElementById("demo-card-ccv").textContent = demoData.card.ccv;
+}
+
 // auth.checkLogInStatus();
 loginInfo = await auth.checkLogInStatus();
-displayLoginData();
+displayUserData();
 displayBookingData();
+displayCardDemoData();

@@ -15,18 +15,17 @@
   {% include './shared/header.html' %}
 
   <h3 id="headline" class="booking-headline button weight-bold mb-30">
-    <span>您好，</span>
     <span class="header__username"></span>
-    <span>，待預訂的行程如下：</span>
+    <span>&nbsp;您好，待付款的行程如下：</span>
     </h2>
-    <main id="mainContent" class="content container hidden">
+    <main id="mainContent" class="content container hidden body">
       <section class="attraction-list booking-container mb-40">
         <div class="attraction-list__image-block">
           <img src="" alt="attraction-img" class="attraction-list__image">
         </div>
 
         <div class="attraction-list__info-block">
-          <h3 class="attraction-list__title body mb-20 weight-bold">
+          <h3 class="attraction-list__title mb-20 weight-bold">
             <span>台北一日遊：</span>
             <span class="attraction-list__attraction"></span>
           </h3>
@@ -54,41 +53,64 @@
       <hr class="seperator" />
       <section class="info-form contact-form booking-container mb-40">
         <h3 class="info-form__title weight-bold">您的聯絡資訊</h3>
-        <p class="info-form__info">
+        <div class="info-form__info">
           <span>聯絡姓名：</span>
           <input type="text" class="info-form__name"></input>
-        </p>
-        <p class="info-form__info">
+        </div>
+        <div class="info-form__info">
           <span>連絡信箱：</span>
           <input type="email" class="info-form__email"></input>
-        </p>
-        <p class="info-form__info">
-          <span>手機號碼：</span>
-          <input type="tel" minlength="10" maxlength="10" class="info-form__phone" placeholder="0912345678"></input>
-        </p>
-        <p class="weight-bold mt-20">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</p>
+        </div>
+        <div class="info-form__phone-block">
+          <div class="info-form__info">
+            <span>手機號碼：</span>
+            <input type="tel" minlength="10" maxlength="10" class="info-form__phone" placeholder="0912345678"></input>
+          </div>
+          <button id="fillDemoDataBtn" class="info-form__fill-demo-btn button">
+              <span>填入 Demo 資料</span>
+          </button>
+        </div>
+        <div class="weight-bold mt-20">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
       </section>
       <hr class="seperator" />
       <section class="info-form payment-form booking-container mb-40">
-        <div class="info-form__info body">
+        <h3 class="info-form__title weight-bold">信用卡付款資訊</h3>
+        <div class="info-form__demo-card">
+          <p class="info-form__demo-card-title">
+            Demo 信用卡資料
+          </p>
+          <p class="info-form__demo-card-item">
+            卡號：
+            <span id="demo-card-number"></span>
+          </p>
+          <p class="info-form__demo-card-item">
+            到期日：
+            <span id="demo-card-expiration-date"></span>
+          </p>
+          <p class="info-form__demo-card-item">
+            CCV：
+            <span id="demo-card-ccv"></span>
+          </p>
+        </div>
+        <div class="info-form__info">
           <span>卡片號碼：</span>
           <div class="tpfield" id="card-number"></div>
         </div>
-        <div class="info-form__info body">
+        <div class="info-form__info">
           <span>過期時間：</span>
           <div class="tpfield" id="card-expiration-date"></div>
         </div>
-        <div class="info-form__info body">
+        <div class="info-form__info">
           <span>驗證密碼：</span>
           <div class="tpfield" id="card-ccv"></div>
         </div>
       </section>
       <hr class="seperator" />
       <section class="confirm booking-container mb-40">
-        <p class="confirm-info body">
+        <div class="confirm-info">
           <span class="weight-bold">總價：</span>
           <span class="confirm-info__total weight-bold">總價：</span>
-        </p>
+        </div>
         <button id="confirmBtn" class="confirm-info__btn dialog__btn default-button button disabled">
           <!-- <button id="confirmBtn" class="confirm-info__btn dialog__btn default-button button"> -->
           <span class="confirm-info__btn-text">確認訂購並付款</span>

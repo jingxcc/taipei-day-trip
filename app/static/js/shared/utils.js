@@ -24,7 +24,7 @@ function todayStr() {
   let year = date.getFullYear();
 
   let todayString = `${year}-${month}-${day}`;
-  console.log(todayString);
+  // console.log(todayString);
   return todayString;
 }
 
