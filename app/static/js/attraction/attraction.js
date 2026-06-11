@@ -38,7 +38,7 @@ function showCarouselImage(imageNum) {
 
 // price
 const timeInputs = document.querySelectorAll(
-  "#attractionFormTime > input[name='time']"
+  "#attractionFormTime > input[name='time']",
 );
 const timePrices = [
   { time: "beforenoon", price: 2000 },
@@ -144,7 +144,7 @@ timeInputs.forEach((input) => {
 });
 
 function setDateInputMin() {
-  console.log(utils.todayStr());
+  // console.log(utils.todayStr());
   dateInput.setAttribute("min", utils.todayStr());
   // dateInput.setAttribute("min", utils.todayStr());
 }
@@ -168,12 +168,12 @@ attractionBookBtn.addEventListener("click", async () => {
     }
 
     let priceText = document.querySelector(
-      ".attraction__form #formPrice"
+      ".attraction__form #formPrice",
     ).textContent;
     let price = utils.getNumFromStr(priceText);
 
     let attractionId = utils.getNumFromStr(
-      utils.getUrlSourceNum(window.location.pathname)
+      utils.getUrlSourceNum(window.location.pathname),
     );
 
     let requestBody = {
@@ -188,7 +188,7 @@ attractionBookBtn.addEventListener("click", async () => {
 
     if (!checkEmptyResult["error"]) {
       let result = await addBooking(requestBody);
-      console.log(result);
+      // console.log(result);
 
       if (result["ok"]) {
         window.location.href = `${window.location.origin}/booking`;
