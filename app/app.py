@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from routes.attraction import attraction_bp
 from routes.user import user_bp
@@ -45,5 +47,10 @@ def thankyou():
 
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run(host="0.0.0.0", port=3000)
+    debug_mode = os.getenv("FLASK_DEBUG", "false").lower() == "true"
+
+    app.run(
+        host="0.0.0.0",
+        port=3000,
+        debug=debug_mode,
+    )
