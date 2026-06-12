@@ -1,0 +1,1 @@
+FLASK_DEBUG=true .venv/bin/python ./app/app.py

@@ -6,13 +6,9 @@ from functools import wraps
 import jwt
 from db import my_pool
 
-# tmp
-# from config import SECRET_KEY
-# SECRET_KEY = "secret"
 
 user_bp = Blueprint("user_bp", __name__)
-# JWT_KEY = SECRET_KEY
-# JWT_ALGORITHM = "HS256"
+
 load_dotenv()
 JWT_KEY = os.getenv("JWT_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
