@@ -20,6 +20,7 @@ CREATE TABLE attraction (
     transport VARCHAR(1000),
     latitude DOUBLE(9, 6),
     longitude DOUBLE(9, 6),
+    is_active BOOLEAN NOT NULL DEFAULT TRUE,
     FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
