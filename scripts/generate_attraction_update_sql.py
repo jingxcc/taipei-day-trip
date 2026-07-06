@@ -68,46 +68,6 @@ def generate_attraction_update_sql(old_name, new_name, api_attraction, update_ru
 
     return sql_lines
 
-# def generate_rename_update_sql(old_name, new_name, api_attraction):
-#     sql_lines = []
-
-#     update_parts = []
-
-#     if UPDATE_RULES["rename_and_update"]["name"]:
-#         update_parts.append(f"attraction_name = {escape_sql(new_name)}")
-
-#     if UPDATE_RULES["rename_and_update"]["description"]:
-#         update_parts.append(
-#             f"description = {escape_sql(api_attraction.get('introduction'))}"
-#         )
-
-#     sql_lines.append(
-#         "UPDATE attraction\n"
-#         f"SET {', '.join(update_parts)}\n"
-#         f"WHERE attraction_name = {escape_sql(old_name)};"
-#     )
-
-#     if UPDATE_RULES["rename_and_update"]["images"]:
-#         images = api_attraction.get("images", [])
-
-#         sql_lines.append(
-#             "DELETE iu FROM image_url iu\n"
-#             "JOIN attraction a ON iu.attraction_id = a.id\n"
-#             f"WHERE a.attraction_name = {escape_sql(new_name)};"
-#         )
-
-#         for image in images:
-#             image_url = image["src"]
-
-#             sql_lines.append(
-#                 "INSERT INTO image_url (attraction_id, url)\n"
-#                 f"SELECT id, {escape_sql(image_url)} "
-#                 "FROM attraction\n"
-#                 f"WHERE attraction_name = {escape_sql(new_name)};"
-#             )
-
-#     return sql_lines
-
 def generate_image_update_sql(attraction_name, api_attraction):
     sql_lines = []
     images = api_attraction.get("images", [])
@@ -198,7 +158,6 @@ def main():
         if UPDATE_RULES["rename_and_update"]["images"]:
             sql_lines.extend(generate_image_update_sql(new_name, api_attraction))
 
-        # sql_lines.extend(generate_rename_update_sql(old_name, new_name, api_attraction))
         sql_lines.append("")
 
     sql_lines.extend(["-- replaced_by_other_attraction", ""])
