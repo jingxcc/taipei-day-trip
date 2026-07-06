@@ -1,6 +1,9 @@
 import auth from "../shared/auth.js";
 
 const DEFAULT_PAGE_NUM = 0;
+const PLACEHOLDER_IMAGE =
+  "/static/images/placeholder/attraction-placeholder.jpg";
+
 let attractionNextPageNum = 0;
 let isFetchingData = false;
 const attractionContent = document.getElementById("attractionContent");
@@ -36,7 +39,7 @@ async function addAttractionItems(keyword) {
     if (response.ok) {
       const result = await response.json();
 
-      console.log(`get next page data : ${attractionNextPageNum}`);
+      // console.log(`get next page data : ${attractionNextPageNum}`);
       // console.log(result);
 
       attractionNextPageNum = result["nextPage"];
@@ -45,16 +48,14 @@ async function addAttractionItems(keyword) {
       if (result["data"].length > 0) {
         result["data"].forEach((attraction) => {
           const card = document.createElement("div");
-          // console.log(card);
 
           card.innerHTML = `
               <a class="card" href="/attraction/${attraction.id}">
                 <div class="card__image-block">
-                  <img
-                    class="card__img"
-                    src=""
-                    alt="attraction"
-                  />
+                  <img class="card__img" src="" alt="attraction" />
+                  <div class="card__img-overlay weight-bold">
+                    <span class="card__img-text">暫無圖片</span>
+                  </div>
                   <div class="card__title body weight-bold">
                     <p 
                       class="card__title-text" 
@@ -69,9 +70,17 @@ async function addAttractionItems(keyword) {
                 </div>
               
             `;
-          const cardImg = card.querySelector(".card__image-block > img");
+          const cardImgBlock = card.querySelector(".card__image-block");
+          const cardImg = cardImgBlock.querySelector(".card__img");
+
           if (attraction["images"] !== null) {
+            cardImg.onerror = () => {
+              showPlaceholder(cardImgBlock);
+            };
+
             cardImg.setAttribute("src", attraction["images"][0]);
+          } else {
+            showPlaceholder(cardImgBlock);
           }
 
           const cardTitleText = card.querySelector(".card__title-text");
@@ -110,6 +119,13 @@ async function addAttractions(attractionKeyword) {
     await addAttractionItems(attractionKeyword);
     isFetchingData = false;
   }
+}
+
+function showPlaceholder(imageBlock) {
+  imageBlock.classList.add("card__image-block--placeholder");
+
+  imageBlock.querySelector(".card__img").src = PLACEHOLDER_IMAGE;
+  imageBlock.querySelector(".card__img-overlay").classList.add("show");
 }
 
 // observer

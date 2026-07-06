@@ -149,6 +149,25 @@
     }
   }
 
+  .card__image-block--placeholder {
+    .card__img {
+      opacity: 0.45;
+    }
+  }
+
+  .card__img-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+
+    justify-content: center;
+    align-items: center;
+
+    &.show {
+      display: flex;
+    }
+  }
+
   .card__title {
     width: 100%;
 
