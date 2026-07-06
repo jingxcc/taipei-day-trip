@@ -16,7 +16,7 @@ function changeCarouselIndex(addNum) {
 }
 
 function showCarouselImage(imageNum) {
-  const imageItems = document.getElementsByClassName("carousel__items");
+  const imageItems = document.getElementsByClassName("carousel__item");
   const dots = document.getElementsByClassName("carousel__dot");
 
   if (imageNum > imageItems.length - 1) {
@@ -52,10 +52,10 @@ function setCarouselControlsVisible(isVisible) {
 }
 
 function fillCarouselPlaceholder(carouselItem) {
-  carouselItem.classList.add("carousel__items--placeholder");
+  carouselItem.classList.add("carousel__item--placeholder");
 
   const image = document.createElement("img");
-  image.classList.add("carousel__images", "carousel__images--placeholder");
+  image.classList.add("carousel__image", "carousel__image--placeholder");
   image.setAttribute("src", PLACEHOLDER_IMAGE);
   image.setAttribute("alt", "attraction image");
 
@@ -142,10 +142,10 @@ async function displayAttractionData() {
   if (attractionData["data"][0]["images"] !== null) {
     attractionData["data"][0]["images"].forEach((item, idx) => {
       const carouselItem = document.createElement("div");
-      carouselItem.classList.add("carousel__items");
+      carouselItem.classList.add("carousel__item");
 
       const image = document.createElement("img");
-      image.classList.add("carousel__images");
+      image.classList.add("carousel__image");
       image.setAttribute("src", item);
       image.setAttribute("alt", "attraction image");
 
@@ -163,7 +163,7 @@ async function displayAttractionData() {
     });
   } else {
     const carouselItem = document.createElement("div");
-    carouselItem.classList.add("carousel__items");
+    carouselItem.classList.add("carousel__item");
 
     fillCarouselPlaceholder(carouselItem);
 
