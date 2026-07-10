@@ -7,9 +7,11 @@ let loginInfo;
 // Carousel
 const PLACEHOLDER_IMAGE =
   "/static/images/placeholder/attraction-placeholder.jpg";
+const carouselImageBlock = document.getElementById("carouselImageBlock");
 const carouselPrevBtn = document.getElementById("carouselPrevBtn");
 const carouselNextBtn = document.getElementById("carouselNextBtn");
 let currentImageIndex = 0;
+const carouselDotList = document.getElementById("carouselDotList");
 
 function changeCarouselIndex(addNum) {
   showCarouselImage((currentImageIndex += addNum));
@@ -134,9 +136,7 @@ async function displayAttractionData() {
   infoAddress.textContent = attractionData["data"][0]["address"];
   infoTransport.textContent = attractionData["data"][0]["transport"];
 
-  const carouselImageBlock = document.getElementById("carouselImageBlock");
   const imageFragment = document.createDocumentFragment();
-  const carouselDotList = document.getElementById("carouselDotList");
   const dotFragment = document.createDocumentFragment();
 
   if (attractionData["data"][0]["images"] !== null) {
