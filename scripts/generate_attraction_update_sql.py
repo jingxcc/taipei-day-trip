@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+# See docs/attraction-mapping-rules.md for mapping definitions.
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 API_DATA_PATH = BASE_DIR / "data" / "taipei-api-attractions.json"
@@ -9,16 +10,22 @@ MAPPING_PATH = BASE_DIR / "data" / "attraction-manual-mapping.json"
 OUTPUT_SQL_PATH = BASE_DIR / "database" / "update_attractions.sql"
 
 
-# Category is not synchronized.
-# Existing category assignments are preserved.
+# Category is maintained manually and is not synchronized with the latest Taipei Open API.
+# Address, latitude, longitude, and images are synchronized from the latest Taipei Open API.
 UPDATE_RULES = {
     "matched": {
         "description": False,
+        "address": True,
+        "latitude": True,
+        "longitude": True,
         "images": True,
     },
     "rename_and_update": {
         "name": True,
         "description": True,
+        "address": True,
+        "latitude": True,
+        "longitude": True,
         "images": True,
     },
 }
@@ -56,6 +63,15 @@ def generate_attraction_update_sql(old_name, new_name, api_attraction, update_ru
         update_parts.append(
            f"description = {escape_sql(api_attraction.get('introduction').strip())}"
         )
+
+    if update_rule.get("address"):
+        update_parts.append(f"address = {escape_sql(api_attraction.get('address').strip())}")
+
+    if update_rule.get("latitude"):
+        update_parts.append(f"latitude = {escape_sql(api_attraction.get('nlat'))}")
+
+    if update_rule.get("longitude"):
+        update_parts.append(f"longitude = {escape_sql(api_attraction.get('elong'))}")
 
     update_parts.append("is_active = TRUE")
 
@@ -121,15 +137,15 @@ def main():
             print(f"Warning: API attraction not found: {name}")
             continue
 
-        # if UPDATE_RULES["matched"]["description"]:
-        #     sql_lines.extend(
-        #         generate_attraction_update_sql(
-        #             old_name=name,
-        #             new_name=name,
-        #             api_attraction=api_attraction,
-        #             update_rule=UPDATE_RULES["matched"],
-        #         )
-        #     )
+        if UPDATE_RULES["matched"]["address"] or UPDATE_RULES["matched"]["latitude"] or UPDATE_RULES["matched"]["longitude"]:
+            sql_lines.extend(
+                generate_attraction_update_sql(
+                    old_name=name,
+                    new_name=name,
+                    api_attraction=api_attraction,
+                    update_rule=UPDATE_RULES["matched"],
+                )
+            )
 
         if UPDATE_RULES["matched"]["images"]:
             sql_lines.extend(generate_image_update_sql(name, api_attraction))
@@ -145,7 +161,7 @@ def main():
             print(f"Warning: API attraction not found: {new_name}")
             continue
         
-        if UPDATE_RULES["rename_and_update"]["name"] or UPDATE_RULES["rename_and_update"]["description"]:
+        if UPDATE_RULES["rename_and_update"]["name"] or UPDATE_RULES["rename_and_update"]["description"] or UPDATE_RULES["rename_and_update"]["address"] or UPDATE_RULES["rename_and_update"]["latitude"] or UPDATE_RULES["rename_and_update"]["longitude"]:
             sql_lines.extend(
                 generate_attraction_update_sql(
                     old_name=old_name,
@@ -160,6 +176,8 @@ def main():
 
         sql_lines.append("")
 
+    # Only deactivate old attractions here.
+    # Replaced attraction INSERT SQL is generated separately.
     sql_lines.extend(["-- replaced_by_other_attraction", ""])
     replaced = mapping.get("replaced_by_other_attraction", {})
     for old_name in replaced.keys():
@@ -172,13 +190,13 @@ def main():
         sql_lines.extend(generate_deactivate_sql(old_name))
         sql_lines.append("")
 
-    # Only deactivate old attractions here.
-    # Split attraction INSERT SQL is generated separately.
-    sql_lines.extend(["-- split", ""])
-    split = mapping.get("split", {})
-    for old_name in split.keys():
-        sql_lines.extend(generate_deactivate_sql(old_name))
-        sql_lines.append("")
+    # # Only deactivate old attractions here.
+    # # Split attraction INSERT SQL is generated separately.
+    # sql_lines.extend(["-- split", ""])
+    # split = mapping.get("split", {})
+    # for old_name in split.keys():
+    #     sql_lines.extend(generate_deactivate_sql(old_name))
+    #     sql_lines.append("")
 
     OUTPUT_SQL_PATH.parent.mkdir(parents=True, exist_ok=True)
 
