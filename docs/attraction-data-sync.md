@@ -28,12 +28,10 @@ MySQL
 2. Execute `add_is_active.sql`.
 3. Review the generated `update_attractions.sql`.
 4. Execute `update_attractions.sql`.
-5. Review the generated `insert_attractions.sql`.
-6. Execute `insert_attractions.sql`.
-7. Execute `remove_legacy_image_urls.sql`.
+5. Execute `remove_legacy_image_urls.sql` to remove obsolete image URLs from the legacy Taipei Open API.
+6. Review the generated `insert_attractions.sql`.
+7. Execute `insert_attractions.sql`.
 8. Verify the updated data.
-
----
 
 ## Verification
 
@@ -75,7 +73,24 @@ LEFT JOIN attraction AS a
 GROUP BY attraction_id;
 ```
 
----
+### Verify inserted attractions
+
+```sql
+SELECT
+    a.attraction_name,
+    a.address,
+    a.transport,
+    a.is_active,
+    m.mrt_name
+FROM attraction a
+LEFT JOIN attraction_mrt am
+    ON a.id = am.attraction_id
+LEFT JOIN mrt m
+    ON am.mrt_id = m.id
+WHERE a.attraction_name IN (
+    ...
+);
+```
 
 ## Notes
 
