@@ -58,14 +58,12 @@ async function getSignUpData() {
 // check if sign up succeess
 signUpBtn.addEventListener("click", async () => {
   let result = await getSignUpData();
-  // console.log(result);
 
   if (!result["error"]) {
     const dialogSignUpMsg = dialogSignUp.querySelector(".dialog__message");
     dialogSignUpMsg.classList.add("success");
     dialogSignUpMsg.textContent = "註冊成功";
   } else if (result["error"]) {
-    // console.error(result["message"]);
     showDialogMessage(result["message"]);
   }
 });
@@ -148,22 +146,17 @@ async function checkLogInStatus() {
   let result;
   if (logInToken !== null) {
     result = await decodeLogInToken(logInToken);
-    // let result = await decodeLogInToken(logInToken);
-    // console.log(result);
     if (result["data"]) {
       isLogin = true;
-      // console.log("I already log in");
     } else {
       // isLogin = false;
       clearLocalStorage();
-      // console.log("local storage is clear when checking log-in status");
     }
   }
   navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
 
   const requireAuthPages = ["/booking", "/thankyou"];
   if (!isLogin) {
-    // console.log(requireAuthPages.includes(`${window.location.pathname}`));
     if (requireAuthPages.includes(`${window.location.pathname}`)) {
       window.location.href = window.location.origin;
     }
@@ -187,15 +180,8 @@ navMenuItemLogIn.addEventListener("click", () => {
 });
 
 dialogMask.addEventListener("click", (e) => {
-  // if (e.target === dialogMask) {
-  // const dialogBlockChildren = document.getElementById("dialogBlock").children;
-  // for (let i = 0; i < dialogBlockChildren.length; i++) {
-  //   dialogBlockChildren[i].classList.remove("block");
-  // }
-
   closeDialog(activeDialog);
   document.body.style.overflowY = "visible";
-  // }
 });
 
 function showDialog() {

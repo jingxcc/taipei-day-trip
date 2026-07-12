@@ -25,8 +25,6 @@ async function addAttractionItems(keyword) {
     keyword: keyword,
   };
 
-  // console.log(paramValues);
-
   urlParams.set("page", paramValues["page"]);
   if (keyword !== "") {
     urlParams.set("keyword", paramValues["keyword"]);
@@ -38,9 +36,6 @@ async function addAttractionItems(keyword) {
 
     if (response.ok) {
       const result = await response.json();
-
-      // console.log(`get next page data : ${attractionNextPageNum}`);
-      // console.log(result);
 
       attractionNextPageNum = result["nextPage"];
       const fragment = document.createDocumentFragment();
@@ -142,7 +137,6 @@ function scrollAddAttractions(attractionKeyword) {
   let observerScrollCallBack = (entries, observerScroll) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        // console.log("addAttractions: in observer callback", attractionKeyword);
         addAttractions(attractionKeyword);
       }
       if (attractionNextPageNum === null) {
@@ -167,7 +161,6 @@ searchInput.addEventListener("keydown", (e) => {
     contentRange.deleteContents();
 
     let inputKeyword = searchInput.value.trim();
-    // console.log(`enter inputKeyword: ${inputKeyword}`);
 
     scrollAddAttractions(inputKeyword);
   }
@@ -179,7 +172,6 @@ searchBtn.addEventListener("click", () => {
   contentRange.deleteContents();
 
   let inputKeyword = searchInput.value.trim();
-  // console.log(`button inputKeyword: ${inputKeyword}`);
 
   scrollAddAttractions(inputKeyword);
 });
@@ -209,12 +201,10 @@ async function addListBarItems() {
 }
 
 listBarPrevBtn.addEventListener("click", () => {
-  // console.log(listBarScrollWidth);
   listBarList.scrollLeft -= listBarScrollWidth;
 });
 
 listBarNextBtn.addEventListener("click", () => {
-  // console.log(listBarScrollWidth);
   listBarList.scrollLeft += listBarScrollWidth;
 });
 
@@ -225,8 +215,6 @@ listBarList.addEventListener("click", (e) => {
 
   // searchInput.textContent = e.target.textContent;
   searchInput.value = e.target.textContent;
-
-  // console.log(`item listBarList: ${searchInput.value}`);
 
   scrollAddAttractions(searchInput.value);
 });

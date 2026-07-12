@@ -194,9 +194,7 @@ timeInputs.forEach((input) => {
 });
 
 function setDateInputMin() {
-  // console.log(utils.todayStr());
   dateInput.setAttribute("min", utils.todayStr());
-  // dateInput.setAttribute("min", utils.todayStr());
 }
 
 displayAttractionData();
@@ -232,13 +230,11 @@ attractionBookBtn.addEventListener("click", async () => {
       time: time,
       price: price,
     };
-    // console.log(requestBody);
 
     let checkEmptyResult = utils.checkEmptyFields(requestBody);
 
     if (!checkEmptyResult["error"]) {
       let result = await addBooking(requestBody);
-      // console.log(result);
 
       if (result["ok"]) {
         window.location.href = `${window.location.origin}/booking`;

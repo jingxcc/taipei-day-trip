@@ -43,10 +43,7 @@ async function displayBookingData() {
   const messageEmptyState = document.getElementById("messageEmptyState");
   const footer = document.getElementById("footer");
 
-  // console.log(messageEmptyState);
-
   let bookingData = await getBookingData();
-  // console.log(bookingData);
   localStorage.setItem("bookingData", JSON.stringify(bookingData));
 
   if (bookingData["data"]) {
@@ -80,7 +77,6 @@ async function displayBookingData() {
 
     confirmTotal.textContent = `新台幣 ${bookingData["data"]["price"]} 元`; // tmp
   } else {
-    // console.log("add");
     mainContent.classList.add("hidden");
     footer.classList.add("booking-footer--empty");
     messageEmptyState.classList.remove("hidden");
@@ -90,7 +86,6 @@ async function displayBookingData() {
 async function displayUserData() {
   if (loginInfo["status"] === true) {
     let result = loginInfo["userInfo"];
-    // console.log("login data", result );
 
     const bookingUsername = document.querySelector(".header__username");
     const contactName = document.querySelector(
@@ -117,7 +112,6 @@ async function deleteBookingData() {
         Authorization: `Bearer ${logInToken}`,
       },
     });
-    // console.log(response);
     if (response.ok) {
       const result = await response.json();
       return result;
@@ -153,7 +147,6 @@ function displayCardDemoData() {
   document.getElementById("demo-card-ccv").textContent = demoData.card.ccv;
 }
 
-// auth.checkLogInStatus();
 loginInfo = await auth.checkLogInStatus();
 displayUserData();
 displayBookingData();

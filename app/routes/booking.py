@@ -33,7 +33,6 @@ def get_booking(login_data):
         result = my_cursor.fetchall()
 
         if len(result) > 0:
-            print(result)
             response_data = {"data": {}}
             response_data["data"] = {
                 "attraction": {
@@ -63,15 +62,12 @@ def add_booking(login_data):
         my_cursor = my_conn.cursor(dictionary=True)
 
         request_data = request.get_json()
-        # print(request_data)
         sql = "SELECT * FROM booking_price \
                 WHERE time=%s and start_date <= current_date() \
 	            and (end_date Is Null OR end_date >= current_date())"
         val = (request_data["time"],)
         my_cursor.execute(sql, val)
         booking_price_data = my_cursor.fetchall()
-        # [{'id': 2, 'time': 'afternoon', 'price': Decimal('2500.00'), 'start_date': datetime.date(2023, 9, 1), 'end_date': None}]
-        # print(booking_price_data)
 
         if len(booking_price_data) > 0:
             columns_mapping = {
@@ -103,10 +99,6 @@ def add_booking(login_data):
             my_conn.commit()
             print(f"{my_cursor.rowcount} record(s) was inserted")
 
-            # {'data': {'id': 7, 'name': 'aaa', 'email': 'aaa@aaa.com'}}
-            # {'attractionId': 10, 'date': '2023-09-30', 'time': 'afternoon', 'price': 2500}
-            print(login_data)
-            print(request_data)
 
             return jsonify({"ok": True})
 

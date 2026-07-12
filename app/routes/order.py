@@ -30,8 +30,6 @@ def create_order_paid(login_data):
         my_cursor = my_conn.cursor(dictionary=True)
 
         request_data = request.get_json()
-        print(request_data)
-        print(login_data)
 
         def send_prime(request_data):
             sql = "SELECT * FROM booking \
@@ -54,7 +52,6 @@ def create_order_paid(login_data):
                     request_data["order"]["trip"]["time"],
                     request_data["order"]["price"],
                 )
-                print(val)
                 my_cursor.execute(sql, val)
                 print(f"{my_cursor.rowcount} record(s) was inserted")
 
@@ -123,7 +120,6 @@ def create_order_paid(login_data):
                 },
                 "remember": True,
             }
-            print(request_data_pay_by_prime)
             response = requests.post(
                 api_url, headers=reqest_headers, json=request_data_pay_by_prime
             )
