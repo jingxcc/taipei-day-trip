@@ -1,6 +1,8 @@
+# EC2 deployment script
+
 set -e
 
-cd repo/taipei-day-trip
+cd /home/ubuntu/repo/taipei-day-trip
 
 git pull origin main
 

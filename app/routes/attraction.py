@@ -26,11 +26,11 @@ def api_attractions():
         my_conn = my_pool.get_connection()
         my_cursor = my_conn.cursor(dictionary=True)
 
-        where_sql = ""
+        where_sql = " WHERE a.is_active = 1"
         val = ()
         val_list = []
         if keyword is not None:
-            where_sql = f" WHERE m.mrt_name=%s or a.attraction_name LIKE %s"
+            where_sql += f" AND (m.mrt_name=%s OR a.attraction_name LIKE %s)"
             val_list = [keyword, f"%{keyword}%"]
 
         page = int(page)
@@ -68,7 +68,7 @@ def api_attractions():
         columns_convert = ["mrt", "images"]
         for col in columns_convert:
             for r in result:
-                print(r)
+                # print(r)
                 if r[col] is not None:
                     r[col] = r[col].split(", ")
 

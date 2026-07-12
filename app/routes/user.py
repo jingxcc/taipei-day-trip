@@ -35,7 +35,6 @@ def login_required(func):
                 bearer = request.headers["Authorization"]
                 token = bearer.split()[1]
                 decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
-                # print(f"{decode_result}")
 
                 response_data = {"data": {}}
                 for key in decode_result:

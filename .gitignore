@@ -147,6 +147,9 @@ nohup.out
 # macOS
 .DS_Store
 
+# Database backups
+database/backups/
+
 # Personal
 planning/
 testing/

@@ -11,7 +11,6 @@ function getNumFromStr(numText) {
 function getUrlSourceNum(urlPathName) {
   // let urlPathName = window.location.pathname;
   let pathNameSegments = urlPathName.split("/");
-  // console.log(pathNameSegments);
   return pathNameSegments[pathNameSegments.length - 1];
 }
 
@@ -24,7 +23,6 @@ function todayStr() {
   let year = date.getFullYear();
 
   let todayString = `${year}-${month}-${day}`;
-  // console.log(todayString);
   return todayString;
 }
 

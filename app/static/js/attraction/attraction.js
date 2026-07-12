@@ -5,35 +5,67 @@ const dateInput = document.querySelector("#attractionFormDate > #date");
 let loginInfo;
 
 // Carousel
+const PLACEHOLDER_IMAGE =
+  "/static/images/placeholder/attraction-placeholder.jpg";
+const carouselImageBlock = document.getElementById("carouselImageBlock");
 const carouselPrevBtn = document.getElementById("carouselPrevBtn");
 const carouselNextBtn = document.getElementById("carouselNextBtn");
 let currentImageIndex = 0;
+const carouselDotList = document.getElementById("carouselDotList");
 
 function changeCarouselIndex(addNum) {
   showCarouselImage((currentImageIndex += addNum));
 }
 
 function showCarouselImage(imageNum) {
-  const images = document.getElementsByClassName("carousel__images");
+  const imageItems = document.getElementsByClassName("carousel__item");
   const dots = document.getElementsByClassName("carousel__dot");
 
-  if (imageNum > images.length - 1) {
+  if (imageNum > imageItems.length - 1) {
     currentImageIndex = 0;
   }
-
   if (imageNum < 0) {
-    currentImageIndex = images.length - 1;
+    currentImageIndex = imageItems.length - 1;
   }
-  for (let i = 0; i < images.length; i++) {
-    images[i].style.display = "none";
+
+  for (let i = 0; i < imageItems.length; i++) {
+    imageItems[i].style.display = "none";
   }
+  imageItems[currentImageIndex].style.display = "block";
 
   for (let i = 0; i < dots.length; i++) {
     dots[i].classList.remove("active");
   }
+  if (dots.length > 0) {
+    dots[currentImageIndex].classList.add("active");
+  }
+}
 
-  images[currentImageIndex].style.display = "block";
-  dots[currentImageIndex].classList.add("active");
+function setCarouselControlsVisible(isVisible) {
+  if (isVisible) {
+    carouselPrevBtn.classList.remove("hidden");
+    carouselNextBtn.classList.remove("hidden");
+    carouselDotList.classList.remove("hidden");
+  } else {
+    carouselPrevBtn.classList.add("hidden");
+    carouselNextBtn.classList.add("hidden");
+    carouselDotList.classList.add("hidden");
+  }
+}
+
+function fillCarouselPlaceholder(carouselItem) {
+  carouselItem.classList.add("carousel__item--placeholder");
+
+  const image = document.createElement("img");
+  image.classList.add("carousel__image", "carousel__image--placeholder");
+  image.setAttribute("src", PLACEHOLDER_IMAGE);
+  image.setAttribute("alt", "attraction image");
+
+  const text = document.createElement("div");
+  text.classList.add("carousel__placeholder-text", "weight-bold");
+  text.textContent = "暫無圖片";
+
+  carouselItem.replaceChildren(image, text);
 }
 
 // price
@@ -104,28 +136,46 @@ async function displayAttractionData() {
   infoAddress.textContent = attractionData["data"][0]["address"];
   infoTransport.textContent = attractionData["data"][0]["transport"];
 
-  const carouselImageBlock = document.getElementById("carouselImageBlock");
   const imageFragment = document.createDocumentFragment();
-  const carouselDotList = document.getElementById("carouselDotList");
   const dotFragment = document.createDocumentFragment();
 
-  if (attractionData["data"][0]["images"].length > 0) {
+  if (attractionData["data"][0]["images"] !== null) {
     attractionData["data"][0]["images"].forEach((item, idx) => {
+      const carouselItem = document.createElement("div");
+      carouselItem.classList.add("carousel__item");
+
       const image = document.createElement("img");
-      image.classList.add("carousel__images");
+      image.classList.add("carousel__image");
       image.setAttribute("src", item);
       image.setAttribute("alt", "attraction image");
 
-      imageFragment.appendChild(image);
+      image.onerror = () => {
+        image.onerror = null;
+        fillCarouselPlaceholder(carouselItem);
+      };
+
+      carouselItem.appendChild(image);
+      imageFragment.appendChild(carouselItem);
 
       const dot = document.createElement("span");
       dot.classList.add("carousel__dot");
       dotFragment.appendChild(dot);
     });
-    carouselImageBlock.appendChild(imageFragment);
-    carouselDotList.appendChild(dotFragment);
-  }
+  } else {
+    const carouselItem = document.createElement("div");
+    carouselItem.classList.add("carousel__item");
 
+    fillCarouselPlaceholder(carouselItem);
+
+    imageFragment.appendChild(carouselItem);
+  }
+  carouselImageBlock.appendChild(imageFragment);
+  carouselDotList.appendChild(dotFragment);
+
+  setCarouselControlsVisible(
+    attractionData["data"][0]["images"] &&
+      attractionData["data"][0]["images"].length > 1,
+  );
   showCarouselImage(currentImageIndex);
 }
 
@@ -144,9 +194,7 @@ timeInputs.forEach((input) => {
 });
 
 function setDateInputMin() {
-  // console.log(utils.todayStr());
   dateInput.setAttribute("min", utils.todayStr());
-  // dateInput.setAttribute("min", utils.todayStr());
 }
 
 displayAttractionData();
@@ -182,13 +230,11 @@ attractionBookBtn.addEventListener("click", async () => {
       time: time,
       price: price,
     };
-    // console.log(requestBody);
 
     let checkEmptyResult = utils.checkEmptyFields(requestBody);
 
     if (!checkEmptyResult["error"]) {
       let result = await addBooking(requestBody);
-      // console.log(result);
 
       if (result["ok"]) {
         window.location.href = `${window.location.origin}/booking`;

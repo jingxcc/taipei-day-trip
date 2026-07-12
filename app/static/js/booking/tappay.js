@@ -92,7 +92,6 @@ function getTPPrimePromise() {
         alert("Prime Error: " + result.msg);
         reject();
       }
-      // console.log(result.card.prime);
       resolve(result.card.prime);
     });
   });
@@ -101,7 +100,6 @@ function getTPPrimePromise() {
 async function getTPPrime() {
   try {
     const result = await getTPPrimePromise();
-    // console.log("Prime", result);
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
@@ -124,7 +122,6 @@ async function createOrdersAndPay(requestBody) {
 
     if (response.ok) {
       const responseData = await response.json();
-      // console.log("responseData", responseData);
       return responseData;
     }
   } catch (err) {
@@ -155,8 +152,6 @@ confirmBtn.addEventListener("click", async () => {
       bookingData = !(bookingData === "")
         ? JSON.parse(bookingData)
         : bookingData;
-
-      // console.log(isEmptyField);
 
       let orderData = {
         price: totalPrice,
@@ -191,11 +186,9 @@ confirmBtn.addEventListener("click", async () => {
         prime: TPPrime,
         order: orderData,
       };
-      // console.log("requestBody");
 
       loading.showLoader();
       const createOrderResult = await createOrdersAndPay(requestBody);
-      console.log("createOrderResult", createOrderResult);
 
       if ("data" in createOrderResult) {
         window.location.href = `${window.location.origin}/thankyou?number=${createOrderResult["data"]["number"]}`;

@@ -1,3 +1,6 @@
+# Legacy seed script.
+# This script is no longer actively maintained.
+
 from dotenv import load_dotenv
 import os
 import json
@@ -75,18 +78,22 @@ for attraction in data["result"]["results"]:
 
 mrt_set = [unicodedata.normalize("NFKC", item) for item in mrt_set]
 
+
+# NOTE:
+# "台北101／世貿" is a single MRT station, so the previous MRT splitting
+# logic has been temporarily disabled.
 process_list = list(mrt_set)
-remove_idx = []
-items_add = []
-for i in range(len(process_list)):
-    if "/" in process_list[i]:
-        remove_idx.append(i)
-        items_add += process_list[i].split("/")
+# remove_idx = []
+# items_add = []
+# for i in range(len(process_list)):
+#     if "/" in process_list[i]:
+#         remove_idx.append(i)
+#         items_add += process_list[i].split("/")
 
-for idx in remove_idx:
-    process_list.pop(idx)
+# for idx in remove_idx:
+#     process_list.pop(idx)
 
-process_list += items_add
+# process_list += items_add
 mrt_set = set(process_list)
 
 
@@ -165,16 +172,16 @@ result = my_cursor.fetchall()
 for attraction in data["result"]["results"]:
     if attraction["MRT"] is not None:
         mrt_normal = unicodedata.normalize("NFKC", attraction["MRT"])
-        if "/" not in mrt_normal:
-            for r in result:
-                if r["mrt_name"] == mrt_normal:
-                    data_attraction_mrt.append((attraction["name_ID"], r["id"]))
-        else:
-            mrt_list = mrt_normal.split("/")
-            for mrt in mrt_list:
-                for r in result:
-                    if r["mrt_name"] == mrt:
-                        data_attraction_mrt.append((attraction["name_ID"], r["id"]))
+        # if "/" not in mrt_normal:
+        for r in result:
+            if r["mrt_name"] == mrt_normal:
+                data_attraction_mrt.append((attraction["name_ID"], r["id"]))
+        # else:
+        #     mrt_list = mrt_normal.split("/")
+        #     for mrt in mrt_list:
+        #         for r in result:
+        #             if r["mrt_name"] == mrt:
+        #                 data_attraction_mrt.append((attraction["name_ID"], r["id"]))
     else:
         data_attraction_mrt.append((attraction["name_ID"], None))
 
