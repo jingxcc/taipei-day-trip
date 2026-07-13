@@ -24,8 +24,8 @@ MySQL
 
 ## Update Steps
 
-1. Export a database backup.
-2. Execute `add_is_active.sql`.
+1. Execute `add_is_active.sql`.
+2. Export a database backup before applying the synchronization.
 3. Review the generated `update_attractions.sql`.
 4. Execute `update_attractions.sql`.
 5. Execute `remove_legacy_image_urls.sql` to remove obsolete image URLs from the legacy Taipei Open API.
@@ -64,16 +64,26 @@ WHERE iu.url LIKE "%d_upload_ttn%";
 
 ```sql
 SELECT
-    attraction_id,
-    attraction_name,
-    COUNT(*)
-FROM image_url AS iu
-LEFT JOIN attraction AS a
-    ON iu.attraction_id = a.id
-GROUP BY attraction_id;
+    a.id,
+    a.attraction_name,
+    a.is_active,
+    COUNT(iu.id) AS image_count
+FROM attraction AS a
+LEFT JOIN image_url AS iu
+    ON a.id = iu.attraction_id
+GROUP BY
+    a.id,
+    a.attraction_name,
+    a.is_active
+ORDER BY
+    image_count,
+    a.is_active DESC,
+    a.id;
 ```
 
 ### Verify inserted attractions
+
+Replace the attraction names in the `IN (...)` clause with the attractions added or replaced in the current synchronization.
 
 ```sql
 SELECT
