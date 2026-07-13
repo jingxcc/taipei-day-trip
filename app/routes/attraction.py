@@ -6,6 +6,14 @@ attraction_bp = Blueprint("attraction_bp", __name__)
 error_msg = {"500": "伺服器內部錯誤", "attraction_400": "景點編號不正確"}
 
 
+def escape_like_keyword(keyword):
+    return (
+        keyword
+        .replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
+    )
+
 @attraction_bp.route("/api/attractions")
 def api_attractions():
     RECORDS_PER_PAGE = 12
@@ -30,8 +38,15 @@ def api_attractions():
         val = ()
         val_list = []
         if keyword is not None:
-            where_sql += f" AND (m.mrt_name=%s OR a.attraction_name LIKE %s)"
-            val_list = [keyword, f"%{keyword}%"]
+            escaped_keyword = escape_like_keyword(keyword)
+
+            where_sql += """
+                AND (
+                    m.mrt_name LIKE %s ESCAPE '\\\\'
+                    OR a.attraction_name LIKE %s ESCAPE '\\\\'
+                )
+            """
+            val_list = [f"%{escaped_keyword}%", f"%{escaped_keyword}%"]
 
         page = int(page)
         records_offset = RECORDS_PER_PAGE * page
@@ -68,7 +83,6 @@ def api_attractions():
         columns_convert = ["mrt", "images"]
         for col in columns_convert:
             for r in result:
-                # print(r)
                 if r[col] is not None:
                     r[col] = r[col].split(", ")
 
