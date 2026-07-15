@@ -21,11 +21,14 @@ CREATE TABLE `order` (
 
 CREATE TABLE order_contact (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    order_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
     contact_name VARCHAR(50) NOT NULL,
     contact_email VARCHAR(255) NOT NULL,
     contact_phone VARCHAR(20) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user(id)
+    FOREIGN KEY (order_id) REFERENCES `order`(id),
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    UNIQUE (order_id)
 );
 
 

@@ -55,14 +55,7 @@ def create_order_paid(login_data):
                 my_cursor.execute(sql, val)
                 print(f"{my_cursor.rowcount} record(s) was inserted")
 
-                sql = "SELECT id FROM `order` \
-                        WHERE user_id = %s \
-                        ORDER BY create_date DESC \
-                        LIMIT 1"
-                my_cursor.execute(sql, (login_data["data"]["id"],))
-                result = my_cursor.fetchall()
-
-                order_id = result[0]["id"]
+                order_id = my_cursor.lastrowid
                 order_no = str(datetime.now().strftime("%Y%m%d%H%M%S")) + str(
                     order_id
                 ).zfill(5)
@@ -75,9 +68,10 @@ def create_order_paid(login_data):
                 if my_cursor.rowcount == 0:
                     raise Exception("Database Update Failed.")
 
-                sql = "INSERT INTO `order_contact` (user_id, contact_name, contact_email, contact_phone) \
-                        VALUES (%s, %s, %s, %s) "
+                sql = "INSERT INTO `order_contact` (order_id, user_id, contact_name, contact_email, contact_phone) \
+                        VALUES (%s, %s, %s, %s, %s)"
                 val = (
+                    order_id,
                     login_data["data"]["id"],
                     request_data["order"]["contact"]["name"],
                     request_data["order"]["contact"]["email"],
