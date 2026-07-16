@@ -19,7 +19,7 @@ def get_booking(login_data):
         my_cursor = my_conn.cursor(dictionary=True)
 
         sql = "SELECT a.id, a.attraction_name, a.address,  \
-                    DATE_FORMAT(b.booking_date,'%Y-%m-%d') booking_date, bp.time, bp.price, \
+                    DATE_FORMAT(b.visit_date,'%Y-%m-%d') visit_date, bp.time, bp.price, \
                     i.id AS image_id, i.url AS image_url \
                 FROM booking b \
                 LEFT JOIN attraction a ON b.attraction_id = a.id \
@@ -41,7 +41,7 @@ def get_booking(login_data):
                     "address": result[0]["address"],
                     "image": result[0]["image_url"],
                 },
-                "date": result[0]["booking_date"],
+                "date": result[0]["visit_date"],
                 "time": result[0]["time"],
                 "price": int(result[0]["price"]),
             }
@@ -74,7 +74,7 @@ def add_booking(login_data):
                 "user_id": login_data["data"]["id"],
                 "attraction_id": request_data["attractionId"],
                 "booking_price_id": booking_price_data[0]["id"],
-                "booking_date": request_data["date"],
+                "visit_date": request_data["date"],
                 "booking_num": TMP_BOOKING_NUM,
             }
 
@@ -92,7 +92,7 @@ def add_booking(login_data):
                 my_conn.commit()
                 print(f"{my_cursor.rowcount} record(s) was deleted")
 
-            sql = "INSERT INTO booking (user_id, attraction_id, booking_price_id, booking_date, booking_num) \
+            sql = "INSERT INTO booking (user_id, attraction_id, booking_price_id, visit_date, booking_num) \
                     VALUES(%s, %s, %s, %s, %s);"
             val = tuple(columns_mapping.values())
             my_cursor.execute(sql, val)
