@@ -43,13 +43,14 @@ def create_order_paid(login_data):
 
             if len(result) > 0:
                 sql = "INSERT INTO `order` \
-                        (user_id, attraction_id, visit_date, visit_time, order_price) \
-                        VALUES (%s, %s, %s, %s, %s);"
+                        (user_id, attraction_id, visit_date, visit_time, guest_count, order_price) \
+                        VALUES (%s, %s, %s, %s, %s, %s);"
                 val = (
                     login_data["data"]["id"],
                     request_data["order"]["trip"]["attraction"]["id"],
                     request_data["order"]["trip"]["date"],
                     request_data["order"]["trip"]["time"],
+                    result[0]["guest_count"],
                     request_data["order"]["price"],
                 )
                 my_cursor.execute(sql, val)

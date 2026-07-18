@@ -2,10 +2,9 @@ from flask import Blueprint, request, jsonify
 from db import my_pool
 from .user import login_required
 
-# tmp
 booking_bp = Blueprint("booking_bp", __name__)
 
-TMP_BOOKING_NUM = 1
+DEFAULT_BOOKING_GUEST_COUNT = 1
 
 error_msg = {"500": "伺服器內部錯誤", "booking_400": "建立失敗，輸入不正確或其他原因"}
 
@@ -75,7 +74,7 @@ def add_booking(login_data):
                 "attraction_id": request_data["attractionId"],
                 "booking_price_id": booking_price_data[0]["id"],
                 "visit_date": request_data["date"],
-                "booking_num": TMP_BOOKING_NUM,
+                "guest_count": DEFAULT_BOOKING_GUEST_COUNT,
             }
 
             sql = "SELECT * FROM booking \
@@ -92,7 +91,7 @@ def add_booking(login_data):
                 my_conn.commit()
                 print(f"{my_cursor.rowcount} record(s) was deleted")
 
-            sql = "INSERT INTO booking (user_id, attraction_id, booking_price_id, visit_date, booking_num) \
+            sql = "INSERT INTO booking (user_id, attraction_id, booking_price_id, visit_date, guest_count) \
                     VALUES(%s, %s, %s, %s, %s);"
             val = tuple(columns_mapping.values())
             my_cursor.execute(sql, val)

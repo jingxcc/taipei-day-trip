@@ -24,7 +24,7 @@ CREATE TABLE booking (
     attraction_id BIGINT NOT NULL,
     booking_price_id BIGINT NOT NULL,
     visit_date DATE NOT NULL,
-    booking_num INT NOT NULL,
+    guest_count INT NOT NULL,
     create_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (attraction_id) REFERENCES attraction(id),
