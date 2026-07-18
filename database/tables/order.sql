@@ -15,20 +15,18 @@ CREATE TABLE `order` (
     create_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
     FOREIGN KEY (attraction_id) REFERENCES attraction(id),
-    UNIQUE (order_no)
 );
 
 
 CREATE TABLE order_contact (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    order_id BIGINT NOT NULL,
+    order_id BIGINT NOT NULL UNIQUE,
     user_id BIGINT NOT NULL,
     contact_name VARCHAR(50) NOT NULL,
     contact_email VARCHAR(255) NOT NULL,
     contact_phone VARCHAR(20) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES `order`(id),
     FOREIGN KEY (user_id) REFERENCES user(id),
-    UNIQUE (order_id)
 );
 
 

@@ -81,6 +81,41 @@ dev.sh
 requirements.txt
 ```
 
+## EC2 Environment Setup
+
+Configure the EC2 timezone:
+
+```bash
+sudo timedatectl set-timezone Asia/Taipei
+```
+
+Verify the timezone settings:
+
+```bash
+timedatectl
+```
+
+Restart MySQL to apply the updated system timezone:
+
+```bash
+sudo systemctl restart mysql
+```
+
+```sql
+SELECT NOW();
+SELECT @@system_time_zone;
+SELECT @@global.time_zone;
+SELECT @@session.time_zone;
+```
+
+Expected:
+
+```text
+@@system_time_zone = CST
+@@global.time_zone = SYSTEM
+@@session.time_zone = SYSTEM
+```
+
 ## Database Schema
 
 <img src="./app/static/images/README/database-schema.svg" alt="database-schema"></img>
