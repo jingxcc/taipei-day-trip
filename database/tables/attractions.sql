@@ -27,7 +27,7 @@ CREATE TABLE attraction (
 
 CREATE TABLE image_url (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    attraction_id BIGINT,
+    attraction_id BIGINT NOT NULL,
     url VARCHAR(500) NOT NULL,
     FOREIGN KEY (attraction_id) REFERENCES attraction(id)
 );
@@ -38,7 +38,7 @@ CREATE TABLE mrt (
 );
 
 CREATE TABLE attraction_mrt (
-    attraction_id BIGINT,
+    attraction_id BIGINT NOT NULL,
     mrt_id BIGINT,
     FOREIGN KEY (attraction_id) REFERENCES attraction(id),
     FOREIGN KEY (mrt_id) REFERENCES mrt(id),

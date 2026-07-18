@@ -1,0 +1,8 @@
+ALTER TABLE image_url
+MODIFY COLUMN attraction_id BIGINT NOT NULL;
+
+ALTER TABLE attraction_mrt
+MODIFY COLUMN attraction_id BIGINT NOT NULL;
+
+ALTER TABLE user
+MODIFY COLUMN `password` VARCHAR(255) NOT NULL;
