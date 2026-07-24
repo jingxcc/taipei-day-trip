@@ -190,15 +190,14 @@ confirmBtn.addEventListener("click", async () => {
       loading.showLoader();
       const createOrderResult = await createOrdersAndPay(requestBody);
 
-      if ("data" in createOrderResult) {
+      if (createOrderResult && "data" in createOrderResult) {
         window.location.href = `${window.location.origin}/thankyou?number=${createOrderResult["data"]["number"]}`;
       } else {
         loading.hideLoader();
-        alert(`請稍後再試 ! \n${createOrderResult[message]}`);
+        alert(`請稍後再試 ! \n${createOrderResult["message"]}`);
       }
     }
   } else {
-    // alert("Please fill in all fields !");
     alert("請填寫必要資訊");
   }
 });

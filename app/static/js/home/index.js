@@ -1,8 +1,7 @@
 import auth from "../shared/auth.js";
+import { PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const DEFAULT_PAGE_NUM = 0;
-const PLACEHOLDER_IMAGE =
-  "/static/images/placeholder/attraction-placeholder.jpg";
 
 let attractionNextPageNum = 0;
 let isFetchingData = false;
@@ -143,7 +142,6 @@ function scrollAddAttractions(attractionKeyword) {
         observerScroll.disconnect();
       }
     });
-    // }
   };
 
   let observerScroll = new IntersectionObserver(
@@ -151,7 +149,6 @@ function scrollAddAttractions(attractionKeyword) {
     observerOptions,
   );
   observerScroll.observe(footer);
-  // }
 }
 
 searchInput.addEventListener("keydown", (e) => {
@@ -213,7 +210,6 @@ listBarList.addEventListener("click", (e) => {
   contentRange.selectNodeContents(attractionContent);
   contentRange.deleteContents();
 
-  // searchInput.textContent = e.target.textContent;
   searchInput.value = e.target.textContent;
 
   scrollAddAttractions(searchInput.value);

@@ -8,9 +8,9 @@ function getNumFromStr(numText) {
   }
 }
 
-function getUrlSourceNum(urlPathName) {
+function getLastPathSegement(urlPathName) {
   // let urlPathName = window.location.pathname;
-  let pathNameSegments = urlPathName.split("/");
+  let pathNameSegments = urlPathName.split("/").filter(Boolean);
   return pathNameSegments[pathNameSegments.length - 1];
 }
 
@@ -39,7 +39,6 @@ function checkEmptyFields(fieldDict) {
     }
   });
   if (isEmptyField) {
-    // message = "Please fill in all fields !";
     let message = "請填寫必要資訊";
     return {
       error: true,
@@ -79,7 +78,7 @@ function checkValidPhoneNumber(phoneNum) {
 
 export default {
   getNumFromStr: getNumFromStr,
-  getUrlSourceNum: getUrlSourceNum,
+  getLastPathSegement: getLastPathSegement,
   todayStr: todayStr,
   checkEmptyFields: checkEmptyFields,
   checkValidEmail: checkValidEmail,

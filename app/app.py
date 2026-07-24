@@ -36,13 +36,25 @@ def attraction(id):
     return render_template("attraction.html")
 
 
-@app.route("/booking")
-def booking():
+@app.route("/booking/<id>")
+def booking(id):
+    if not id.isdigit():
+        return redirect(url_for("index"))
+
     return render_template("booking.html")
+
+
+@app.route("/cart")
+def cart():
+    return render_template("cart.html")
 
 
 @app.route("/thankyou")
 def thankyou():
+    order_number = request.args.get("number")
+    if not order_number:
+        return redirect(url_for("index"))
+    
     return render_template("thankyou.html")
 
 

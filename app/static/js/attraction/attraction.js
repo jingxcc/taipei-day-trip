@@ -1,12 +1,17 @@
 import utils from "../shared/utils.js";
 import auth from "../shared/auth.js";
+import { PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const dateInput = document.querySelector("#attractionFormDate > #date");
 let loginInfo;
 
+const ADD_BOOKING_ERROR_MESSAGES = {
+  400: "請提供正確的預訂資料",
+  500: "加入購物車失敗，請稍後再試",
+  default: "加入購物車失敗，請稍後再試",
+};
+
 // Carousel
-const PLACEHOLDER_IMAGE =
-  "/static/images/placeholder/attraction-placeholder.jpg";
 const carouselImageBlock = document.getElementById("carouselImageBlock");
 const carouselPrevBtn = document.getElementById("carouselPrevBtn");
 const carouselNextBtn = document.getElementById("carouselNextBtn");
@@ -94,7 +99,7 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let attractionId = utils.getUrlSourceNum(window.location.pathname);
+  let attractionId = utils.getLastPathSegement(window.location.pathname);
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
@@ -221,7 +226,7 @@ attractionBookBtn.addEventListener("click", async () => {
     let price = utils.getNumFromStr(priceText);
 
     let attractionId = utils.getNumFromStr(
-      utils.getUrlSourceNum(window.location.pathname),
+      utils.getLastPathSegement(window.location.pathname),
     );
 
     let requestBody = {
@@ -234,16 +239,17 @@ attractionBookBtn.addEventListener("click", async () => {
     let checkEmptyResult = utils.checkEmptyFields(requestBody);
 
     if (!checkEmptyResult["error"]) {
-      let result = await addBooking(requestBody);
-
-      if (result["ok"]) {
-        window.location.href = `${window.location.origin}/booking`;
-        alert("預定成功");
-      } else {
-        alert(`預定失敗\n${result["message"]}`);
+      try {
+        await addBooking(requestBody);
+        alert("成功加入購物車");
+        window.location.href = `${window.location.origin}/cart`;
+      } catch (error) {
+        alert(
+          ADD_BOOKING_ERROR_MESSAGES[error.status] ||
+            ADD_BOOKING_ERROR_MESSAGES["default"],
+        );
       }
     } else {
-      // alert("Please fill in all fields !");
       alert(checkEmptyResult["message"]);
     }
   }
@@ -263,11 +269,19 @@ async function addBooking(requestBody) {
     });
 
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        result.message || ADD_BOOKING_ERROR_MESSAGES["default"],
+      );
+      error.status = response.status;
+      throw error;
+    }
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+    throw err;
   }
-  return false;
 }
 
 loginInfo = await auth.checkLogInStatus();

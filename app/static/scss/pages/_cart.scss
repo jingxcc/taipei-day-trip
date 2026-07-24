@@ -1,0 +1,145 @@
+#cartList {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+
+  background-color: $gray-20;
+  border-radius: 5px;
+  padding: 25px 15px;
+
+  @media (max-width: 1000px) {
+    width: 100%;
+  }
+}
+
+#cartList {
+  .attraction-list:not(:last-child) {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid white;
+  }
+
+  @media (max-width: 1000px) {
+    .attraction-list {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .attraction-list__image-block {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    .attraction-list__info-block {
+      grid-column: 1;
+      grid-row: 2;
+      min-width: 0;
+    }
+
+    .attraction-list__select {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .attraction-list__delete-btn {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  }
+
+  input[type="radio"] {
+    /* Remove the default styles on browsers */
+    appearance: none;
+    -webkit-appearance: none; // Safari, Chrome
+    -moz-appearance: none; // Firefox
+
+    align-self: center;
+
+    width: 22px;
+    height: 22px;
+    margin: 0px 15px 0px 0px;
+
+    background-color: white;
+    border: 3px solid white;
+    border-radius: 50%;
+
+    &:checked {
+      background-color: $cyan-70;
+    }
+  }
+
+  @media (max-width: 1000px) {
+    input.attraction-list__select {
+      align-self: start;
+      margin: 9px;
+    }
+    .attraction-list__delete-btn {
+      padding: 5px;
+    }
+  }
+}
+
+.attraction-list__delete-btn {
+  align-self: flex-end;
+}
+
+.attraction-list__delete-icon {
+  background-image: url(../../images/icons/delete.svg);
+  background-repeat: no-repeat;
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.cart-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.cart-empty__link {
+  display: inline-block;
+  width: auto;
+}
+
+#cartDeleteDialog {
+  &.dialog__window {
+    top: 30%;
+  }
+
+  .dialog__main {
+    position: relative;
+    padding: 15px 0px 0px 0px;
+  }
+
+  .dialog__header {
+    padding: 15px 0px;
+  }
+
+  .dialog__close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+
+  .dialog__actions {
+    display: flex;
+  }
+
+  .dialog__btn {
+    margin: 0;
+  }
+
+  .dialog__cancel-btn {
+    border-radius: 0px 0px 0px 5px;
+    background-color: $gray-20;
+    color: $gray-70;
+  }
+
+  .dialog__confirm-btn {
+    border-radius: 0px 0px 5px 0px;
+  }
+}

@@ -1,7 +1,8 @@
 import utils from "./utils.js";
+import { PROTECTED_PATHS, PROTECTED_PATH_PREFIXES } from "./constants.js";
 
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
-const navMenuItemBooking = document.getElementById("navMenuItemBooking");
+const navMenuItemCart = document.getElementById("navMenuItemCart");
 const dialogMask = document.getElementById("dialogMask");
 
 const dialogLogIn = document.getElementById("dialogLogIn");
@@ -155,11 +156,14 @@ async function checkLogInStatus() {
   }
   navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
 
-  const requireAuthPages = ["/booking", "/thankyou"];
-  if (!isLogin) {
-    if (requireAuthPages.includes(`${window.location.pathname}`)) {
-      window.location.href = window.location.origin;
-    }
+  const pathname = window.location.pathname;
+  const requiresAuth =
+    PROTECTED_PATHS.includes(`${pathname}`) ||
+    PROTECTED_PATH_PREFIXES.some((pathPrefix) =>
+      pathname.startsWith(pathPrefix),
+    );
+  if (!isLogin && requiresAuth) {
+    window.location.href = window.location.origin;
   }
   return { status: isLogin, userInfo: result };
 }
@@ -248,13 +252,13 @@ function showDialogMessage(msg) {
   }
 }
 
-// booking
-navMenuItemBooking.addEventListener("click", (e) => {
+// cart
+navMenuItemCart.addEventListener("click", (e) => {
   if (!isLogin) {
     e.preventDefault();
     showDialog();
   } else {
-    navMenuItemBooking.href = `${window.location.origin}/booking`;
+    navMenuItemCart.href = `${window.location.origin}/cart`;
   }
 });
 

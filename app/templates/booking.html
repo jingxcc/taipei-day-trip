@@ -1,33 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link rel="stylesheet" href="../static/scss/css/style.css" />
+    <script defer src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
+    <script type="module" src="../static/js/booking/booking.js"></script>
+    <script type="module" src="../static/js/booking/tappay.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>台北一日遊</title>
-  <link rel="stylesheet" href="../static/scss/css/style.css" />
-  <script defer src="https://js.tappaysdk.com/sdk/tpdirect/v5.14.0"></script>
-  <script type="module" src="../static/js/booking/booking.js"></script>
-  <script type="module" src="../static/js/booking/tappay.js"></script>
-</head>
+  <body>
+    {% include './shared/header.html' %}
 
-<body>
-  {% include './shared/header.html' %}
-
-  <h3 id="headline" class="booking-headline button weight-bold mb-30">
-    <span class="header__username"></span>
-    <span>&nbsp;您好，待付款的行程如下：</span>
-    </h2>
+    <h3 id="headline" class="booking-headline button weight-bold mb-30">
+      <span class="header__username"></span>
+      <span id="headlineMessage">&nbsp;您好，待付款的行程如下：</span>
+    </h3>
     <main id="mainContent" class="content container hidden body">
-      <section class="attraction-list booking-container mb-40">
+      <section class="attraction-list booking-item mb-40">
         <div class="attraction-list__image-block">
-          <img src="" alt="attraction-img" class="attraction-list__image">
+          <img src="" alt="attraction-img" class="attraction-list__image" />
+          <span class="attraction-list__placeholder-text weight-bold"
+            >暫無圖片</span
+          >
         </div>
 
         <div class="attraction-list__info-block">
           <h3 class="attraction-list__title mb-20 weight-bold">
-            <span>台北一日遊：</span>
-            <span class="attraction-list__attraction"></span>
+            <a class="attraction-list__link" href="">
+              <span>台北一日遊：</span>
+              <span class="attraction-list__attraction"></span>
+            </a>
           </h3>
           <p class="attraction-list__info">
             <span class="attraction-list__info-title">日期：</span>
@@ -46,39 +50,42 @@
             <span class="attraction-list__address"></span>
           </p>
         </div>
-        <button id="bookingDeleteBtn" class="attraction-list__delete-btn">
-          <span class="attraction-list__delete-icon"></span>
-        </button>
       </section>
       <hr class="seperator" />
-      <section class="info-form contact-form booking-container mb-40">
+      <section class="info-form contact-form booking-item mb-40">
         <h3 class="info-form__title weight-bold">您的聯絡資訊</h3>
         <div class="info-form__info">
           <span>聯絡姓名：</span>
-          <input type="text" class="info-form__name"></input>
+          <input type="text" class="info-form__name" />
         </div>
         <div class="info-form__info">
           <span>連絡信箱：</span>
-          <input type="email" class="info-form__email"></input>
+          <input type="email" class="info-form__email" />
         </div>
         <div class="info-form__phone-block">
           <div class="info-form__info">
             <span>手機號碼：</span>
-            <input type="tel" minlength="10" maxlength="10" class="info-form__phone" placeholder="0912345678"></input>
+            <input
+              type="tel"
+              minlength="10"
+              maxlength="10"
+              class="info-form__phone"
+              placeholder="0912345678"
+            />
           </div>
           <button id="fillDemoDataBtn" class="info-form__fill-demo-btn button">
-              <span>填入 Demo 資料</span>
+            <span>填入 Demo 資料</span>
           </button>
         </div>
-        <div class="weight-bold mt-20">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
+        <div class="weight-bold mt-20">
+          請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。
+        </div>
       </section>
       <hr class="seperator" />
-      <section class="info-form payment-form booking-container mb-40">
+      <section class="info-form payment-form booking-item mb-40">
         <h3 class="info-form__title weight-bold">信用卡付款資訊</h3>
         <div class="info-form__demo-card">
-          <p class="info-form__demo-card-title">
-            Demo 信用卡資料
-          </p>
+          <p class="info-form__demo-card-title">Demo 信用卡資料</p>
           <p class="info-form__demo-card-item">
             卡號：
             <span id="demo-card-number"></span>
@@ -88,7 +95,7 @@
             <span id="demo-card-expiration-date"></span>
           </p>
           <p class="info-form__demo-card-item">
-            CCV：
+            CVV：
             <span id="demo-card-ccv"></span>
           </p>
         </div>
@@ -106,22 +113,26 @@
         </div>
       </section>
       <hr class="seperator" />
-      <section class="confirm booking-container mb-40">
+      <section class="confirm booking-item mb-40">
         <div class="confirm-info">
           <span class="weight-bold">總價：</span>
-          <span class="confirm-info__total weight-bold">總價：</span>
+          <span class="confirm-info__total weight-bold"></span>
         </div>
-        <button id="confirmBtn" class="confirm-info__btn dialog__btn default-button button disabled">
-          <!-- <button id="confirmBtn" class="confirm-info__btn dialog__btn default-button button"> -->
+        <button
+          id="confirmBtn"
+          class="confirm-info__btn dialog__btn default-button button disabled"
+        >
           <span class="confirm-info__btn-text">確認訂購並付款</span>
         </button>
       </section>
     </main>
-    <p id="messageEmptyState" class="booking__message--empty body mb-40">目前沒有任何待預訂的行程</p>
-    {% include './shared/loading.html' %}
-    {% include './shared/footer.html' %}
-</body>
-<script>
-</script>
-
+    <section id="bookingErrorState" class="booking__message body mb-40 hidden">
+      <p id="bookingErrorMessage" class="mb-20"></p>
+      <a class="default-button button cart-empty__link" href="/cart"
+        >返回購物車</a
+      >
+    </section>
+    {% include './shared/loading.html' %} {% include './shared/footer.html' %}
+  </body>
+  <script></script>
 </html>
