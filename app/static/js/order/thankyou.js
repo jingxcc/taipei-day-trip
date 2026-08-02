@@ -1,4 +1,4 @@
-import auth from "../shared/auth.js";
+import { checkLogInStatus } from "../shared/auth.js";
 
 function displayOrderResult() {
   const messageDescription = document.querySelectorAll(".message__description");
@@ -9,5 +9,5 @@ function displayOrderResult() {
   messageDescription[0]["textContent"] = `訂單編號：${orderId}`;
 }
 
-auth.checkLogInStatus();
+checkLogInStatus();
 displayOrderResult();

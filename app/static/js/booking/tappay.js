@@ -1,7 +1,12 @@
 // tappay
-import utils from "../shared/utils.js";
+import {
+  checkValidEmail,
+  checkValidPhoneNumber,
+  getNumFromStr,
+} from "../shared/utils.js";
 import env from "../shared/env.js";
-import loading from "../shared/loading.js";
+import { hideLoader, showLoader } from "../shared/loading.js";
+import { getAuthHeaders } from "../shared/auth.js";
 
 const TP_APP_ID = env.TP_APP_ID;
 const TP_API_KEY = env.TP_API_KEY;
@@ -109,13 +114,12 @@ async function getTPPrime() {
 
 async function createOrdersAndPay(requestBody) {
   let apiUrl = `/api/orders`;
-  let logInToken = localStorage.getItem("logInToken");
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${logInToken}`,
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(requestBody),
     });
@@ -146,7 +150,7 @@ confirmBtn.addEventListener("click", async () => {
       let totalPrice = document.querySelector(
         ".confirm-info__total",
       ).textContent;
-      totalPrice = utils.getNumFromStr(totalPrice);
+      totalPrice = getNumFromStr(totalPrice);
 
       let bookingData = localStorage.getItem("bookingData");
       bookingData = !(bookingData === "")
@@ -163,7 +167,7 @@ confirmBtn.addEventListener("click", async () => {
         },
       };
 
-      let checkEmailResult = utils.checkValidEmail(
+      let checkEmailResult = checkValidEmail(
         orderData["contact"]["email"],
       );
       if (checkEmailResult["error"]) {
@@ -171,7 +175,7 @@ confirmBtn.addEventListener("click", async () => {
         return false;
       }
 
-      let checkPhoneResult = utils.checkValidPhoneNumber(
+      let checkPhoneResult = checkValidPhoneNumber(
         orderData["contact"]["phone"],
       );
       if (checkPhoneResult["error"]) {
@@ -187,13 +191,13 @@ confirmBtn.addEventListener("click", async () => {
         order: orderData,
       };
 
-      loading.showLoader();
+      showLoader();
       const createOrderResult = await createOrdersAndPay(requestBody);
 
       if (createOrderResult && "data" in createOrderResult) {
         window.location.href = `${window.location.origin}/thankyou?number=${createOrderResult["data"]["number"]}`;
       } else {
-        loading.hideLoader();
+        hideLoader();
         alert(`請稍後再試 ! \n${createOrderResult["message"]}`);
       }
     }

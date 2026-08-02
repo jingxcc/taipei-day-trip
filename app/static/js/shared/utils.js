@@ -8,7 +8,7 @@ function getNumFromStr(numText) {
   }
 }
 
-function getLastPathSegement(urlPathName) {
+function getLastPathSegment(urlPathName) {
   // let urlPathName = window.location.pathname;
   let pathNameSegments = urlPathName.split("/").filter(Boolean);
   return pathNameSegments[pathNameSegments.length - 1];
@@ -76,11 +76,11 @@ function checkValidPhoneNumber(phoneNum) {
   return isValidEmailphoneNum;
 }
 
-export default {
-  getNumFromStr: getNumFromStr,
-  getLastPathSegement: getLastPathSegement,
-  todayStr: todayStr,
-  checkEmptyFields: checkEmptyFields,
-  checkValidEmail: checkValidEmail,
-  checkValidPhoneNumber: checkValidPhoneNumber,
+export {
+  getNumFromStr,
+  getLastPathSegment,
+  todayStr,
+  checkEmptyFields,
+  checkValidEmail,
+  checkValidPhoneNumber,
 };

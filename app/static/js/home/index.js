@@ -1,4 +1,4 @@
-import auth from "../shared/auth.js";
+import { checkLogInStatus } from "../shared/auth.js";
 import { PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const DEFAULT_PAGE_NUM = 0;
@@ -215,7 +215,7 @@ listBarList.addEventListener("click", (e) => {
   scrollAddAttractions(searchInput.value);
 });
 
-auth.checkLogInStatus();
+checkLogInStatus();
 
 addListBarItems();
 scrollAddAttractions("");

@@ -1,5 +1,5 @@
-import auth from "../shared/auth.js";
-import utils from "../shared/utils.js";
+import { checkLogInStatus, getAuthHeaders } from "../shared/auth.js";
+import { getLastPathSegment } from "../shared/utils.js";
 import { DISPLAY_TIME_SLOT, PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 let loginInfo;
@@ -24,22 +24,19 @@ const BOOKING_ERROR_MESSAGES = {
 const fillDemoDataBtn = document.getElementById("fillDemoDataBtn");
 
 async function fetchBookingById() {
-  const bookingId = utils.getLastPathSegement(window.location.pathname);
+  const bookingId = getLastPathSegment(window.location.pathname);
   let apiUrl = `/api/booking/${bookingId}`;
-  let logInToken = localStorage.getItem("logInToken");
   try {
     const response = await fetch(apiUrl, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${logInToken}`,
-      },
+      headers: getAuthHeaders(),
     });
     const result = await response.json();
 
     if (!response.ok) {
       const error = new Error(
-        result.message || BOOKING_ERROR_MESSAGES["default"],
+        BOOKING_ERROR_MESSAGES[response.status] ||
+          BOOKING_ERROR_MESSAGES.default,
       );
       error.status = response.status;
       throw error;
@@ -47,7 +44,11 @@ async function fetchBookingById() {
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
-    throw err;
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(BOOKING_ERROR_MESSAGES.default);
   }
 }
 
@@ -114,7 +115,7 @@ async function displayBookingData() {
     document.getElementById("headlineMessage").textContent =
       " 您好，目前無法載入預訂資訊：";
     document.getElementById("bookingErrorMessage").textContent =
-      BOOKING_ERROR_MESSAGES[error.status] || BOOKING_ERROR_MESSAGES["default"];
+      error.message || BOOKING_ERROR_MESSAGES.default;
   }
 }
 
@@ -148,7 +149,7 @@ function displayCardDemoData() {
   document.getElementById("demo-card-ccv").textContent = DEMO_DATA.card.ccv;
 }
 
-loginInfo = await auth.checkLogInStatus();
+loginInfo = await checkLogInStatus();
 displayUserData();
 displayBookingData();
 displayCardDemoData();

@@ -4,6 +4,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 import jwt
+from mysql.connector import IntegrityError, errorcode
 from db import my_pool
 
 
@@ -14,43 +15,29 @@ JWT_KEY = os.getenv("JWT_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 
 error_msg = {
-    "login_require_403": "未登入系統，拒絕存取",
-    "signup_400": "註冊失敗，重複的 Email 或其他原因",
-    "login_put_400": "登入失敗，帳號或密碼錯誤或其他原因",
-    "500": "伺服器內部錯誤",
+    "unauthorized": "未登入系統，拒絕存取",
+
+    "invalid_signup_data": "請提供正確的註冊資料",
+    "duplicate_email": "此 Email 已被註冊",
+    "signup_failed": "註冊失敗，請稍後再試",
+
+    "invalid_login_data": "登入資料格式不正確",
+    "invalid_credentials": "Email 或密碼錯誤",
+    "login_failed": "登入失敗，請稍後再試",
 }
 
 
-# tmp: could combine with 'check log in status'
-# decorator with wrapper
 def login_required(func):
     @wraps(func)
     def wrapper(*arg, **kwargs):
-        reponse_columns = ["id", "name", "email"]
-        try:
-            if (
-                "Authorization" in request.headers
-                and request.headers["Authorization"] != ""
-            ):
-                bearer = request.headers["Authorization"]
-                token = bearer.split()[1]
-                decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
+        current_user = get_current_user()
 
-                response_data = {"data": {}}
-                for key in decode_result:
-                    if key in reponse_columns:
-                        response_data["data"][key] = decode_result[key]
+        if current_user is None:
+            message = error_msg["unauthorized"]
+            return jsonify({"error": True, "message": message}), 401
 
-                result = func(login_data=response_data, *arg, **kwargs)
-                # return jsonify(response_data)
-                return result
-
-        except Exception as err:
-            print(f"ERROR: {err}")
-
-        # message = "Access denied. Please log in."
-        message = error_msg["login_require_403"]
-        return jsonify({"error": True, "message": message}), 403
+        login_data = {"data": current_user}
+        return func(login_data=login_data, *arg, **kwargs)
 
     return wrapper
 
@@ -58,47 +45,49 @@ def login_required(func):
 # sign up
 @user_bp.route("/api/user", methods=["POST"])
 def api_signup():
-    request_data = request.get_json()
-    user_name = request_data["name"]
-    email = request_data["email"]
-    password = request_data["password"]
+    request_data = request.get_json(silent=True)
+    required_fields = ("name", "email", "password")
+
+    if not request_data or not all(
+        request_data.get(field) for field in required_fields
+    ):
+        message = error_msg["invalid_signup_data"]
+        return jsonify({"error": True, "message": message}), 400
 
     try:
         my_conn = my_pool.get_connection()
-        my_cursor = my_conn.cursor(dictionary=True)
+        my_cursor = my_conn.cursor()
 
-        sql = "SELECT email FROM user \
-                WHERE email = %s"
-        val = (email,)
+        sql = "INSERT INTO user (user_name, email, password) \
+                VALUES (%s, %s, %s)"
+        val = (
+            request_data["name"],
+            request_data["email"],
+            request_data["password"],
+        )
         my_cursor.execute(sql, val)
-        result = my_cursor.fetchall()
+        my_conn.commit()
 
-        if len(result) == 0:
-            sql = "INSERT INTO user (user_name, email, password) \
-                    VALUES (%s, %s, %s)"
-            val = (user_name, email, password)
-            my_cursor.execute(sql, val)
-            my_conn.commit()
-            print(f"{my_cursor.rowcount} record(s) was inserted")
+        return jsonify({"ok": True}), 201
 
-            return jsonify({"ok": True})
-        else:
-            message = error_msg["signup_400"]
-            # message = "Sign-up failed. Duplicate email or other reasons"
-            return (
-                jsonify(
-                    {
-                        "error": True,
-                        "message": message,
-                    }
-                ),
-                400,
-            )
+    except IntegrityError as err:
+        if "my_conn" in locals():
+            my_conn.rollback()
+
+        if err.errno == errorcode.ER_DUP_ENTRY:
+            message = error_msg["duplicate_email"]
+            return jsonify({"error": True, "message": message}), 409
+
+        print(f"ERROR: {err}")
+        message = error_msg["signup_failed"]
+        return jsonify({"error": True, "message": message}), 500
 
     except Exception as err:
+        if "my_conn" in locals():
+            my_conn.rollback()
+
         print(f"ERROR: {err}")
-        # message = "Internal Server Error"
-        message = error_msg["500"]
+        message = error_msg["signup_failed"]
         return jsonify({"error": True, "message": message}), 500
 
     finally:
@@ -107,52 +96,38 @@ def api_signup():
 
 
 # check log in status, log in
-@user_bp.route("/api/user/auth", methods=["GET", "PUT"])
+@user_bp.route("/api/user/auth", methods=["GET", "POST"])
 def api_user_auth():
     # check log in status
     if request.method == "GET":
-        reponse_columns = ["id", "name", "email"]
-        try:
-            if (
-                "Authorization" in request.headers
-                and request.headers["Authorization"] != ""
-            ):
-                bearer = request.headers["Authorization"]
-                token = bearer.split()[1]
-                response_data = {"data": None}
-
-                decode_result = jwt.decode(token, JWT_KEY, JWT_ALGORITHM)
-
-                response_data = {"data": {}}
-                for key in decode_result:
-                    if key in reponse_columns:
-                        response_data["data"][key] = decode_result[key]
-
-                return jsonify(response_data)
-
-        except Exception as err:
-            print(f"ERROR: {err}")
-
-        return jsonify(response_data)
+        current_user = get_current_user()
+        return jsonify({"data": current_user})
 
     # log in
-    elif request.method == "PUT":
-        request_data = request.get_json()
+    elif request.method == "POST":
+        request_data = request.get_json(silent=True)
+        required_fields = ("email", "password")
+
+        if not request_data or not all(
+            request_data.get(field) for field in required_fields
+        ):
+            message = error_msg["invalid_login_data"]
+            return jsonify({"error": True, "message": message}), 400
+
         email = request_data["email"]
         password = request_data["password"]
         try:
             my_conn = my_pool.get_connection()
-            my_curosr = my_conn.cursor(dictionary=True)
+            my_cursor = my_conn.cursor(dictionary=True)
 
             sql = "SELECT id, user_name as name, email FROM user \
                 WHERE email = %s AND password = %s"
             val = (email, password)
-            my_curosr.execute(sql, val)
-            result = my_curosr.fetchall()
+            my_cursor.execute(sql, val)
+            result = my_cursor.fetchall()
 
             if len(result) == 0:
-                message = error_msg["login_put_400"]
-                # message = "Log-in failed. Incorrect account, password or other reasons"
+                message = error_msg["invalid_credentials"]
                 return (
                     jsonify(
                         {
@@ -160,11 +135,10 @@ def api_user_auth():
                             "message": message,
                         }
                     ),
-                    400,
+                    401,
                 )
 
             else:
-                # token_expiration = datetime.now(tz=timezone.utc) + timedelta(seconds=10)
                 token_expiration = datetime.now(tz=timezone.utc) + timedelta(days=7)
                 token_payload = result[0]
                 token_payload["exp"] = token_expiration
@@ -176,10 +150,38 @@ def api_user_auth():
 
         except Exception as err:
             print(f"ERROR: {err}")
-            message = error_msg["500"]
-            # message = "Internal Server Error"
+            message = error_msg["login_failed"]
             return jsonify({"error": True, "message": message}), 500
 
         finally:
             if "my_conn" in locals():
                 my_conn.close()
+
+
+def get_current_user():
+    auth_header = request.headers.get("Authorization", "")
+    parts = auth_header.split()
+
+    if len(parts) != 2 or parts[0].lower() != "bearer":
+        return None
+
+    token = parts[1]
+
+    try:
+        payload = jwt.decode(
+            token,
+            JWT_KEY,
+            algorithms=[JWT_ALGORITHM],
+            options={
+                "require": ["id", "name", "email", "exp"],
+            },
+        )
+    except jwt.InvalidTokenError as err:
+        print(f"ERROR: {err}")
+        return None
+
+    return {
+        "id": payload["id"],
+        "name": payload["name"],
+        "email": payload["email"],
+    }

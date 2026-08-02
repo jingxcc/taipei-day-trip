@@ -8,4 +8,4 @@ function hideLoader() {
   loader.classList.add("hidden");
 }
 
-export default { showLoader: showLoader, hideLoader: hideLoader };
+export { showLoader, hideLoader };

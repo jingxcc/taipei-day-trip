@@ -1,12 +1,21 @@
-import utils from "../shared/utils.js";
-import auth from "../shared/auth.js";
+import {
+  checkEmptyFields,
+  getLastPathSegment,
+  getNumFromStr,
+  todayStr,
+} from "../shared/utils.js";
+import {
+  checkLogInStatus,
+  getAuthHeaders,
+  showDialog,
+} from "../shared/auth.js";
 import { PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const dateInput = document.querySelector("#attractionFormDate > #date");
 let loginInfo;
 
 const ADD_BOOKING_ERROR_MESSAGES = {
-  400: "請提供正確的預訂資料",
+  400: "加入購物車失敗，請稍後再試",
   500: "加入購物車失敗，請稍後再試",
   default: "加入購物車失敗，請稍後再試",
 };
@@ -99,7 +108,7 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let attractionId = utils.getLastPathSegement(window.location.pathname);
+  let attractionId = getLastPathSegment(window.location.pathname);
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
@@ -199,7 +208,7 @@ timeInputs.forEach((input) => {
 });
 
 function setDateInputMin() {
-  dateInput.setAttribute("min", utils.todayStr());
+  dateInput.setAttribute("min", todayStr());
 }
 
 displayAttractionData();
@@ -209,7 +218,7 @@ setDateInputMin();
 const attractionBookBtn = document.getElementById("attractionBookBtn");
 attractionBookBtn.addEventListener("click", async () => {
   if (loginInfo["status"] !== true) {
-    auth.showDialog();
+    showDialog();
   } else {
     let date = dateInput.value;
     let time = "";
@@ -223,10 +232,10 @@ attractionBookBtn.addEventListener("click", async () => {
     let priceText = document.querySelector(
       ".attraction__form #formPrice",
     ).textContent;
-    let price = utils.getNumFromStr(priceText);
+    let price = getNumFromStr(priceText);
 
-    let attractionId = utils.getNumFromStr(
-      utils.getLastPathSegement(window.location.pathname),
+    let attractionId = getNumFromStr(
+      getLastPathSegment(window.location.pathname),
     );
 
     let requestBody = {
@@ -236,7 +245,7 @@ attractionBookBtn.addEventListener("click", async () => {
       price: price,
     };
 
-    let checkEmptyResult = utils.checkEmptyFields(requestBody);
+    let checkEmptyResult = checkEmptyFields(requestBody);
 
     if (!checkEmptyResult["error"]) {
       try {
@@ -244,10 +253,7 @@ attractionBookBtn.addEventListener("click", async () => {
         alert("成功加入購物車");
         window.location.href = `${window.location.origin}/cart`;
       } catch (error) {
-        alert(
-          ADD_BOOKING_ERROR_MESSAGES[error.status] ||
-            ADD_BOOKING_ERROR_MESSAGES["default"],
-        );
+        alert(error.message || ADD_BOOKING_ERROR_MESSAGES.default);
       }
     } else {
       alert(checkEmptyResult["message"]);
@@ -257,13 +263,12 @@ attractionBookBtn.addEventListener("click", async () => {
 
 async function addBooking(requestBody) {
   let apiUrl = `/api/booking`;
-  let logInToken = localStorage.getItem("logInToken");
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${logInToken}`,
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(requestBody),
     });
@@ -272,7 +277,8 @@ async function addBooking(requestBody) {
 
     if (!response.ok) {
       const error = new Error(
-        result.message || ADD_BOOKING_ERROR_MESSAGES["default"],
+        ADD_BOOKING_ERROR_MESSAGES[response.status] ||
+          ADD_BOOKING_ERROR_MESSAGES.default,
       );
       error.status = response.status;
       throw error;
@@ -280,8 +286,12 @@ async function addBooking(requestBody) {
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
-    throw err;
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(ADD_BOOKING_ERROR_MESSAGES.default);
   }
 }
 
-loginInfo = await auth.checkLogInStatus();
+loginInfo = await checkLogInStatus();

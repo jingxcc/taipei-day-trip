@@ -1,4 +1,4 @@
-import auth from "../shared/auth.js";
+import { checkLogInStatus, getAuthHeaders } from "../shared/auth.js";
 import { DISPLAY_TIME_SLOT, PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const CART_ERROR_MESSAGES = {
@@ -31,25 +31,18 @@ function closeDeleteDialog() {
 
 async function fetchBooking() {
   const apiUrl = `/api/bookings`;
-  const logInToken = localStorage.getItem("logInToken");
-
-  const headers = {
-    "Content-Type": "application/json",
-  };
-  if (logInToken) {
-    headers["Authorization"] = `Bearer ${logInToken}`;
-  }
 
   try {
     const response = await fetch(apiUrl, {
       method: "GET",
-      headers: headers,
+      headers: getAuthHeaders(),
     });
     const result = await response.json();
 
     if (!response.ok) {
       const error = new Error(
-        result.message || CART_ERROR_MESSAGES.get.default,
+        CART_ERROR_MESSAGES.get[response.status] ||
+          CART_ERROR_MESSAGES.get.default,
       );
       error.status = response.status;
       throw error;
@@ -57,31 +50,28 @@ async function fetchBooking() {
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
-    throw err;
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(CART_ERROR_MESSAGES.get.default);
   }
 }
 
 async function deleteBooking(bookingId) {
   const apiUrl = `/api/booking/${bookingId}`;
-  const logInToken = localStorage.getItem("logInToken");
-
-  const headers = {
-    "Content-Type": "application/json",
-  };
-  if (logInToken) {
-    headers["Authorization"] = `Bearer ${logInToken}`;
-  }
 
   try {
     const response = await fetch(apiUrl, {
       method: "DELETE",
-      headers: headers,
+      headers: getAuthHeaders(),
     });
     const result = await response.json();
 
     if (!response.ok) {
       const error = new Error(
-        result.message || CART_ERROR_MESSAGES.delete.default,
+        CART_ERROR_MESSAGES.delete[response.status] ||
+          CART_ERROR_MESSAGES.delete.default,
       );
       error.status = response.status;
       throw error;
@@ -89,7 +79,11 @@ async function deleteBooking(bookingId) {
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
-    throw err;
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(CART_ERROR_MESSAGES.delete.default);
   }
 }
 
@@ -163,9 +157,7 @@ async function loadCart() {
     result.data.length > 0 ? showCart(result.data) : showEmptyCart();
   } catch (error) {
     console.error(error);
-    showCartError(
-      CART_ERROR_MESSAGES.get[error.status] || CART_ERROR_MESSAGES.get.default,
-    );
+    showCartError(error.message || CART_ERROR_MESSAGES.get.default);
   }
 }
 
@@ -198,10 +190,7 @@ document
       console.error(error);
       closeDeleteDialog();
 
-      alert(
-        CART_ERROR_MESSAGES.delete[error.status] ||
-          CART_ERROR_MESSAGES.delete.default,
-      );
+      alert(error.message || CART_ERROR_MESSAGES.delete.default);
     }
   });
 
@@ -222,7 +211,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
   }
 });
 
-const loginInfo = await auth.checkLogInStatus();
+const loginInfo = await checkLogInStatus();
 if (loginInfo.status) {
   document.querySelector(".header__username").textContent =
     loginInfo.userInfo.data.name;
