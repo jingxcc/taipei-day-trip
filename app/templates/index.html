@@ -1,43 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link rel="stylesheet" href="../static/scss/css/style.css" />
+    <script type="module" src="../static/js/home/index.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>台北一日遊</title>
-  <link rel="stylesheet" href="../static/scss/css/style.css" />
-  <script type="module" src="../static/js/home/index.js"></script>
-  <link rel="stylesheet" href="../static/scss/css/style.css" />
-</head>
+  <body>
+    {% include './shared/header.html' %}
 
-<body>
-  {% include './shared/header.html' %}
-
-  <section class="hero mb-40">
-    <div class="slogan container">
-      <h2 class="slogan__title mb-15">輕鬆享受台北一日悠閒</h2>
-      <p class="slogan__info body mb-25">
-        探索每個角落，體驗程式的深度旅遊行程
-      </p>
-      <div class="search">
-        <input id="searchInput" class="search__input body weight-bold" type=" text" placeholder="輸入景點名稱查詢" />
-        <button id="searchBtn" class="search__btn">
-          <img class="search__btn-icon" src="../static/images/icons/search.svg" alt="search" />
-        </button>
+    <section class="hero mb-40">
+      <div class="slogan container">
+        <h2 class="slogan__title mb-15">輕鬆享受台北一日悠閒</h2>
+        <p class="slogan__info body mb-25">
+          探索每個角落，體驗程式的深度旅遊行程
+        </p>
+        <div class="search">
+          <input
+            id="searchInput"
+            class="search__input body weight-bold"
+            type=" text"
+            placeholder="輸入景點名稱查詢"
+          />
+          <button id="searchBtn" class="search__btn">
+            <img
+              class="search__btn-icon"
+              src="../static/images/icons/search.svg"
+              alt="search"
+            />
+          </button>
+        </div>
       </div>
+    </section>
+    <div class="list-bar container mb-20">
+      <button id="listBarPrevBtn" class="list-bar__prev-btn list-bar__btn">
+        <span class="list-bar__prev-btn-icon list-bar__btn-icon" />
+      </button>
+      <div id="listBarList" class="list-bar__list"></div>
+      <button id="listBarNextBtn" class="list-bar__next-btn list-bar__btn">
+        <span class="list-bar__next-btn-icon list-bar__btn-icon" />
+      </button>
     </div>
-  </section>
-  <div class="list-bar container mb-20">
-    <button id="listBarPrevBtn" class="list-bar__prev-btn list-bar__btn">
-      <span class="list-bar__prev-btn-icon list-bar__btn-icon" />
-    </button>
-    <div id="listBarList" class="list-bar__list"></div>
-    <button id="listBarNextBtn" class="list-bar__next-btn list-bar__btn">
-      <span class="list-bar__next-btn-icon list-bar__btn-icon" />
-    </button>
-  </div>
-  <main id="attractionContent" class="home-content container mb-40"></main>
-  {% include './shared/footer.html' %}
-</body>
-
+    <main id="attractionContent" class="home-content container mb-40"></main>
+    {% include './shared/footer.html' %}
+  </body>
 </html>

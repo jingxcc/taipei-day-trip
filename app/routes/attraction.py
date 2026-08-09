@@ -3,7 +3,15 @@ from db import my_pool
 
 attraction_bp = Blueprint("attraction_bp", __name__)
 
-error_msg = {"500": "伺服器內部錯誤", "attraction_400": "景點編號不正確"}
+error_msg = {
+    "invalid_page": "page 必須是 0 （含）以上的整數",
+    "get_attractions_failed": "景點列表取得失敗，請稍後再試",
+
+    "attraction_not_found": "找不到景點資料",
+    "get_attraction_failed": "景點資料取得失敗，請稍後再試",
+
+    "get_mrts_failed": "捷運站資料取得失敗，請稍後再試",
+}
 
 
 def escape_like_keyword(keyword):
@@ -20,15 +28,9 @@ def api_attractions():
 
     page = request.args.get("page")
     keyword = request.args.get("keyword")
-
-    if not page:
-        message = error_msg["500"]
-        # message = "'page' is required"
-        return jsonify({"error": True, "message": message}), 500
-    if not page.isdigit():
-        message = error_msg["500"]
-        # message = "'page' type error"
-        return jsonify({"error": True, "message": message}), 500
+    if page is None or not page.isdigit():
+        message = error_msg["invalid_page"]
+        return jsonify({"error": True, "message": message}), 400
 
     try:
         my_conn = my_pool.get_connection()
@@ -90,7 +92,7 @@ def api_attractions():
 
     except Exception as err:
         print(f"ERROR: {err}")
-        message = error_msg["500"]
+        message = error_msg["get_attractions_failed"]
         return jsonify({"error": True, "message": message}), 500
 
     finally:
@@ -98,13 +100,12 @@ def api_attractions():
             my_conn.close()
 
 
-@attraction_bp.route("/api/attraction/<int:attractionId>")
-def api_attraction_id(attractionId):
+@attraction_bp.route("/api/attraction/<int:attraction_id>")
+def api_attraction_id(attraction_id):
     try:
         my_conn = my_pool.get_connection()
         my_cursor = my_conn.cursor(dictionary=True)
 
-        # where_sql = f"WHERE a.id = {attractionId}"
         sql = "SELECT a.id, a.attraction_name, c.category_name as category, a.description, a.address, a.transport \
                     , GROUP_CONCAT(DISTINCT m.mrt_name SEPARATOR ', ') as mrt, a.latitude as lat, a.longitude as lng \
                     , GROUP_CONCAT(DISTINCT iu.url ORDER BY iu.id SEPARATOR ', ') as images \
@@ -116,16 +117,12 @@ def api_attraction_id(attractionId):
                 WHERE a.id = %s \
                 GROUP BY a.id, a.attraction_name, c.category_name, a.description, a.address, a.transport, a.latitude, a.longitude \
                 ORDER BY a.id"
-        my_cursor.execute(sql, (attractionId,))
+        my_cursor.execute(sql, (attraction_id,))
         result = my_cursor.fetchall()
 
         if len(result) == 0:
-            message = error_msg["attraction_400"]
-            # message ="Incorrect Attraction Number"
-            return (
-                jsonify({"error": True, "message": "Incorrect Attraction Number"}),
-                400,
-            )
+            message = error_msg["attraction_not_found"]
+            return jsonify({"error": True, "message": message}), 404
 
         # concat concatenate data to list
         columns_convert = ["mrt", "images"]
@@ -138,8 +135,7 @@ def api_attraction_id(attractionId):
 
     except Exception as err:
         print(f"ERROR: {err}")
-        # message = "Internal Server Error"
-        message = error_msg["500"]
+        message = error_msg["get_attraction_failed"]
         return jsonify({"error": True, "message": message}), 500
 
     finally:
@@ -170,8 +166,7 @@ def api_mrts():
 
     except Exception as err:
         print(f"ERROR: {err}")
-        message = error_msg["500"]
-        # message = "Internal Server Error"
+        message = error_msg["get_mrts_failed"]
         return jsonify({"error": True, "message": message}), 500
 
     finally:

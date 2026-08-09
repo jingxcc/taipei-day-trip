@@ -1,12 +1,10 @@
-import auth from "../shared/auth.js";
+import { checkLogInStatus, getAuthHeaders } from "../shared/auth.js";
+import { getLastPathSegment } from "../shared/utils.js";
+import { DISPLAY_TIME_SLOT, PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 let loginInfo;
-const bookingDisplayTime = {
-  beforenoon: "08:00 - 11:00",
-  afternoon: "13:00 - 16:00",
-};
 
-const demoData = {
+const DEMO_DATA = {
   contact: {
     phone: "0912345678",
   },
@@ -17,69 +15,107 @@ const demoData = {
   },
 };
 
-const bookingDeleteBtn = document.getElementById("bookingDeleteBtn");
+const BOOKING_ERROR_MESSAGES = {
+  404: "找不到這筆預訂，請返回購物車重新選擇。",
+  500: "預訂資料取得失敗，請稍後再試。",
+  default: "無法取得預訂資料，請稍後再試。",
+};
+
 const fillDemoDataBtn = document.getElementById("fillDemoDataBtn");
 
-async function getBookingData() {
-  let apiUrl = `/api/booking`;
-  let logInToken = localStorage.getItem("logInToken");
+async function fetchBookingById() {
+  const bookingId = getLastPathSegment(window.location.pathname);
+  let apiUrl = `/api/booking/${bookingId}`;
   try {
     const response = await fetch(apiUrl, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${logInToken}`,
-      },
+      method: "GET",
+      headers: getAuthHeaders(),
     });
-
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        BOOKING_ERROR_MESSAGES[response.status] ||
+          BOOKING_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
+    }
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(BOOKING_ERROR_MESSAGES.default);
   }
 }
 
 async function displayBookingData() {
   const mainContent = document.getElementById("mainContent");
-  const messageEmptyState = document.getElementById("messageEmptyState");
+  const bookingErrorState = document.getElementById("bookingErrorState");
   const footer = document.getElementById("footer");
 
-  let bookingData = await getBookingData();
-  localStorage.setItem("bookingData", JSON.stringify(bookingData));
+  try {
+    let bookingData = await fetchBookingById();
+    localStorage.setItem("bookingData", JSON.stringify(bookingData));
 
-  if (bookingData["data"]) {
-    mainContent.classList.remove("hidden");
-    footer.classList.remove("booking-footer--empty");
-    messageEmptyState.classList.add("hidden");
+    if (bookingData["data"]) {
+      mainContent.classList.remove("hidden");
+      footer.classList.remove("booking-footer--empty");
+      bookingErrorState.classList.add("hidden");
 
-    const bookingImg = document.querySelector(".attraction-list__image");
-    const bookingAttractionName = document.querySelector(
-      ".attraction-list__attraction",
-    );
-    const bookingDate = document.querySelector(".attraction-list__date");
-    const bookingTime = document.querySelector(".attraction-list__time");
-    const bookingPrice = document.querySelector(".attraction-list__price");
-    const bookingAttractionAddress = document.querySelector(
-      ".attraction-list__address",
-    );
-    const confirmTotal = document.querySelector(".confirm-info__total");
+      const bookingImg = document.querySelector(".attraction-list__image");
+      const bookingAttractionName = document.querySelector(
+        ".attraction-list__attraction",
+      );
+      const bookingAttractionLink = document.querySelector(
+        ".attraction-list__link",
+      );
+      const bookingDate = document.querySelector(".attraction-list__date");
+      const bookingTime = document.querySelector(".attraction-list__time");
+      const bookingPrice = document.querySelector(".attraction-list__price");
+      const bookingAttractionAddress = document.querySelector(
+        ".attraction-list__address",
+      );
+      const confirmTotal = document.querySelector(".confirm-info__total");
 
-    bookingImg.setAttribute("src", bookingData["data"]["attraction"]["image"]);
+      bookingImg.setAttribute(
+        "src",
+        bookingData["data"]["attraction"]["image"] || PLACEHOLDER_IMAGE,
+      );
+      bookingImg.parentElement.classList.toggle(
+        "attraction-list__image-block--placeholder",
+        !bookingData["data"]["attraction"]["image"],
+      );
 
-    bookingAttractionName.textContent =
-      bookingData["data"]["attraction"]["name"];
-    bookingDate.textContent = bookingData["data"]["date"];
-    bookingTime.textContent = "beforenoon"
-      ? bookingDisplayTime["beforenoon"]
-      : bookingDisplayTime["afternoon"]; // tmp
-    bookingPrice.textContent = `新台幣 ${bookingData["data"]["price"]} 元`;
-    bookingAttractionAddress.textContent =
-      bookingData["data"]["attraction"]["address"];
+      bookingAttractionName.textContent =
+        bookingData["data"]["attraction"]["name"];
+      bookingAttractionLink.href = `/attraction/${bookingData["data"]["attraction"]["id"]}`;
+      bookingDate.textContent = bookingData["data"]["date"];
+      bookingTime.textContent =
+        DISPLAY_TIME_SLOT[bookingData["data"]["time"]] ||
+        bookingData["data"]["time"];
+      bookingPrice.textContent = `新台幣 ${bookingData["data"]["price"]} 元`;
+      bookingAttractionAddress.textContent =
+        bookingData["data"]["attraction"]["address"];
 
-    confirmTotal.textContent = `新台幣 ${bookingData["data"]["price"]} 元`; // tmp
-  } else {
+      confirmTotal.textContent = `新台幣 ${bookingData["data"]["price"]} 元`; // tmp
+    } else {
+      mainContent.classList.add("hidden");
+      footer.classList.add("booking-footer--empty");
+      bookingErrorState.classList.add("hidden");
+    }
+  } catch (error) {
+    console.error(error);
     mainContent.classList.add("hidden");
+    bookingErrorState.classList.remove("hidden");
     footer.classList.add("booking-footer--empty");
-    messageEmptyState.classList.remove("hidden");
+    document.getElementById("headlineMessage").textContent =
+      " 您好，目前無法載入預訂資訊：";
+    document.getElementById("bookingErrorMessage").textContent =
+      error.message || BOOKING_ERROR_MESSAGES.default;
   }
 }
 
@@ -101,53 +137,19 @@ async function displayUserData() {
   }
 }
 
-async function deleteBookingData() {
-  let apiUrl = `/api/booking`;
-  let logInToken = localStorage.getItem("logInToken");
-  try {
-    const response = await fetch(apiUrl, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${logInToken}`,
-      },
-    });
-    if (response.ok) {
-      const result = await response.json();
-      return result;
-    }
-  } catch (err) {
-    console.error(`Error: ${err}`);
-  }
-  return false;
-}
-
-bookingDeleteBtn.addEventListener("click", async () => {
-  let deleteResult = await deleteBookingData();
-  deleteResult;
-  if (deleteResult) {
-    // displayBookingData();
-    alert("刪除成功");
-    location.reload();
-  } else {
-    // alert("Unknown Error. Please try again later.");
-    alert("刪除失敗，請稍後再試 !");
-  }
-});
-
 fillDemoDataBtn.addEventListener("click", () => {
-  document.querySelector(".info-form__phone").value = demoData.contact.phone;
+  document.querySelector(".info-form__phone").value = DEMO_DATA.contact.phone;
 });
 
 function displayCardDemoData() {
   document.getElementById("demo-card-number").textContent =
-    demoData.card.number;
+    DEMO_DATA.card.number;
   document.getElementById("demo-card-expiration-date").textContent =
-    demoData.card.expirationDate;
-  document.getElementById("demo-card-ccv").textContent = demoData.card.ccv;
+    DEMO_DATA.card.expirationDate;
+  document.getElementById("demo-card-ccv").textContent = DEMO_DATA.card.ccv;
 }
 
-loginInfo = await auth.checkLogInStatus();
+loginInfo = await checkLogInStatus();
 displayUserData();
 displayBookingData();
 displayCardDemoData();

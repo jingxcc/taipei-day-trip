@@ -1,7 +1,8 @@
-import utils from "./utils.js";
+import { checkEmptyFields, checkValidEmail } from "./utils.js";
+import { PROTECTED_PATHS, PROTECTED_PATH_PREFIXES } from "./constants.js";
 
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
-const navMenuItemBooking = document.getElementById("navMenuItemBooking");
+const navMenuItemCart = document.getElementById("navMenuItemCart");
 const dialogMask = document.getElementById("dialogMask");
 
 const dialogLogIn = document.getElementById("dialogLogIn");
@@ -17,25 +18,45 @@ const signUpBtn = document.getElementById("signUpBtn");
 let activeDialog = "dialogLogIn";
 let isLogin;
 
+const SIGNUP_ERROR_MESSAGES = {
+  400: "註冊失敗，請稍後再試",
+  409: "此 Email 已被註冊",
+  500: "註冊失敗，請稍後再試",
+  default: "註冊失敗，請稍後再試",
+};
+
+const LOGIN_ERROR_MESSAGES = {
+  400: "登入失敗，請稍後再試",
+  401: "Email 或密碼錯誤",
+  500: "登入失敗，請稍後再試",
+  default: "登入失敗，請稍後再試",
+};
+
+const AUTH_STATUS_ERROR_MESSAGES = {
+  default: "無法確認登入狀態，請稍後再試",
+};
+
 // sign up
 async function getSignUpData() {
-  let name = document.querySelector("#dialogSignUp .signup-form__name");
-  let email = document.querySelector("#dialogSignUp .signup-form__email");
-  let password = document.querySelector("#dialogSignUp .signup-form__password");
-  let requestBody = {
+  const name = document.querySelector("#dialogSignUp .signup-form__name");
+  const email = document.querySelector("#dialogSignUp .signup-form__email");
+  const password = document.querySelector(
+    "#dialogSignUp .signup-form__password",
+  );
+  const requestBody = {
     name: name.value,
     email: email.value,
     password: password.value,
   };
 
-  let checkEmptyResult = utils.checkEmptyFields(requestBody);
+  const checkEmptyResult = checkEmptyFields(requestBody);
   if (checkEmptyResult["error"]) {
-    return checkEmptyResult;
+    throw new Error(checkEmptyResult["message"]);
   }
 
-  let checkEmailResult = utils.checkValidEmail(requestBody["email"]);
+  const checkEmailResult = checkValidEmail(requestBody["email"]);
   if (checkEmailResult["error"]) {
-    return checkEmailResult;
+    throw new Error(checkEmailResult["message"]);
   }
 
   const apiUrl = `/api/user`;
@@ -48,23 +69,40 @@ async function getSignUpData() {
       body: JSON.stringify(requestBody),
     });
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        SIGNUP_ERROR_MESSAGES[response.status] || SIGNUP_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
+    }
+
+    if (!result.ok) {
+      throw new Error(SIGNUP_ERROR_MESSAGES.default);
+    }
+
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(SIGNUP_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
 // check if sign up succeess
 signUpBtn.addEventListener("click", async () => {
-  let result = await getSignUpData();
+  try {
+    await getSignUpData();
 
-  if (!result["error"]) {
     const dialogSignUpMsg = dialogSignUp.querySelector(".dialog__message");
     dialogSignUpMsg.classList.add("success");
     dialogSignUpMsg.textContent = "註冊成功";
-  } else if (result["error"]) {
-    showDialogMessage(result["message"]);
+  } catch (err) {
+    showDialogMessage(err.message || SIGNUP_ERROR_MESSAGES.default);
   }
 });
 
@@ -77,20 +115,20 @@ async function getLogInData() {
     password: password.value,
   };
 
-  let checkEmptyResult = utils.checkEmptyFields(requestBody);
+  let checkEmptyResult = checkEmptyFields(requestBody);
   if (checkEmptyResult["error"]) {
-    return checkEmptyResult;
+    throw new Error(checkEmptyResult["message"]);
   }
 
-  let checkEmailResult = utils.checkValidEmail(requestBody["email"]);
+  let checkEmailResult = checkValidEmail(requestBody["email"]);
   if (checkEmailResult["error"]) {
-    return checkEmailResult;
+    throw new Error(checkEmailResult["message"]);
   }
 
   const apiUrl = `/api/user/auth`;
   try {
     const response = await fetch(apiUrl, {
-      method: "PUT",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -98,70 +136,111 @@ async function getLogInData() {
     });
 
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        LOGIN_ERROR_MESSAGES[response.status] || LOGIN_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
+    }
+
+    if (!result.token) {
+      throw new Error(LOGIN_ERROR_MESSAGES.default);
+    }
+
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(LOGIN_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
 // check if log in succeess
 logInBtn.addEventListener("click", async () => {
-  let result = await getLogInData();
-  if (!result["error"]) {
-    localStorage.setItem("logInToken", result["token"]);
+  try {
+    const result = await getLogInData();
+    localStorage.setItem("logInToken", result.token);
 
     activeDialog = "dialogLogIn";
     closeDialog(activeDialog);
     location.reload();
-  } else if (result["error"]) {
-    console.error(result["message"]);
-    showDialogMessage(result["message"]);
+  } catch (err) {
+    showDialogMessage(err.message || LOGIN_ERROR_MESSAGES.default);
   }
 });
 
 // check log in status
-async function decodeLogInToken(token) {
+async function decodeLogInToken() {
   const apiUrl = `/api/user/auth`;
   try {
     const response = await fetch(apiUrl, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: getAuthHeaders(),
     });
 
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(AUTH_STATUS_ERROR_MESSAGES.default);
+      error.status = response.status;
+      throw error;
+    }
+
+    if (!result || !("data" in result)) {
+      throw new Error(AUTH_STATUS_ERROR_MESSAGES.default);
+    }
+
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(AUTH_STATUS_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
 async function checkLogInStatus() {
   isLogin = false;
-  let logInToken = localStorage.getItem("logInToken");
-  let result;
+  const logInToken = localStorage.getItem("logInToken");
+  let userInfo = { data: null };
+
   if (logInToken !== null) {
-    result = await decodeLogInToken(logInToken);
-    if (result["data"]) {
-      isLogin = true;
-    } else {
-      // isLogin = false;
-      clearLocalStorage();
+    try {
+      userInfo = await decodeLogInToken();
+      if (userInfo.data) {
+        isLogin = true;
+      } else {
+        clearLocalStorage();
+      }
+    } catch (err) {
+      console.error(`Error: ${err}`);
     }
   }
   navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
 
-  const requireAuthPages = ["/booking", "/thankyou"];
-  if (!isLogin) {
-    if (requireAuthPages.includes(`${window.location.pathname}`)) {
-      window.location.href = window.location.origin;
-    }
+  const pathname = window.location.pathname;
+  const requiresAuth =
+    PROTECTED_PATHS.includes(`${pathname}`) ||
+    PROTECTED_PATH_PREFIXES.some((pathPrefix) =>
+      pathname.startsWith(pathPrefix),
+    );
+  if (!isLogin && requiresAuth) {
+    window.location.href = window.location.origin;
   }
-  return { status: isLogin, userInfo: result };
+  return { status: isLogin, userInfo: userInfo };
+}
+
+function getAuthHeaders() {
+  const token = localStorage.getItem("logInToken");
+
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 // clear local storage data
@@ -248,14 +327,14 @@ function showDialogMessage(msg) {
   }
 }
 
-// booking
-navMenuItemBooking.addEventListener("click", (e) => {
+// cart
+navMenuItemCart.addEventListener("click", (e) => {
   if (!isLogin) {
     e.preventDefault();
     showDialog();
   } else {
-    navMenuItemBooking.href = `${window.location.origin}/booking`;
+    navMenuItemCart.href = `${window.location.origin}/cart`;
   }
 });
 
-export default { checkLogInStatus: checkLogInStatus, showDialog: showDialog };
+export { checkLogInStatus, showDialog, getAuthHeaders };

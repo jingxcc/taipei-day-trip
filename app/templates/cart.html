@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>購物車｜台北一日遊</title>
+    <link rel="stylesheet" href="../static/scss/css/style.css" />
+    <script type="module" src="../static/js/cart/cart.js"></script>
+  </head>
+
+  <body>
+    {% include './shared/header.html' %}
+
+    <h3 class="booking-headline button weight-bold mb-30">
+      <span class="header__username"></span>
+      <span id="cartHeadlineMessage">&nbsp;您好，您的購物車如下：</span>
+    </h3>
+
+    <main id="cartContent" class="content container hidden body">
+      <div id="cartList"></div>
+      <template id="cartItemTemplate">
+        <section class="attraction-list booking-item">
+          <input
+            class="attraction-list__select"
+            type="radio"
+            name="booking-selection"
+            aria-label="選擇此行程"
+          />
+          <div class="attraction-list__image-block">
+            <img src="" alt="attraction-img" class="attraction-list__image" />
+            <span class="attraction-list__placeholder-text weight-bold"
+              >暫無圖片</span
+            >
+          </div>
+
+          <div class="attraction-list__info-block">
+            <h3 class="attraction-list__title mb-20 weight-bold">
+              <a class="attraction-list__link" href="">
+                <span>台北一日遊：</span>
+                <span class="attraction-list__attraction"></span>
+              </a>
+            </h3>
+            <p class="attraction-list__info">
+              <span class="attraction-list__info-title">日期：</span>
+              <span class="attraction-list__date"></span>
+            </p>
+            <p class="attraction-list__info">
+              <span class="attraction-list__info-title">時間：</span>
+              <span class="attraction-list__time"></span>
+            </p>
+            <p class="attraction-list__info">
+              <span class="attraction-list__info-title">費用：</span>
+              <span class="attraction-list__price"></span>
+            </p>
+            <p class="attraction-list__info">
+              <span class="attraction-list__info-title">地點：</span>
+              <span class="attraction-list__address"></span>
+            </p>
+          </div>
+
+          <button class="attraction-list__delete-btn" aria-label="刪除行程">
+            <span class="attraction-list__delete-icon"></span>
+          </button>
+        </section>
+      </template>
+      <hr class="seperator" />
+      <section class="cart-summary booking-item mb-20">
+        <p class="cart-summary__total weight-bold">
+          <span>總價：</span>
+          <span id="cartTotal"></span>
+        </p>
+        <button id="checkoutBtn" class="default-button button" disabled>
+          前往付款
+        </button>
+      </section>
+    </main>
+    <section id="cartEmptyState" class="booking__message body mb-40 hidden">
+      <p class="mb-20">購物車目前是空的</p>
+      <a class="cart-empty__link default-button button" href="/"
+        >探索台北景點</a
+      >
+    </section>
+    <section id="cartErrorState" class="booking__message body mb-40 hidden">
+      <p></p>
+    </section>
+    <div id="cartDeleteDialogMask" class="dialog__mask hidden"></div>
+    <dialog id="cartDeleteDialog" class="dialog__window hidden">
+      <div class="dialog__decorator-bar"></div>
+      <div class="dialog__main">
+        <div class="dialog__header">
+          <p class="delete-confirm__message body">確定要刪除這筆行程嗎？</p>
+          <span
+            class="dialog__close-btn"
+            role="button"
+            tabindex="0"
+            aria-label="關閉確認視窗"
+          ></span>
+        </div>
+        <div class="dialog__actions">
+          <button
+            id="cartDeleteCancelBtn"
+            type="button"
+            class="dialog__btn dialog__cancel-btn button"
+          >
+            取消
+          </button>
+          <button
+            id="cartDeleteConfirmBtn"
+            type="button"
+            class="dialog__btn dialog__confirm-btn button"
+          >
+            <span class="dialog_btn-text">確認</span>
+          </button>
+        </div>
+      </div>
+    </dialog>
+    {% include './shared/loading.html' %} {% include './shared/footer.html' %}
+  </body>
+</html>

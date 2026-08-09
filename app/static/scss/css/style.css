@@ -539,6 +539,9 @@ footer {
   display: flex;
   align-items: center;
 }
+.list-bar--hidden {
+  display: none;
+}
 
 .list-bar__btn {
   background-color: white;
@@ -687,6 +690,19 @@ footer {
     flex-wrap: wrap;
     padding: 0;
     border: 0;
+  }
+}
+.attraction--error {
+  border-bottom: 0;
+}
+.attraction--error .attraction__carousel,
+.attraction--error .attraction__profile {
+  display: none;
+}
+@media (max-width: 1200px) {
+  .attraction--error {
+    margin-top: 79px;
+    padding: 0px 15px 40px 15px;
   }
 }
 
@@ -856,129 +872,6 @@ footer {
   padding: 10px 10px 60px 10px;
 }
 
-.tpfield {
-  width: 200px;
-  height: 38px;
-  padding: 10px;
-  border: 1px solid #e8e8e8;
-  border-radius: 5px;
-  color: black;
-}
-.tpfield::-moz-placeholder {
-  color: #757575;
-}
-.tpfield::placeholder {
-  color: #757575;
-}
-
-.booking-headline {
-  display: flex;
-  width: 1000px;
-  padding: 0px 10px;
-  margin-top: 95px;
-  margin-left: auto;
-  margin-right: auto;
-}
-@media (max-width: 1000px) {
-  .booking-headline {
-    width: 100%;
-  }
-}
-
-.booking__message--empty {
-  width: 1000px;
-  padding: 0px 10px;
-  margin-left: auto;
-  margin-right: auto;
-}
-@media (max-width: 1000px) {
-  .booking__message--empty {
-    width: 100%;
-  }
-}
-
-@media (max-width: 1000px) {
-  .content {
-    padding: 0px 10px;
-  }
-}
-
-.booking-container {
-  width: 980px;
-  margin-left: auto;
-  margin-right: auto;
-}
-@media (max-width: 1000px) {
-  .booking-container {
-    width: 100%;
-  }
-}
-
-.attraction-list {
-  display: flex;
-  align-items: flex-start;
-}
-@media (max-width: 1000px) {
-  .attraction-list {
-    flex-direction: column;
-  }
-}
-.attraction-list .attraction-list__info-block {
-  flex-grow: 1;
-}
-.attraction-list .attraction-list__title {
-  display: flex;
-  padding: 5px 0px;
-  color: #448899;
-}
-.attraction-list .attraction-list__info {
-  display: flex;
-  align-items: center;
-  padding: 5px 0px;
-  margin-bottom: 10px;
-}
-.attraction-list .attraction-list__info-title {
-  font-weight: 700;
-  margin-right: 5px;
-}
-
-.attraction-list__image-block {
-  margin-right: 30px;
-}
-@media (max-width: 1000px) {
-  .attraction-list__image-block {
-    width: 100%;
-    margin-right: 0px;
-    margin-bottom: 30px;
-  }
-}
-.attraction-list__image-block img {
-  width: 250px;
-  height: 200px;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: center;
-     object-position: center;
-}
-@media (max-width: 1000px) {
-  .attraction-list__image-block img {
-    width: 100%;
-    height: 256px;
-  }
-}
-
-.attraction-list__delete-btn {
-  align-self: flex-end;
-}
-
-.attraction-list__delete-icon {
-  background-image: url(../../images/icons/delete.svg);
-  background-repeat: no-repeat;
-  display: block;
-  width: 30px;
-  height: 30px;
-}
-
 .info-form__title {
   margin-bottom: 20px;
 }
@@ -1065,8 +958,127 @@ footer {
   margin-bottom: 22px;
 }
 
-.booking-footer--empty {
-  flex-grow: 1;
+#cartList {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #e8e8e8;
+  border-radius: 5px;
+  padding: 25px 15px;
+}
+@media (max-width: 1000px) {
+  #cartList {
+    width: 100%;
+  }
+}
+
+#cartList .attraction-list:not(:last-child) {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid white;
+}
+@media (max-width: 1000px) {
+  #cartList .attraction-list {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  #cartList .attraction-list__image-block {
+    grid-column: 1/-1;
+    grid-row: 1;
+  }
+  #cartList .attraction-list__info-block {
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+  }
+  #cartList .attraction-list__select {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  #cartList .attraction-list__delete-btn {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+#cartList input[type=radio] {
+  /* Remove the default styles on browsers */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  align-self: center;
+  width: 22px;
+  height: 22px;
+  margin: 0px 15px 0px 0px;
+  background-color: white;
+  border: 3px solid white;
+  border-radius: 50%;
+}
+#cartList input[type=radio]:checked {
+  background-color: #448899;
+}
+@media (max-width: 1000px) {
+  #cartList input.attraction-list__select {
+    align-self: start;
+    margin: 9px;
+  }
+  #cartList .attraction-list__delete-btn {
+    padding: 5px;
+  }
+}
+
+.attraction-list__delete-btn {
+  align-self: flex-end;
+}
+
+.attraction-list__delete-icon {
+  background-image: url(../../images/icons/delete.svg);
+  background-repeat: no-repeat;
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+.cart-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  padding-bottom: 20px;
+}
+
+.cart-empty__link {
+  display: inline-block;
+  width: auto;
+}
+
+#cartDeleteDialog.dialog__window {
+  top: 30%;
+}
+#cartDeleteDialog .dialog__main {
+  position: relative;
+  padding: 15px 0px 0px 0px;
+}
+#cartDeleteDialog .dialog__header {
+  padding: 15px 0px;
+}
+#cartDeleteDialog .dialog__close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+#cartDeleteDialog .dialog__actions {
+  display: flex;
+}
+#cartDeleteDialog .dialog__btn {
+  margin: 0;
+}
+#cartDeleteDialog .dialog__cancel-btn {
+  border-radius: 0px 0px 0px 5px;
+  background-color: #e8e8e8;
+  color: #666666;
+}
+#cartDeleteDialog .dialog__confirm-btn {
+  border-radius: 0px 0px 5px 0px;
 }
 
 .thankyou {
@@ -1100,4 +1112,140 @@ footer {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+.booking-headline {
+  display: flex;
+  width: 1000px;
+  padding: 0px 10px;
+  margin-top: 95px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 1000px) {
+  .booking-headline {
+    width: 100%;
+  }
+}
+
+.booking__message {
+  width: 1000px;
+  padding: 0px 10px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 1000px) {
+  .booking__message {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .content {
+    padding: 0px 10px;
+  }
+}
+
+.booking-item {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 1000px) {
+  .booking-item {
+    width: 100%;
+  }
+}
+
+.attraction-list {
+  display: flex;
+  align-items: flex-start;
+}
+@media (max-width: 1000px) {
+  .attraction-list {
+    flex-direction: column;
+  }
+}
+.attraction-list .attraction-list__info-block {
+  flex-grow: 1;
+}
+.attraction-list .attraction-list__title {
+  display: flex;
+  padding: 5px 0px;
+  color: #448899;
+}
+@media (max-width: 1000px) {
+  .attraction-list .attraction-list__title {
+    margin-bottom: 10px;
+  }
+}
+.attraction-list .attraction-list__info {
+  display: flex;
+  align-items: center;
+  padding: 5px 0px;
+  margin-bottom: 10px;
+}
+@media (max-width: 1000px) {
+  .attraction-list .attraction-list__info {
+    margin-bottom: 5px;
+  }
+}
+.attraction-list .attraction-list__info-title {
+  flex-shrink: 0;
+  align-self: flex-start;
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+.attraction-list__image-block {
+  margin-right: 30px;
+}
+@media (max-width: 1000px) {
+  .attraction-list__image-block {
+    width: 100%;
+    margin-right: 0px;
+    margin-bottom: 15px;
+  }
+}
+.attraction-list__image-block img {
+  width: 250px;
+  height: 200px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+@media (max-width: 1000px) {
+  .attraction-list__image-block img {
+    width: 100%;
+    height: 256px;
+  }
+}
+
+.attraction-list__placeholder-text {
+  display: none;
+}
+
+.attraction-list__image-block--placeholder {
+  position: relative;
+}
+.attraction-list__image-block--placeholder img {
+  opacity: 0.45;
+}
+.attraction-list__image-block--placeholder .attraction-list__placeholder-text {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #666666;
+  pointer-events: none;
+}
+
+.seperator {
+  max-width: 980px;
+}
+
+.booking-footer--empty {
+  flex-grow: 1;
 }/*# sourceMappingURL=style.css.map */

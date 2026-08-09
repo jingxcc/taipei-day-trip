@@ -1,12 +1,31 @@
-import utils from "../shared/utils.js";
-import auth from "../shared/auth.js";
+import {
+  checkEmptyFields,
+  getLastPathSegment,
+  getNumFromStr,
+  todayStr,
+} from "../shared/utils.js";
+import {
+  checkLogInStatus,
+  getAuthHeaders,
+  showDialog,
+} from "../shared/auth.js";
+import { PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const dateInput = document.querySelector("#attractionFormDate > #date");
 let loginInfo;
 
+const ADD_BOOKING_ERROR_MESSAGES = {
+  400: "加入購物車失敗，請稍後再試",
+  500: "加入購物車失敗，請稍後再試",
+  default: "加入購物車失敗，請稍後再試",
+};
+const GET_ATTRACTION_ERROR_MESSAGES = {
+  404: "找不到景點資料",
+  500: "景點資料載入失敗，請稍後再試",
+  default: "景點資料載入失敗，請稍後再試",
+};
+
 // Carousel
-const PLACEHOLDER_IMAGE =
-  "/static/images/placeholder/attraction-placeholder.jpg";
 const carouselImageBlock = document.getElementById("carouselImageBlock");
 const carouselPrevBtn = document.getElementById("carouselPrevBtn");
 const carouselNextBtn = document.getElementById("carouselNextBtn");
@@ -94,27 +113,63 @@ function changeTimePrices() {
 }
 
 async function getAttractionData() {
-  let attractionId = utils.getUrlSourceNum(window.location.pathname);
+  let attractionId = getLastPathSegment(window.location.pathname);
 
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
     const response = await fetch(apiUrl);
+    const result = await response.json();
 
-    if (response.ok) {
-      const result = await response.json();
-      return result;
-    } else {
-      window.location.href = window.location.origin;
+    if (!response.ok) {
+      const error = new Error(
+        GET_ATTRACTION_ERROR_MESSAGES[response.status] ||
+          GET_ATTRACTION_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
     }
+
+    return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+
+    throw new Error(GET_ATTRACTION_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
 // add images, information in the page
 async function displayAttractionData() {
-  let attractionData = await getAttractionData();
+  let attractionData;
+
+  try {
+    attractionData = await getAttractionData();
+  } catch (err) {
+    const attraction = document.querySelector(".attraction");
+    attraction.classList.add("attraction--error");
+    document.querySelector(".attraction__info").classList.add("hidden");
+
+    const attractionError = document.getElementById("attractionError");
+    const attractionErrorMessage = document.getElementById(
+      "attractionErrorMessage",
+    );
+    const attractionErrorHomeLink = document.getElementById(
+      "attractionErrorHomeLink",
+    );
+
+    attractionErrorMessage.textContent =
+      err.message || GET_ATTRACTION_ERROR_MESSAGES.default;
+    attractionError.classList.remove("hidden");
+
+    if (err.status === 404) {
+      attractionErrorHomeLink.classList.remove("hidden");
+    }
+
+    return;
+  }
 
   const attractionTitle = document.getElementById("attractionTitle");
   const attractionCategory = document.getElementById("attractionCategory");
@@ -194,7 +249,7 @@ timeInputs.forEach((input) => {
 });
 
 function setDateInputMin() {
-  dateInput.setAttribute("min", utils.todayStr());
+  dateInput.setAttribute("min", todayStr());
 }
 
 displayAttractionData();
@@ -204,7 +259,7 @@ setDateInputMin();
 const attractionBookBtn = document.getElementById("attractionBookBtn");
 attractionBookBtn.addEventListener("click", async () => {
   if (loginInfo["status"] !== true) {
-    auth.showDialog();
+    showDialog();
   } else {
     let date = dateInput.value;
     let time = "";
@@ -218,10 +273,10 @@ attractionBookBtn.addEventListener("click", async () => {
     let priceText = document.querySelector(
       ".attraction__form #formPrice",
     ).textContent;
-    let price = utils.getNumFromStr(priceText);
+    let price = getNumFromStr(priceText);
 
-    let attractionId = utils.getNumFromStr(
-      utils.getUrlSourceNum(window.location.pathname),
+    let attractionId = getNumFromStr(
+      getLastPathSegment(window.location.pathname),
     );
 
     let requestBody = {
@@ -231,19 +286,17 @@ attractionBookBtn.addEventListener("click", async () => {
       price: price,
     };
 
-    let checkEmptyResult = utils.checkEmptyFields(requestBody);
+    let checkEmptyResult = checkEmptyFields(requestBody);
 
     if (!checkEmptyResult["error"]) {
-      let result = await addBooking(requestBody);
-
-      if (result["ok"]) {
-        window.location.href = `${window.location.origin}/booking`;
-        alert("預定成功");
-      } else {
-        alert(`預定失敗\n${result["message"]}`);
+      try {
+        await addBooking(requestBody);
+        alert("成功加入購物車");
+        window.location.href = `${window.location.origin}/cart`;
+      } catch (error) {
+        alert(error.message || ADD_BOOKING_ERROR_MESSAGES.default);
       }
     } else {
-      // alert("Please fill in all fields !");
       alert(checkEmptyResult["message"]);
     }
   }
@@ -251,23 +304,35 @@ attractionBookBtn.addEventListener("click", async () => {
 
 async function addBooking(requestBody) {
   let apiUrl = `/api/booking`;
-  let logInToken = localStorage.getItem("logInToken");
   try {
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${logInToken}`,
+        ...getAuthHeaders(),
       },
       body: JSON.stringify(requestBody),
     });
 
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        ADD_BOOKING_ERROR_MESSAGES[response.status] ||
+          ADD_BOOKING_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
+    }
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(ADD_BOOKING_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
-loginInfo = await auth.checkLogInStatus();
+loginInfo = await checkLogInStatus();

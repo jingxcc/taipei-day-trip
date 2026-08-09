@@ -11,10 +11,11 @@ CREATE TABLE `order` (
     order_status INT NOT NULL DEFAULT 0 COMMENT '0 = Unpaid, 1 = Paid',
     visit_date DATE NOT NULL,
     visit_time VARCHAR(50) NOT NULL,
+    guest_count INT NOT NULL,
     order_price DECIMAL(10, 2) NOT NULL,
     create_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES user(id),
-    FOREIGN KEY (attraction_id) REFERENCES attraction(id),
+    FOREIGN KEY (attraction_id) REFERENCES attraction(id)
 );
 
 
@@ -26,7 +27,7 @@ CREATE TABLE order_contact (
     contact_email VARCHAR(255) NOT NULL,
     contact_phone VARCHAR(20) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES `order`(id),
-    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
 

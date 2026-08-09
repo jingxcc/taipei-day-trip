@@ -6,13 +6,10 @@ import requests
 from db import my_pool
 from .user import login_required
 
-TP_PARTNER_KEY = "partner_lpC6yZbdJonQAzIXaZPgqKIWTblxIKV7bKVKgCK50fFbBcYdKGtR4jS5"
-TP_MRECHANT_ID = "veralala_CTBC"
-
 
 load_dotenv()
 TP_PARTNER_KEY = os.getenv("TP_PARTNER_KEY")
-TP_MRECHANT_ID = os.getenv("TP_MRECHANT_ID")
+TP_MERCHANT_ID = os.getenv("TP_MERCHANT_ID")
 
 order_bp = Blueprint("order_bp", __name__)
 
@@ -43,13 +40,14 @@ def create_order_paid(login_data):
 
             if len(result) > 0:
                 sql = "INSERT INTO `order` \
-                        (user_id, attraction_id, visit_date, visit_time, order_price) \
-                        VALUES (%s, %s, %s, %s, %s);"
+                        (user_id, attraction_id, visit_date, visit_time, guest_count, order_price) \
+                        VALUES (%s, %s, %s, %s, %s, %s);"
                 val = (
                     login_data["data"]["id"],
                     request_data["order"]["trip"]["attraction"]["id"],
                     request_data["order"]["trip"]["date"],
                     request_data["order"]["trip"]["time"],
+                    result[0]["guest_count"],
                     request_data["order"]["price"],
                 )
                 my_cursor.execute(sql, val)
@@ -100,7 +98,7 @@ def create_order_paid(login_data):
             request_data_pay_by_prime = {
                 "prime": request_data["prime"],
                 "partner_key": TP_PARTNER_KEY,
-                "merchant_id": TP_MRECHANT_ID,
+                "merchant_id": TP_MERCHANT_ID,
                 "details": "TapPay Test",
                 "amount": request_data["order"]["price"],
                 "currency": "TWD",
@@ -160,8 +158,11 @@ def create_order_paid(login_data):
                 raise Exception("Database Update Failed.")
 
             sql = "DELETE FROM booking \
-                    WHERE user_id = %s"
-            val = (login_data["data"]["id"],)
+                    WHERE id = %s AND user_id = %s"
+            val = (
+                request_data["order"]["trip"]["id"],
+                login_data["data"]["id"],
+            )
             my_cursor.execute(sql, val)
             print(f"{my_cursor.rowcount} record(s) was deleted")
 
@@ -180,7 +181,6 @@ def create_order_paid(login_data):
 
     except Exception as err:
         print(f"ERROR: {err}")
-        # message = "Internal Server Error"
         message = error_msg["500"]
         return jsonify({"error": True, "message": message}), 500
 
