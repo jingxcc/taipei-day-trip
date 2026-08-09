@@ -19,6 +19,11 @@ const ADD_BOOKING_ERROR_MESSAGES = {
   500: "加入購物車失敗，請稍後再試",
   default: "加入購物車失敗，請稍後再試",
 };
+const GET_ATTRACTION_ERROR_MESSAGES = {
+  404: "找不到景點資料",
+  500: "景點資料載入失敗，請稍後再試",
+  default: "景點資料載入失敗，請稍後再試",
+};
 
 // Carousel
 const carouselImageBlock = document.getElementById("carouselImageBlock");
@@ -113,22 +118,58 @@ async function getAttractionData() {
   let apiUrl = `${window.location.origin}/api/attraction/${attractionId}`;
   try {
     const response = await fetch(apiUrl);
+    const result = await response.json();
 
-    if (response.ok) {
-      const result = await response.json();
-      return result;
-    } else {
-      window.location.href = window.location.origin;
+    if (!response.ok) {
+      const error = new Error(
+        GET_ATTRACTION_ERROR_MESSAGES[response.status] ||
+          GET_ATTRACTION_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
     }
+
+    return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+
+    throw new Error(GET_ATTRACTION_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
 // add images, information in the page
 async function displayAttractionData() {
-  let attractionData = await getAttractionData();
+  let attractionData;
+
+  try {
+    attractionData = await getAttractionData();
+  } catch (err) {
+    const attraction = document.querySelector(".attraction");
+    attraction.classList.add("attraction--error");
+    document.querySelector(".attraction__info").classList.add("hidden");
+
+    const attractionError = document.getElementById("attractionError");
+    const attractionErrorMessage = document.getElementById(
+      "attractionErrorMessage",
+    );
+    const attractionErrorHomeLink = document.getElementById(
+      "attractionErrorHomeLink",
+    );
+
+    attractionErrorMessage.textContent =
+      err.message || GET_ATTRACTION_ERROR_MESSAGES.default;
+    attractionError.classList.remove("hidden");
+
+    if (err.status === 404) {
+      attractionErrorHomeLink.classList.remove("hidden");
+    }
+
+    return;
+  }
 
   const attractionTitle = document.getElementById("attractionTitle");
   const attractionCategory = document.getElementById("attractionCategory");

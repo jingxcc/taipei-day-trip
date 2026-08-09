@@ -2,8 +2,11 @@ import { checkLogInStatus } from "../shared/auth.js";
 import { PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const DEFAULT_PAGE_NUM = 0;
+const ATTRACTION_ERROR_MESSAGES = {
+  default: "景點資料載入失敗，請稍後再試",
+};
 
-let attractionNextPageNum = 0;
+let attractionNextPageNum = DEFAULT_PAGE_NUM;
 let isFetchingData = false;
 const attractionContent = document.getElementById("attractionContent");
 const footer = document.getElementById("footer");
@@ -14,15 +17,18 @@ const searchBtn = document.getElementById("searchBtn");
 const listBarList = document.getElementById("listBarList");
 const listBarPrevBtn = document.getElementById("listBarPrevBtn");
 const listBarNextBtn = document.getElementById("listBarNextBtn");
+const listBar = document.querySelector(".list-bar");
+const hero = document.querySelector(".hero");
 let listBarScrollWidth = window.innerWidth * 0.5;
 
 async function addAttractionItems(keyword) {
   let url = new URL(`${window.location.origin}/api/attractions?`);
-  let urlParams = new URLSearchParams(url.search);
-  let paramValues = {
+  const urlParams = new URLSearchParams(url.search);
+  const paramValues = {
     page: attractionNextPageNum,
     keyword: keyword,
   };
+  const isFirstPage = paramValues.page === DEFAULT_PAGE_NUM;
 
   urlParams.set("page", paramValues["page"]);
   if (keyword !== "") {
@@ -32,18 +38,22 @@ async function addAttractionItems(keyword) {
   url += urlParams.toString();
   try {
     const response = await fetch(url);
+    const result = await response.json();
 
-    if (response.ok) {
-      const result = await response.json();
+    if (!response.ok) {
+      const error = new Error(ATTRACTION_ERROR_MESSAGES.default);
+      error.status = response.status;
+      throw error;
+    }
 
-      attractionNextPageNum = result["nextPage"];
-      const fragment = document.createDocumentFragment();
+    attractionNextPageNum = result["nextPage"];
+    const fragment = document.createDocumentFragment();
 
-      if (result["data"].length > 0) {
-        result["data"].forEach((attraction) => {
-          const card = document.createElement("div");
+    if (result["data"].length > 0) {
+      result["data"].forEach((attraction) => {
+        const card = document.createElement("div");
 
-          card.innerHTML = `
+        card.innerHTML = `
               <a class="card" href="/attraction/${attraction.id}">
                 <div class="card__image-block">
                   <img class="card__img" src="" alt="attraction" />
@@ -64,54 +74,65 @@ async function addAttractionItems(keyword) {
                 </div>
               
             `;
-          const cardImgBlock = card.querySelector(".card__image-block");
-          const cardImg = cardImgBlock.querySelector(".card__img");
+        const cardImgBlock = card.querySelector(".card__image-block");
+        const cardImg = cardImgBlock.querySelector(".card__img");
 
-          if (attraction["images"] !== null) {
-            cardImg.onerror = () => {
-              showPlaceholder(cardImgBlock);
-            };
-
-            cardImg.setAttribute("src", attraction["images"][0]);
-          } else {
+        if (attraction["images"] !== null) {
+          cardImg.onerror = () => {
             showPlaceholder(cardImgBlock);
+          };
+
+          cardImg.setAttribute("src", attraction["images"][0]);
+        } else {
+          showPlaceholder(cardImgBlock);
+        }
+
+        const cardTitleText = card.querySelector(".card__title-text");
+        cardTitleText.setAttribute("title", attraction["attraction_name"]);
+        cardTitleText.textContent = attraction["attraction_name"];
+
+        const cardInfoSpans = card.querySelectorAll(".card__info > span");
+        cardInfoSpans.forEach((cardInfoSpan, idx) => {
+          if (idx === 0 && attraction["mrt"] !== null) {
+            cardInfoSpan.textContent = attraction["mrt"].join("/");
+          } else if (idx === 1) {
+            cardInfoSpan.textContent = attraction["category"];
           }
-
-          const cardTitleText = card.querySelector(".card__title-text");
-          cardTitleText.setAttribute("title", attraction["attraction_name"]);
-          cardTitleText.textContent = attraction["attraction_name"];
-
-          const cardInfoSpans = card.querySelectorAll(".card__info > span");
-          cardInfoSpans.forEach((cardInfoSpan, idx) => {
-            if (idx === 0 && attraction["mrt"] !== null) {
-              cardInfoSpan.textContent = attraction["mrt"].join("/");
-            } else if (idx === 1) {
-              cardInfoSpan.textContent = attraction["category"];
-            }
-          });
-          fragment.appendChild(card);
         });
+        fragment.appendChild(card);
+      });
 
-        attractionContent.appendChild(fragment);
-      } else if (paramValues["page"] === 0) {
-        const attractionNoResult = document.createElement("div");
-        const styleList = ["content"];
-        attractionNoResult.classList.add(...styleList);
-        attractionNoResult.textContent = "找不到資料";
+      attractionContent.appendChild(fragment);
+    } else if (isFirstPage) {
+      const attractionNoResult = document.createElement("div");
+      const styleList = ["content"];
+      attractionNoResult.classList.add(...styleList);
+      attractionNoResult.textContent = "找不到資料";
 
-        attractionContent.appendChild(attractionNoResult);
-      }
+      attractionContent.appendChild(attractionNoResult);
     }
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+
+    throw new Error(ATTRACTION_ERROR_MESSAGES.default);
   }
 }
 
 async function addAttractions(attractionKeyword) {
   if (attractionNextPageNum !== null && !isFetchingData) {
     isFetchingData = true;
-    await addAttractionItems(attractionKeyword);
-    isFetchingData = false;
+
+    try {
+      await addAttractionItems(attractionKeyword);
+    } catch (err) {
+      attractionContent.textContent = err.message;
+    } finally {
+      isFetchingData = false;
+    }
   }
 }
 
@@ -123,9 +144,16 @@ function showPlaceholder(imageBlock) {
 }
 
 // observer
-function scrollAddAttractions(attractionKeyword) {
-  attractionNextPageNum = 0;
-  addAttractions(attractionKeyword);
+let attractionObserver = null;
+async function scrollAddAttractions(attractionKeyword) {
+  attractionObserver?.disconnect();
+
+  attractionNextPageNum = DEFAULT_PAGE_NUM;
+  await addAttractions(attractionKeyword);
+
+  if (attractionNextPageNum === null) {
+    return;
+  }
 
   const observerOptions = {
     root: null,
@@ -133,22 +161,22 @@ function scrollAddAttractions(attractionKeyword) {
     threshold: 0.5,
   };
 
-  let observerScrollCallBack = (entries, observerScroll) => {
-    entries.forEach((entry) => {
+  const observerScrollCallBack = async (entries, observer) => {
+    for (const entry of entries) {
       if (entry.isIntersecting) {
-        addAttractions(attractionKeyword);
+        await addAttractions(attractionKeyword);
       }
       if (attractionNextPageNum === null) {
-        observerScroll.disconnect();
+        observer.disconnect();
       }
-    });
+    }
   };
 
-  let observerScroll = new IntersectionObserver(
+  attractionObserver = new IntersectionObserver(
     observerScrollCallBack,
     observerOptions,
   );
-  observerScroll.observe(footer);
+  attractionObserver.observe(footer);
 }
 
 searchInput.addEventListener("keydown", (e) => {
@@ -177,24 +205,40 @@ async function addListBarItems() {
   const url = "/api/mrts";
   try {
     const response = await fetch(url);
-    if (response.ok) {
-      const result = await response.json();
-      const styleClass = ["list-bar__item", "body"];
-      const fragment = document.createDocumentFragment();
+    const result = await response.json();
 
-      result["data"].forEach((item) => {
-        const listBarItem = document.createElement("button");
-        listBarItem.classList.add(...styleClass);
-        listBarItem.textContent = item;
-        fragment.appendChild(listBarItem);
-      });
-      listBarList.appendChild(fragment);
-
-      listBarScrollWidth = listBarList.clientWidth * 0.7;
+    if (!response.ok) {
+      const error = new Error("捷運站資料載入失敗");
+      error.status = response.status;
+      throw error;
     }
+
+    if (!Array.isArray(result.data) || result.data.length === 0) {
+      hideListBar();
+      return;
+    }
+
+    const styleClass = ["list-bar__item", "body"];
+    const fragment = document.createDocumentFragment();
+
+    result.data.forEach((item) => {
+      const listBarItem = document.createElement("button");
+      listBarItem.classList.add(...styleClass);
+      listBarItem.textContent = item;
+      fragment.appendChild(listBarItem);
+    });
+    listBarList.appendChild(fragment);
+
+    listBarScrollWidth = listBarList.clientWidth * 0.7;
   } catch (err) {
     console.error(`Error: ${err}`);
+    hideListBar();
   }
+}
+
+function hideListBar() {
+  listBar.classList.add("list-bar--hidden");
+  hero.classList.replace("mb-40", "mb-20");
 }
 
 listBarPrevBtn.addEventListener("click", () => {

@@ -32,6 +32,10 @@ const LOGIN_ERROR_MESSAGES = {
   default: "登入失敗，請稍後再試",
 };
 
+const AUTH_STATUS_ERROR_MESSAGES = {
+  default: "無法確認登入狀態，請稍後再試",
+};
+
 // sign up
 async function getSignUpData() {
   const name = document.querySelector("#dialogSignUp .signup-form__name");
@@ -180,23 +184,43 @@ async function decodeLogInToken() {
     });
 
     const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(AUTH_STATUS_ERROR_MESSAGES.default);
+      error.status = response.status;
+      throw error;
+    }
+
+    if (!result || !("data" in result)) {
+      throw new Error(AUTH_STATUS_ERROR_MESSAGES.default);
+    }
+
     return result;
   } catch (err) {
     console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+    throw new Error(AUTH_STATUS_ERROR_MESSAGES.default);
   }
-  return false;
 }
 
 async function checkLogInStatus() {
   isLogin = false;
-  let logInToken = localStorage.getItem("logInToken");
-  let result;
+  const logInToken = localStorage.getItem("logInToken");
+  let userInfo = { data: null };
+
   if (logInToken !== null) {
-    result = await decodeLogInToken();
-    if (result["data"]) {
-      isLogin = true;
-    } else {
-      clearLocalStorage();
+    try {
+      userInfo = await decodeLogInToken();
+      if (userInfo.data) {
+        isLogin = true;
+      } else {
+        clearLocalStorage();
+      }
+    } catch (err) {
+      console.error(`Error: ${err}`);
     }
   }
   navMenuItemLogIn.textContent = isLogin ? "登出系統" : "登入/註冊";
@@ -210,7 +234,7 @@ async function checkLogInStatus() {
   if (!isLogin && requiresAuth) {
     window.location.href = window.location.origin;
   }
-  return { status: isLogin, userInfo: result };
+  return { status: isLogin, userInfo: userInfo };
 }
 
 function getAuthHeaders() {

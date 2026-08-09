@@ -47,6 +47,10 @@
 .list-bar {
   display: flex;
   align-items: center;
+
+  &--hidden {
+    display: none;
+  }
 }
 
 .list-bar__btn {

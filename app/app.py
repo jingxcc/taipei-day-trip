@@ -28,19 +28,13 @@ def index():
     return render_template("index.html")
 
 
-@app.route("/attraction/<id>")
-def attraction(id):
-    if not id.isdigit():
-        return redirect(url_for("index"))
-
+@app.route("/attraction/<int:attraction_id>")
+def attraction(attraction_id):
     return render_template("attraction.html")
 
 
-@app.route("/booking/<id>")
-def booking(id):
-    if not id.isdigit():
-        return redirect(url_for("index"))
-
+@app.route("/booking/<int:booking_id>")
+def booking(booking_id):
     return render_template("booking.html")
 
 

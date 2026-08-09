@@ -539,6 +539,9 @@ footer {
   display: flex;
   align-items: center;
 }
+.list-bar--hidden {
+  display: none;
+}
 
 .list-bar__btn {
   background-color: white;
@@ -687,6 +690,19 @@ footer {
     flex-wrap: wrap;
     padding: 0;
     border: 0;
+  }
+}
+.attraction--error {
+  border-bottom: 0;
+}
+.attraction--error .attraction__carousel,
+.attraction--error .attraction__profile {
+  display: none;
+}
+@media (max-width: 1200px) {
+  .attraction--error {
+    margin-top: 79px;
+    padding: 0px 15px 40px 15px;
   }
 }
 
