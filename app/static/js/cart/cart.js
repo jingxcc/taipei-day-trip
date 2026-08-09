@@ -207,7 +207,7 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
     'input[name="booking-selection"]:checked',
   );
   if (selectedBooking) {
-    window.location.href = `/booking/${selectedBooking.value}`;
+    window.location.href = `/checkout/${selectedBooking.value}`;
   }
 });
 
