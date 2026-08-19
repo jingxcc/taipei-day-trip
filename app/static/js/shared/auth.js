@@ -50,8 +50,8 @@ async function getSignUpData() {
   };
 
   const checkEmptyResult = checkEmptyFields(requestBody);
-  if (checkEmptyResult["error"]) {
-    throw new Error(checkEmptyResult["message"]);
+  if (!checkEmptyResult.valid) {
+    throw new Error(checkEmptyResult.message);
   }
 
   const checkEmailResult = checkValidEmail(requestBody["email"]);
@@ -116,8 +116,8 @@ async function getLogInData() {
   };
 
   let checkEmptyResult = checkEmptyFields(requestBody);
-  if (checkEmptyResult["error"]) {
-    throw new Error(checkEmptyResult["message"]);
+  if (!checkEmptyResult.valid) {
+    throw new Error(checkEmptyResult.message);
   }
 
   let checkEmailResult = checkValidEmail(requestBody["email"]);

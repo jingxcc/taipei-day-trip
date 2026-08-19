@@ -1,4 +1,5 @@
 import { checkLogInStatus, getAuthHeaders } from "../shared/auth.js";
+import { formatPrice } from "../shared/utils.js";
 import { DISPLAY_TIME_SLOT, PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 const CART_ERROR_MESSAGES = {
@@ -113,7 +114,7 @@ function createCartItem(booking) {
   item.querySelector(".attraction-list__time").textContent =
     DISPLAY_TIME_SLOT[booking.time] || booking.time;
   item.querySelector(".attraction-list__price").textContent =
-    `新台幣 ${booking.price} 元`;
+    formatPrice(booking.price);
   item.querySelector(".attraction-list__address").textContent =
     booking.attraction.address;
 
@@ -138,7 +139,7 @@ function showCart(bookings) {
   const cartTotal = document.getElementById("cartTotal");
   firstBookingSelect.checked = true;
   checkoutBtn.disabled = false;
-  cartTotal.textContent = `新台幣 ${firstBookingSelect.dataset.price} 元`;
+  cartTotal.textContent = formatPrice(firstBookingSelect.dataset.price);
 }
 
 function showCartError(message) {
@@ -164,7 +165,7 @@ async function loadCart() {
 document.getElementById("cartList").addEventListener("change", (event) => {
   if (event.target.matches(".attraction-list__select")) {
     document.getElementById("cartTotal").textContent =
-      `新台幣 ${event.target.dataset.price} 元`;
+      formatPrice(event.target.dataset.price);
     document.getElementById("checkoutBtn").disabled = false;
   }
 });

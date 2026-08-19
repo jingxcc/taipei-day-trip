@@ -1,5 +1,5 @@
 import { checkLogInStatus, getAuthHeaders } from "../shared/auth.js";
-import { getLastPathSegment } from "../shared/utils.js";
+import { formatPrice, getLastPathSegment } from "../shared/utils.js";
 import { DISPLAY_TIME_SLOT, PLACEHOLDER_IMAGE } from "../shared/constants.js";
 
 let loginInfo;
@@ -97,11 +97,11 @@ async function displayBookingData() {
       bookingTime.textContent =
         DISPLAY_TIME_SLOT[bookingData["data"]["time"]] ||
         bookingData["data"]["time"];
-      bookingPrice.textContent = `新台幣 ${bookingData["data"]["price"]} 元`;
+      bookingPrice.textContent = formatPrice(bookingData["data"]["price"]);
       bookingAttractionAddress.textContent =
         bookingData["data"]["attraction"]["address"];
 
-      confirmTotal.textContent = `新台幣 ${bookingData["data"]["price"]} 元`; // tmp
+      confirmTotal.textContent = formatPrice(bookingData["data"]["price"]);
     } else {
       mainContent.classList.add("hidden");
       footer.classList.add("booking-footer--empty");
