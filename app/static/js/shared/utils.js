@@ -1,11 +1,16 @@
 function getNumFromStr(numText) {
   const regexpNum = /\d+/;
   let num;
-  if (numText.match(regexpNum)) {
-    num = numText.match(regexpNum)[0];
+  const normalizedText = numText.replaceAll(",", "");
+  if (normalizedText.match(regexpNum)) {
+    num = normalizedText.match(regexpNum)[0];
     num = !isNaN(parseInt(num)) ? parseInt(num) : undefined;
     return num;
   }
+}
+
+function formatPrice(price) {
+  return `新台幣 ${Number(price).toLocaleString("zh-TW")} 元`;
 }
 
 function getLastPathSegment(urlPathName) {
@@ -26,26 +31,25 @@ function todayStr() {
   return todayString;
 }
 
-function checkEmptyFields(fieldDict) {
-  let isEmptyField = false;
-  Object.keys(fieldDict).forEach((item) => {
-    fieldDict[item] =
-      typeof fieldDict[item] === "string"
-        ? fieldDict[item].trim()
-        : fieldDict[item];
-
-    if (fieldDict[item] === "" || fieldDict[item] === undefined) {
-      isEmptyField = true;
-    }
+function checkEmptyFields(fields, message = "請填寫必要資訊") {
+  const hasEmptyField = Object.values(fields).some((value) => {
+    return (
+      value === null ||
+      value === undefined ||
+      (typeof value === "string" && value.trim() === "")
+    );
   });
-  if (isEmptyField) {
-    let message = "請填寫必要資訊";
+
+  if (hasEmptyField) {
     return {
-      error: true,
-      message: message,
+      valid: false,
+      message,
     };
   }
-  return isEmptyField;
+
+  return {
+    valid: true,
+  };
 }
 
 function checkValidEmail(email) {
@@ -78,6 +82,7 @@ function checkValidPhoneNumber(phoneNum) {
 
 export {
   getNumFromStr,
+  formatPrice,
   getLastPathSegment,
   todayStr,
   checkEmptyFields,

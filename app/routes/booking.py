@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from datetime import datetime
 from db import my_pool
 from .user import login_required
 
@@ -11,6 +12,9 @@ ERROR_MESSAGES = {
 
     "get_list_failed": "購物車資料取得失敗，請稍後再試",
     "get_one_failed": "預訂資料取得失敗，請稍後再試",
+    
+    "get_prices_invalid_date": "請提供 YYYY-MM-DD 格式的日期",
+    "get_prices_failed": "價格資料取得失敗，請稍後再試",
 
     "add_invalid_request": "請提供預訂資料",
     "add_invalid_price": "找不到對應價格，請確認是否為有效價格",
@@ -18,6 +22,50 @@ ERROR_MESSAGES = {
 
     "delete_failed": "刪除購物車資料失敗，請稍後再試",
 }
+
+
+@booking_bp.route("/api/booking-prices", methods=["GET"])
+def get_booking_prices():
+    date_string = request.args.get("date", "")
+    
+    try:
+        visit_date = datetime.strptime(date_string, "%Y-%m-%d").date()
+    except ValueError:
+        return jsonify({
+            "error": True,
+            "message": ERROR_MESSAGES["get_prices_invalid_date"],
+        }), 400
+
+    try:
+        my_conn = my_pool.get_connection()
+        my_cursor = my_conn.cursor(dictionary=True)
+
+        sql = "SELECT time, price FROM booking_price \
+                WHERE start_date <= %s \
+                AND (end_date IS NULL OR end_date >= %s) \
+                ORDER BY id"
+        my_cursor.execute(sql, (visit_date, visit_date))
+        result = my_cursor.fetchall()
+
+        prices = []
+
+        for booking_price in result:
+            prices.append({
+                "time": booking_price["time"],
+                "price": int(booking_price["price"]),
+            })
+
+        return jsonify({"data": prices}), 200
+
+    except Exception as err:
+        print(f"ERROR: {err}")
+        return jsonify({
+            "error": True,
+            "message": ERROR_MESSAGES["get_prices_failed"],
+        }), 500
+    finally:
+        if "my_conn" in locals():
+            my_conn.close()
 
 # cart page
 @booking_bp.route("/api/bookings", methods=["GET"])
@@ -152,7 +200,7 @@ def add_booking(login_data):
         my_cursor.execute(sql, val)
         booking_price_data = my_cursor.fetchall()
 
-        if booking_price_data is None:
+        if not booking_price_data:
             return jsonify({
                 "error": True,
                 "message": ERROR_MESSAGES["add_invalid_price"],

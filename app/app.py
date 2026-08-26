@@ -33,9 +33,9 @@ def attraction(attraction_id):
     return render_template("attraction.html")
 
 
-@app.route("/booking/<int:booking_id>")
-def booking(booking_id):
-    return render_template("booking.html")
+@app.route("/checkout/<int:booking_id>")
+def checkout(booking_id):
+    return render_template("checkout.html")
 
 
 @app.route("/cart")

@@ -1,5 +1,6 @@
 import {
   checkEmptyFields,
+  formatPrice,
   getLastPathSegment,
   getNumFromStr,
   todayStr,
@@ -23,6 +24,11 @@ const GET_ATTRACTION_ERROR_MESSAGES = {
   404: "找不到景點資料",
   500: "景點資料載入失敗，請稍後再試",
   default: "景點資料載入失敗，請稍後再試",
+};
+const GET_BOOKING_PRICES_ERROR_MESSAGES = {
+  400: "日期格式錯誤，無法取得價格",
+  500: "價格資料載入失敗，請稍後再試",
+  default: "無法取得價格資料，請稍後再試",
 };
 
 // Carousel
@@ -91,13 +97,11 @@ function fillCarouselPlaceholder(carouselItem) {
 const timeInputs = document.querySelectorAll(
   "#attractionFormTime > input[name='time']",
 );
-const timePrices = [
-  { time: "beforenoon", price: 2000 },
-  { time: "afternoon", price: 2500 },
-];
+let timePrices = [];
 
-function changeTimePrices() {
+function updateSelectedTimePrice() {
   const formPrice = document.getElementById("formPrice");
+  formPrice.textContent = "";
 
   timeInputs.forEach((input) => {
     if (input.checked) {
@@ -105,11 +109,65 @@ function changeTimePrices() {
 
       timePrices.forEach((timePrice) => {
         if (timePrice["time"] === timeSelected) {
-          formPrice.textContent = `新台幣 ${timePrice["price"]} 元`;
+          formPrice.textContent = formatPrice(timePrice["price"]);
         }
       });
     }
   });
+}
+
+async function fetchBookingPrices(visitDate) {
+  const params = new URLSearchParams({ date: visitDate });
+  const apiUrl = `/api/booking-prices?${params.toString()}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const result = await response.json();
+
+    if (!response.ok) {
+      const error = new Error(
+        GET_BOOKING_PRICES_ERROR_MESSAGES[response.status] ||
+          GET_BOOKING_PRICES_ERROR_MESSAGES.default,
+      );
+      error.status = response.status;
+      throw error;
+    }
+
+    return result.data;
+  } catch (err) {
+    console.error(`Error: ${err}`);
+
+    if (err.status) {
+      throw err;
+    }
+
+    throw new Error(GET_BOOKING_PRICES_ERROR_MESSAGES.default);
+  }
+}
+
+async function loadBookingPrices(visitDate) {
+  timePrices = [];
+  updateSelectedTimePrice();
+
+  if (!visitDate) return;
+
+  try {
+    const bookingPrices = await fetchBookingPrices(visitDate);
+
+    if (dateInput.value !== visitDate) return;
+
+    if (bookingPrices.length === 0) {
+      alert("所選日期目前沒有可預訂的時段");
+      return;
+    }
+
+    timePrices = bookingPrices;
+    updateSelectedTimePrice();
+  } catch (error) {
+    if (dateInput.value !== visitDate) return;
+
+    alert(error.message || GET_BOOKING_PRICES_ERROR_MESSAGES.default);
+  }
 }
 
 async function getAttractionData() {
@@ -243,9 +301,11 @@ carouselNextBtn.addEventListener("click", () => {
 });
 
 timeInputs.forEach((input) => {
-  input.addEventListener("click", () => {
-    changeTimePrices();
-  });
+  input.addEventListener("change", updateSelectedTimePrice);
+});
+
+dateInput.addEventListener("change", (event) => {
+  loadBookingPrices(event.target.value);
 });
 
 function setDateInputMin() {
@@ -288,7 +348,7 @@ attractionBookBtn.addEventListener("click", async () => {
 
     let checkEmptyResult = checkEmptyFields(requestBody);
 
-    if (!checkEmptyResult["error"]) {
+    if (checkEmptyResult.valid) {
       try {
         await addBooking(requestBody);
         alert("成功加入購物車");
@@ -297,7 +357,7 @@ attractionBookBtn.addEventListener("click", async () => {
         alert(error.message || ADD_BOOKING_ERROR_MESSAGES.default);
       }
     } else {
-      alert(checkEmptyResult["message"]);
+      alert(checkEmptyResult.message);
     }
   }
 });

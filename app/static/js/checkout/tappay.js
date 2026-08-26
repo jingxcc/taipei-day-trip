@@ -195,7 +195,12 @@ confirmBtn.addEventListener("click", async () => {
       const createOrderResult = await createOrdersAndPay(requestBody);
 
       if (createOrderResult && "data" in createOrderResult) {
-        window.location.href = `${window.location.origin}/thankyou?number=${createOrderResult["data"]["number"]}`;
+        const orderNo = createOrderResult["data"]["number"];
+        const params = new URLSearchParams({
+          number: orderNo,
+        });
+
+        window.location.href = `/thankyou?${params.toString()}`;
       } else {
         hideLoader();
         alert(`請稍後再試 ! \n${createOrderResult["message"]}`);
