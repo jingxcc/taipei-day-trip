@@ -9,9 +9,5 @@ CREATE TABLE user (
 );
 
 
--- insert fake data
-INSERT INTO user (user_name, email, `password`)
-VALUES ('彭彭彭', 'ply@ply.com','1234');
-
 
 

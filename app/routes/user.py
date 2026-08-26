@@ -4,11 +4,15 @@ import os
 from datetime import datetime, timedelta, timezone
 from functools import wraps
 import jwt
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 from mysql.connector import IntegrityError, errorcode
 from db import my_pool
 
 
 user_bp = Blueprint("user_bp", __name__)
+
+password_hasher = PasswordHasher()
 
 load_dotenv()
 JWT_KEY = os.getenv("JWT_KEY")
@@ -54,7 +58,12 @@ def api_signup():
         message = error_msg["invalid_signup_data"]
         return jsonify({"error": True, "message": message}), 400
 
+    my_conn = None
+    my_cursor = None
+
     try:
+        password_hash = password_hasher.hash(request_data["password"])
+
         my_conn = my_pool.get_connection()
         my_cursor = my_conn.cursor()
 
@@ -63,7 +72,7 @@ def api_signup():
         val = (
             request_data["name"],
             request_data["email"],
-            request_data["password"],
+            password_hash,
         )
         my_cursor.execute(sql, val)
         my_conn.commit()
@@ -71,7 +80,7 @@ def api_signup():
         return jsonify({"ok": True}), 201
 
     except IntegrityError as err:
-        if "my_conn" in locals():
+        if my_conn is not None:
             my_conn.rollback()
 
         if err.errno == errorcode.ER_DUP_ENTRY:
@@ -83,7 +92,7 @@ def api_signup():
         return jsonify({"error": True, "message": message}), 500
 
     except Exception as err:
-        if "my_conn" in locals():
+        if my_conn is not None:
             my_conn.rollback()
 
         print(f"ERROR: {err}")
@@ -91,7 +100,10 @@ def api_signup():
         return jsonify({"error": True, "message": message}), 500
 
     finally:
-        if "my_conn" in locals():
+        if my_cursor is not None:
+            my_cursor.close()
+
+        if my_conn is not None:
             my_conn.close()
 
 
@@ -116,45 +128,72 @@ def api_user_auth():
 
         email = request_data["email"]
         password = request_data["password"]
+
+        my_conn = None
+        my_cursor = None
+        
         try:
             my_conn = my_pool.get_connection()
             my_cursor = my_conn.cursor(dictionary=True)
 
-            sql = "SELECT id, user_name as name, email FROM user \
-                WHERE email = %s AND password = %s"
-            val = (email, password)
+            sql = "SELECT id, user_name as name, email, password FROM user \
+                WHERE email = %s"
+            val = (email,)
             my_cursor.execute(sql, val)
-            result = my_cursor.fetchall()
+            result = my_cursor.fetchone()
 
-            if len(result) == 0:
+            if result is None:
                 message = error_msg["invalid_credentials"]
-                return (
-                    jsonify(
-                        {
-                            "error": True,
-                            "message": message,
-                        }
-                    ),
-                    401,
-                )
+                return jsonify({
+                    "error": True,
+                    "message": message,
+                }), 401
 
-            else:
-                token_expiration = datetime.now(tz=timezone.utc) + timedelta(days=7)
-                token_payload = result[0]
-                token_payload["exp"] = token_expiration
-                encoded_result = jwt.encode(
-                    token_payload, JWT_KEY, algorithm=JWT_ALGORITHM
-                )
+            if not password_matches_hash(result["password"], password):
+                message = error_msg["invalid_credentials"]
+                return jsonify({
+                    "error": True,
+                    "message": message,
+                }), 401
 
-                return jsonify({"token": encoded_result})
+            if password_hasher.check_needs_rehash(result["password"]):
+                new_password_hash = password_hasher.hash(password)
+
+                update_sql = """
+                    UPDATE user
+                    SET password = %s
+                    WHERE id = %s
+                """
+                val = (new_password_hash, result["id"])
+                my_cursor.execute(update_sql, val)
+                my_conn.commit()
+                        
+            token_expiration = datetime.now(tz=timezone.utc) + timedelta(days=7)
+            token_payload = {
+                "id": result["id"],
+                "name": result["name"],
+                "email": result["email"],
+                "exp": token_expiration,
+            }
+            encoded_result = jwt.encode(
+                token_payload, JWT_KEY, algorithm=JWT_ALGORITHM
+            )
+
+            return jsonify({"token": encoded_result})
 
         except Exception as err:
+            if my_conn is not None:
+                my_conn.rollback()
+
             print(f"ERROR: {err}")
             message = error_msg["login_failed"]
             return jsonify({"error": True, "message": message}), 500
 
         finally:
-            if "my_conn" in locals():
+            if my_cursor is not None:
+                my_cursor.close()
+
+            if my_conn is not None:
                 my_conn.close()
 
 
@@ -185,3 +224,11 @@ def get_current_user():
         "name": payload["name"],
         "email": payload["email"],
     }
+
+def password_matches_hash(password_hash, password):
+    try:
+        password_hasher.verify(password_hash, password)
+    except VerifyMismatchError:
+        return False
+
+    return True
