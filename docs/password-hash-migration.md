@@ -31,7 +31,7 @@
 5. 從專案根目錄（`taipei-day-trip/`）執行 migration：
 
    ```bash
-   .venv/bin/python scripts/hash_existing_user_passwords.py
+   .venv/bin/python -m scripts.hash_existing_user_passwords
    ```
 
 6. 確認所有密碼皆已轉換。
