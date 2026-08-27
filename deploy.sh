@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # EC2 deployment script
 
 set -e
