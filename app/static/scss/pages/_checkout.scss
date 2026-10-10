@@ -91,3 +91,14 @@
     margin-bottom: 22px;
   }
 }
+
+.confirm-info__btn {
+  &--not-ready {
+    background-color: $gray-70;
+    cursor: default;
+  }
+
+  &--submitting {
+    cursor: wait;
+  }
+}

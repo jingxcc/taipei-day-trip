@@ -51,7 +51,7 @@ button {
   background-color: $cyan-70;
   color: white;
 
-  &.disabled{
+  &--disabled {
     background-color: $gray-70;
     cursor: default;
   }
@@ -59,16 +59,17 @@ button {
 
 dialog {
   padding: 0;
-  border:0;
-  box-shadow: 0px 0px 20px 0px #aaa
+  border: 0;
+  box-shadow: 0px 0px 20px 0px #aaa;
 }
 
-input, input::placeholder {
+input,
+input::placeholder {
   font-family: "Noto Sans TC", sans-serif;
   font-size: $size-default;
   font-weight: $weight-default;
   line-height: 13.3px;
-  
+
   color: $gray-70;
 }
 
@@ -116,7 +117,7 @@ header {
     text-align: center;
   }
 
-  #navMenuItemLogIn{
+  #navMenuItemLogIn {
     width: 92px;
   }
 }
@@ -168,21 +169,21 @@ footer {
     display: flex;
     align-items: center;
     justify-content: center;
-  
+
     margin-bottom: 15px;
   }
-  
+
   .dialog__title {
     flex-grow: 1;
   }
-  
+
   .dialog__close-btn {
     box-sizing: content-box;
     display: block;
     width: 16px;
     height: 16px;
     padding: 7px;
-  
+
     background-image: url(../../images/icons/dialog/close.svg);
     background-repeat: no-repeat;
     background-position: center;
@@ -190,48 +191,49 @@ footer {
   }
 }
 
-.dialog__main { 
+.dialog__main {
   padding: 15px;
   color: $gray-70;
 
   input {
     padding: 15px;
     border: 1px solid #ccc;
-    
+
     border-radius: 5px;
     color: $gray-50;
   }
-  
+
   button {
     border-radius: 5px;
-  
+
     background-color: $cyan-70;
   }
-  
-  input, button, a {
+
+  input,
+  button,
+  a {
     width: 100%;
     margin-bottom: 10px;
   }
-  
+
   .dialog_btn-text {
     display: block;
     padding: 10px 20px;
-  
+
     font-weight: 400;
     color: white;
   }
 
   .dialog__message {
     font-size: 12px;
-    color:red;
+    color: red;
 
-    &.success{
+    &.success {
       color: green;
       font-size: 16px;
     }
   }
 }
-
 
 // loading
 .bouncing-loader {
@@ -262,7 +264,7 @@ footer {
 }
 @keyframes bouncing-loader {
   to {
-      opacity: 0.5;
-      transform: translate3d(0, -12px, 0);
+    opacity: 0.5;
+    transform: translate3d(0, -12px, 0);
   }
 }

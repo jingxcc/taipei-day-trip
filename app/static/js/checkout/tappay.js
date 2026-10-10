@@ -2,7 +2,7 @@
 import {
   checkValidEmail,
   checkValidPhoneNumber,
-  getNumFromStr,
+  getLastPathSegment,
 } from "../shared/utils.js";
 import env from "../shared/env.js";
 import { hideLoader, showLoader } from "../shared/loading.js";
@@ -11,7 +11,18 @@ import { getAuthHeaders } from "../shared/auth.js";
 const TP_APP_ID = env.TP_APP_ID;
 const TP_API_KEY = env.TP_API_KEY;
 
+const MESSAGES = {
+  emptyContact: "請填寫必要資訊",
+  invalidBookingId: "預訂編號無效，請返回購物車重新選擇",
+  requestFailed: "付款請求失敗，請稍後再試",
+  paymentFailed: "付款失敗，請重新付款",
+};
+
 const confirmBtn = document.getElementById("confirmBtn");
+const paymentState = {
+  canGetPrime: false,
+  isSubmitting: false,
+};
 
 TPDirect.setupSDK(TP_APP_ID, TP_API_KEY, "sandbox");
 let TP_fields = {
@@ -79,37 +90,36 @@ TPDirect.card.setup({
   },
 });
 
+function updateConfirmButtonState() {
+  const isCardNotReady = !paymentState.canGetPrime;
+
+  confirmBtn.disabled = isCardNotReady || paymentState.isSubmitting;
+
+  confirmBtn.classList.toggle("confirm-info__btn--not-ready", isCardNotReady);
+
+  confirmBtn.classList.toggle(
+    "confirm-info__btn--submitting",
+    paymentState.isSubmitting,
+  );
+}
+
 TPDirect.card.onUpdate(function (update) {
-  if (update.canGetPrime) {
-    // Enable submit Button to get prime.
-    confirmBtn.classList.remove("disabled");
-  } else {
-    // Disable submit Button to get prime.
-    confirmBtn.classList.add("disabled");
-  }
+  paymentState.canGetPrime = update.canGetPrime;
+  updateConfirmButtonState();
 });
 
-// get Prime from TP
-function getTPPrimePromise() {
+// get prime
+function getTPPrime() {
   return new Promise((resolve, reject) => {
-    TPDirect.card.getPrime(async (result) => {
+    TPDirect.card.getPrime((result) => {
       if (result.status !== 0) {
-        alert("Prime Error: " + result.msg);
-        reject();
+        reject(new Error(result.msg || MESSAGES.requestFailed));
+        return;
       }
+
       resolve(result.card.prime);
     });
   });
-}
-
-async function getTPPrime() {
-  try {
-    const result = await getTPPrimePromise();
-    return result;
-  } catch (err) {
-    console.error(`Error: ${err}`);
-    return;
-  }
 }
 
 async function createOrdersAndPay(requestBody) {
@@ -124,89 +134,70 @@ async function createOrdersAndPay(requestBody) {
       body: JSON.stringify(requestBody),
     });
 
-    if (response.ok) {
-      const responseData = await response.json();
-      return responseData;
+    const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error(responseData.message || MESSAGES.requestFailed);
     }
+    return responseData;
   } catch (err) {
     console.error(`Error: ${err}`);
+    throw err;
   }
-  return false;
 }
 
 confirmBtn.addEventListener("click", async () => {
-  const contactInfo = document.querySelectorAll(".info-form__info > input");
+  const contact = {
+    name: document.querySelector(".info-form__name").value.trim(),
+    email: document.querySelector(".info-form__email").value.trim(),
+    phone: document.querySelector(".info-form__phone").value.trim(),
+  };
 
-  let isEmptyField = false;
-  contactInfo.forEach((item) => {
-    item["value"] = item["value"].trim();
-    if (item["value"] === "") {
-      isEmptyField = true;
+  const hasEmptyContactField = Object.values(contact).some(
+    (value) => value === "",
+  );
+  if (hasEmptyContactField) {
+    alert(MESSAGES.emptyContact);
+    return;
+  }
+
+  if (confirmBtn.disabled) return;
+
+  const bookingId = Number(getLastPathSegment(window.location.pathname));
+  if (!Number.isSafeInteger(bookingId) || bookingId <= 0) {
+    alert(MESSAGES.invalidBookingId);
+    return;
+  }
+  const emailResult = checkValidEmail(contact.email);
+  if (emailResult.error) {
+    alert(emailResult.message);
+    return;
+  }
+  const phoneResult = checkValidPhoneNumber(contact.phone);
+  if (phoneResult.error) {
+    alert(phoneResult.message);
+    return;
+  }
+
+  paymentState.isSubmitting = true;
+  updateConfirmButtonState();
+
+  showLoader();
+  try {
+    const prime = await getTPPrime();
+
+    const result = await createOrdersAndPay({ bookingId, prime, contact });
+    if (result.data.payment.status === 0) {
+      const params = new URLSearchParams({ number: result.data.number });
+      window.location.href = `/thankyou?${params.toString()}`;
+    } else {
+      alert(result.data.payment.message || MESSAGES.paymentFailed);
     }
-  });
+  } catch (error) {
+    alert(error.message || MESSAGES.requestFailed);
+  } finally {
+    hideLoader();
 
-  if (!isEmptyField) {
-    if (!confirmBtn.classList.contains("disabled")) {
-      let totalPrice = document.querySelector(
-        ".confirm-info__total",
-      ).textContent;
-      totalPrice = getNumFromStr(totalPrice);
-
-      let bookingData = localStorage.getItem("bookingData");
-      bookingData = !(bookingData === "")
-        ? JSON.parse(bookingData)
-        : bookingData;
-
-      let orderData = {
-        price: totalPrice,
-        trip: bookingData["data"],
-        contact: {
-          name: contactInfo[0]["value"],
-          email: contactInfo[1]["value"],
-          phone: contactInfo[2]["value"],
-        },
-      };
-
-      let checkEmailResult = checkValidEmail(
-        orderData["contact"]["email"],
-      );
-      if (checkEmailResult["error"]) {
-        alert(checkEmailResult["message"]);
-        return false;
-      }
-
-      let checkPhoneResult = checkValidPhoneNumber(
-        orderData["contact"]["phone"],
-      );
-      if (checkPhoneResult["error"]) {
-        alert(checkPhoneResult["message"]);
-        return false;
-      }
-
-      delete orderData["trip"]["price"];
-
-      const TPPrime = await getTPPrime();
-      let requestBody = {
-        prime: TPPrime,
-        order: orderData,
-      };
-
-      showLoader();
-      const createOrderResult = await createOrdersAndPay(requestBody);
-
-      if (createOrderResult && "data" in createOrderResult) {
-        const orderNo = createOrderResult["data"]["number"];
-        const params = new URLSearchParams({
-          number: orderNo,
-        });
-
-        window.location.href = `/thankyou?${params.toString()}`;
-      } else {
-        hideLoader();
-        alert(`請稍後再試 ! \n${createOrderResult["message"]}`);
-      }
-    }
-  } else {
-    alert("請填寫必要資訊");
+    paymentState.isSubmitting = false;
+    updateConfirmButtonState();
   }
 });
