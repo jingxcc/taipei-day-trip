@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的訂單｜台北一日遊</title>
+    <link rel="stylesheet" href="/static/scss/css/style.css" />
+    <script type="module" src="/static/js/order/orders.js"></script>
+  </head>
+  <body>
+    {% include './shared/header.html' %}
+    <main id="ordersContent" class="orders container" aria-busy="true">
+      <h2 class="orders__title page-title weight-bold mb-30">
+        <span id="ordersUsername"></span>您好，您可以在這裡查看訂單與付款狀態：
+      </h2>
+      <div aria-live="polite">
+        <div id="ordersLoadingState" class="orders__state" role="status">
+          <div
+            class="bouncing-loader bouncing-loader--inline"
+            aria-hidden="true"
+          >
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p>正在載入訂單</p>
+        </div>
+        <section id="ordersEmptyState" class="orders__state hidden">
+          <p>您目前沒有訂單</p>
+          <a class="default-button button" href="/">探索台北景點</a>
+        </section>
+        <section id="ordersErrorState" class="orders__state hidden">
+          <p id="ordersErrorMessage"></p>
+          <button
+            id="ordersReloadBtn"
+            type="button"
+            class="default-button button-small"
+          >
+            重新載入
+          </button>
+        </section>
+      </div>
+      <ul id="ordersList" class="orders__list hidden"></ul>
+      <template id="orderItemTemplate">
+        <li class="order-card">
+          <div class="order-card__header">
+            <p class="order-card__number">訂單編號：<span></span></p>
+            <span class="order-card__status"></span>
+          </div>
+          <h3 class="order-card__title weight-bold">
+            <a class="order-card__attraction"></a>
+          </h3>
+          <dl class="order-card__details">
+            <div>
+              <dt>日期</dt>
+              <dd class="order-card__date"></dd>
+            </div>
+            <div>
+              <dt>時間</dt>
+              <dd class="order-card__time"></dd>
+            </div>
+            <div>
+              <dt>人數</dt>
+              <dd class="order-card__guests"></dd>
+            </div>
+            <div>
+              <dt>金額</dt>
+              <dd class="order-card__price weight-bold"></dd>
+            </div>
+          </dl>
+          <div class="order-card__footer">
+            <p class="order-card__note"></p>
+            <a class="order-card__retry default-button button-small hidden">
+              重新付款
+            </a>
+          </div>
+        </li>
+      </template>
+    </main>
+    {% include './shared/footer.html' %}
+  </body>
+</html>

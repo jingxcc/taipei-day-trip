@@ -1,4 +1,4 @@
-export const PROTECTED_PATHS = ["/cart", "/thankyou"];
+export const PROTECTED_PATHS = ["/cart", "/orders", "/thankyou"];
 export const PROTECTED_PATH_PREFIXES = ["/checkout/"];
 
 export const DISPLAY_TIME_SLOT = {

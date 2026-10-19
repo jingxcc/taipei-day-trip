@@ -3,6 +3,7 @@ import { PROTECTED_PATHS, PROTECTED_PATH_PREFIXES } from "./constants.js";
 
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
 const navMenuItemCart = document.getElementById("navMenuItemCart");
+const navMenuItemOrders = document.getElementById("navMenuItemOrders");
 const dialogMask = document.getElementById("dialogMask");
 
 const dialogLogIn = document.getElementById("dialogLogIn");
@@ -327,14 +328,14 @@ function showDialogMessage(msg) {
   }
 }
 
-// cart
-navMenuItemCart.addEventListener("click", (e) => {
-  if (!isLogin) {
-    e.preventDefault();
-    showDialog();
-  } else {
-    navMenuItemCart.href = `${window.location.origin}/cart`;
-  }
+// Require login before opening the cart or orders page.
+[navMenuItemCart, navMenuItemOrders].forEach((link) => {
+  link.addEventListener("click", (event) => {
+    if (!isLogin) {
+      event.preventDefault();
+      showDialog();
+    }
+  });
 });
 
 export { checkLogInStatus, showDialog, getAuthHeaders };

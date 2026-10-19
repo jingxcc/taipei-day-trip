@@ -43,6 +43,11 @@ def cart():
     return render_template("cart.html")
 
 
+@app.route("/orders")
+def orders():
+    return render_template("orders.html")
+
+
 @app.route("/thankyou")
 def thankyou():
     order_number = request.args.get("number")

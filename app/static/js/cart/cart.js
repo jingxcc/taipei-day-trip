@@ -212,6 +212,10 @@ document.getElementById("checkoutBtn").addEventListener("click", () => {
   }
 });
 
+document
+  .getElementById("navMenuItemCart")
+  .setAttribute("aria-current", "page");
+
 const loginInfo = await checkLogInStatus();
 if (loginInfo.status) {
   document.querySelector(".header__username").textContent =
