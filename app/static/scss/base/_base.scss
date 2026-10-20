@@ -56,7 +56,7 @@ button:focus-visible {
   background-color: $cyan-70;
   color: white;
 
-  &--disabled {
+  &:disabled {
     background-color: $gray-70;
     cursor: default;
   }
@@ -80,6 +80,14 @@ input::placeholder {
 
 input[type="password"] {
   font: caption;
+}
+
+.page-top {
+  margin-top: calc($head-margin + 40px);
+
+  @media (max-width: 480px) {
+    margin-top: calc($head-margin + 20px);
+  }
 }
 
 .container {
@@ -291,7 +299,7 @@ footer {
 
   // 查詢資料時在內容區顯示。
   &--inline {
-    min-height: 120px;
+    padding: 20px 0px;
   }
 }
 @keyframes bouncing-loader {

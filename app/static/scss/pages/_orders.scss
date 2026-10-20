@@ -2,7 +2,6 @@
   flex: 1;
   max-width: 1000px;
   padding: 0 10px 50px;
-  margin-top: 95px;
   line-height: 1.6;
 
   &__list {
@@ -11,6 +10,7 @@
   }
 
   &__state {
+    height: 240px;
     padding: 80px 20px;
     border-radius: 5px;
     background: $gray-20;
@@ -22,11 +22,6 @@
 
     .default-button {
       display: inline-block;
-    }
-
-    .default-button:disabled {
-      opacity: 0.6;
-      cursor: wait;
     }
   }
 }

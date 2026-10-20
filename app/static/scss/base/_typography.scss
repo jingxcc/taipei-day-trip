@@ -26,9 +26,12 @@
 }
 
 .page-title {
+  margin-bottom: 30px;
+
   @media (max-width: 480px) {
     font-size: $size-default;
     line-height: $lh-default;
+    margin-bottom: 20px;
   }
 }
 

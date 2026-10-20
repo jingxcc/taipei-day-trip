@@ -115,7 +115,5 @@ document
   .setAttribute("aria-current", "page");
 const loginInfo = await checkLogInStatus();
 if (loginInfo.status) {
-  document.getElementById("ordersUsername").textContent =
-    `${loginInfo.userInfo.data.name} `;
   await loadOrders();
 }
