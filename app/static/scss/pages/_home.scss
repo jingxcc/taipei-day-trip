@@ -1,5 +1,7 @@
+@use "../base/variables" as vars;
+
 .hero {
-  margin-top: $head-margin;
+  margin-top: vars.$head-margin;
   padding: 76px 0px;
 
   background-image: url("../../images/home/welcome.svg");
@@ -21,7 +23,7 @@
   border: 0;
   border-radius: 8px 0px 0px 8px;
 
-  color: $gray-50;
+  color: vars.$gray-50;
   box-shadow: 0px 0px 20px 0px #abc;
 
   @media (max-width: 768px) {
@@ -37,7 +39,7 @@
 .search__btn {
   border-radius: 0px 8px 8px 0px;
 
-  background-color: $cyan-70;
+  background-color: vars.$cyan-70;
 }
 
 .search__btn-icon {
@@ -104,7 +106,7 @@
   border: 0;
 
   background-color: transparent;
-  color: $gray-70;
+  color: vars.$gray-70;
 
   &:hover {
     color: black;
@@ -129,7 +131,7 @@
   }
 
   .card {
-    border: 1px solid $gray-20;
+    border: 1px solid vars.$gray-20;
 
     border-radius: 5px;
   }
@@ -196,6 +198,6 @@
     justify-content: space-between;
     padding: 10px;
 
-    color: $gray-50;
+    color: vars.$gray-50;
   }
 }

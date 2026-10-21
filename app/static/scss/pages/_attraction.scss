@@ -1,12 +1,14 @@
+@use "../base/variables" as vars;
+
 .attraction {
   display: flex;
   flex: auto;
-  margin-top: calc($head-margin + 40px);
+  margin-top: calc(vars.$head-margin + 40px);
   padding: 0px 15px 40px 15px;
-  border-bottom: 1px solid $gray-20;
+  border-bottom: 1px solid vars.$gray-20;
 
   @media (max-width: 1200px) {
-    margin-top: $head-margin;
+    margin-top: vars.$head-margin;
     flex-wrap: wrap;
     padding: 0;
     border: 0;
@@ -21,7 +23,7 @@
     }
 
     @media (max-width: 1200px) {
-      margin-top: $head-margin + 24px;
+      margin-top: vars.$head-margin + 24px;
       padding: 0px 15px 40px 15px;
     }
   }
@@ -145,7 +147,7 @@
     padding: 0;
     margin: 0px 10px;
     padding: 0px 0px 40px 0px;
-    border-bottom: 1px solid $gray-20;
+    border-bottom: 1px solid vars.$gray-20;
   }
 }
 
@@ -154,15 +156,7 @@
   padding: 15px 20px 40px 20px;
 
   border-radius: 5px;
-  background-color: $gray-20;
-
-  // button {
-  //   padding: 10px 20px;
-
-  //   border-radius: 5px;
-  //   background-color: $cyan-70;
-  //   color: white;
-  // }
+  background-color: vars.$gray-20;
 
   .form__date {
     width: 195px;
@@ -206,7 +200,7 @@
     border-radius: 50%;
 
     &:checked {
-      background-color: $cyan-70;
+      background-color: vars.$cyan-70;
     }
   }
 }

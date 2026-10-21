@@ -1,3 +1,5 @@
+@use "../base/variables" as vars;
+
 .booking-headline {
   display: flex;
   width: 1000px;
@@ -51,7 +53,7 @@
   .attraction-list__title {
     display: flex;
     padding: 5px 0px;
-    color: $cyan-70;
+    color: vars.$cyan-70;
 
     @media (max-width: 1000px) {
       margin-bottom: 10px;
@@ -70,7 +72,7 @@
   .attraction-list__info-title {
     flex-shrink: 0;
     align-self: flex-start;
-    font-weight: $weight-bold;
+    font-weight: vars.$weight-bold;
     margin-right: 5px;
   }
 }
@@ -115,7 +117,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    color: $gray-70;
+    color: vars.$gray-70;
     pointer-events: none;
   }
 }

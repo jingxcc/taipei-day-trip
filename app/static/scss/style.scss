@@ -1,20 +1,19 @@
 // Base
-@import "base/reset";
-@import "base/variables";
-@import "base/typography";
-@import "base/base";
-@import "base/utils";
+@use "base/reset";
+@use "base/typography";
+@use "base/base";
+@use "base/utils";
 
 // Vendors
-@import "vendors/tappay";
+@use "vendors/tappay";
 
 // Pages
-@import "pages/home";
-@import "pages/attraction";
-@import "pages/checkout";
-@import "pages/cart";
-@import "pages/thankyou";
-@import "pages/orders";
+@use "pages/home";
+@use "pages/attraction";
+@use "pages/checkout";
+@use "pages/cart";
+@use "pages/thankyou";
+@use "pages/orders";
 
 // Shared
-@import "shared/booking-components";
+@use "shared/booking-components";

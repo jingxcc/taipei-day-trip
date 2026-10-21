@@ -1,3 +1,5 @@
+@use "variables" as vars;
+
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap");
 
 body {
@@ -6,11 +8,11 @@ body {
   min-height: 100vh;
 
   font-family: "Noto Sans TC", sans-serif;
-  font-size: $size-default;
-  font-weight: $weight-default;
-  line-height: $lh-default;
+  font-size: vars.$size-default;
+  font-weight: vars.$weight-default;
+  line-height: vars.$lh-default;
 
-  color: $gray-70;
+  color: vars.$gray-70;
 }
 
 *,
@@ -46,18 +48,18 @@ button {
 
 a:focus-visible,
 button:focus-visible {
-  outline-color: $cyan-70;
+  outline-color: vars.$cyan-70;
 }
 
 .default-button {
   padding: 10px 20px;
 
   border-radius: 5px;
-  background-color: $cyan-70;
+  background-color: vars.$cyan-70;
   color: white;
 
   &:disabled {
-    background-color: $gray-70;
+    background-color: vars.$gray-70;
     cursor: default;
   }
 }
@@ -71,11 +73,11 @@ dialog {
 input,
 input::placeholder {
   font-family: "Noto Sans TC", sans-serif;
-  font-size: $size-default;
-  font-weight: $weight-default;
+  font-size: vars.$size-default;
+  font-weight: vars.$weight-default;
   line-height: 13.3px;
 
-  color: $gray-70;
+  color: vars.$gray-70;
 }
 
 input[type="password"] {
@@ -83,10 +85,10 @@ input[type="password"] {
 }
 
 .page-top {
-  margin-top: calc($head-margin + 40px);
+  margin-top: calc(vars.$head-margin + 40px);
 
   @media (max-width: 480px) {
-    margin-top: calc($head-margin + 20px);
+    margin-top: calc(vars.$head-margin + 20px);
   }
 }
 
@@ -104,7 +106,7 @@ input[type="password"] {
 header {
   width: 100%;
   padding: 10px;
-  border-bottom: 1px solid $gray-20;
+  border-bottom: 1px solid vars.$gray-20;
   position: fixed;
   top: 0;
   z-index: 9;
@@ -118,7 +120,7 @@ header {
   }
 
   .headline {
-    color: $cyan-70;
+    color: vars.$cyan-70;
   }
 
   .nav-menu {
@@ -132,8 +134,8 @@ header {
   }
 
   .nav-menu__item[aria-current="page"] {
-    color: $cyan-70;
-    font-weight: $weight-bold;
+    color: vars.$cyan-70;
+    font-weight: vars.$weight-bold;
   }
 
   #navMenuItemLogIn {
@@ -159,14 +161,14 @@ footer {
   padding: 40px 0px;
 
   text-align: center;
-  background-color: $gray-50;
+  background-color: vars.$gray-50;
   color: white;
-  font-weight: $weight-bold;
+  font-weight: vars.$weight-bold;
 }
 
 .seperator {
   border-top: 1px;
-  border-color: $gray-50;
+  border-color: vars.$gray-50;
   margin-bottom: 40px;
 }
 
@@ -195,7 +197,7 @@ footer {
 
   .dialog__decorator-bar {
     height: 10px;
-    background: $cyan-dark-gradient;
+    background: vars.$cyan-dark-gradient;
   }
 
   .dialog__header {
@@ -226,20 +228,20 @@ footer {
 
 .dialog__main {
   padding: 15px;
-  color: $gray-70;
+  color: vars.$gray-70;
 
   input {
     padding: 15px;
     border: 1px solid #ccc;
 
     border-radius: 5px;
-    color: $gray-50;
+    color: vars.$gray-50;
   }
 
   button {
     border-radius: 5px;
 
-    background-color: $cyan-70;
+    background-color: vars.$cyan-70;
   }
 
   input,
@@ -278,7 +280,7 @@ footer {
     width: 1rem;
     height: 1rem;
     margin: 0 0.2rem;
-    background: $cyan-50;
+    background: vars.$cyan-50;
     border-radius: 50%;
     animation: bouncing-loader 0.5s infinite alternate;
   }
