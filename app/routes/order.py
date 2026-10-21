@@ -132,7 +132,7 @@ def get_orders(login_data):
 
 @order_bp.route("/api/orders", methods=["POST"])
 @login_required
-def create_order_paid(login_data):
+def create_order_and_pay(login_data):
     validated_payment_input = validate_checkout_request(request.get_json(silent=True))
     if validated_payment_input is None:
         return jsonify({"error": True, "message": MESSAGES["invalid_request"]}), 400

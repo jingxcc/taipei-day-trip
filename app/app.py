@@ -44,7 +44,7 @@ def cart():
 
 
 @app.route("/orders")
-def orders():
+def orders_page():
     return render_template("orders.html")
 
 
