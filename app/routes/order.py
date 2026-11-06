@@ -25,6 +25,8 @@ order_bp = Blueprint("order_bp", __name__)
 
 MESSAGES = {
     "orders_list_failed": "訂單資料取得失敗，請稍後再試",
+    "order_not_found": "找不到這筆訂單",
+    "order_get_failed": "訂單資料取得失敗，請稍後再試",
     "invalid_request": "請提供正確的付款資料",
     "booking_not_found": "找不到這筆預訂",
     "payment_blocked": "這筆預訂已有處理中的付款或已付款訂單",
@@ -123,6 +125,36 @@ def get_orders(login_data):
     except Exception as err:
         print(f"ERROR: {err}")
         return jsonify({"error": True, "message": MESSAGES["orders_list_failed"]}), 500
+    finally:
+        if my_cursor is not None:
+            my_cursor.close()
+        if my_conn is not None:
+            my_conn.close()
+
+
+@order_bp.route("/api/orders/<string:order_no>", methods=["GET"])
+@login_required
+def get_order(login_data, order_no):
+    my_conn = None
+    my_cursor = None
+    try:
+        my_conn = my_pool.get_connection()
+        my_cursor = my_conn.cursor(dictionary=True)
+        my_cursor.execute(
+            "SELECT order_no, order_status FROM `order` "
+            "WHERE order_no = %s AND user_id = %s",
+            (order_no, login_data["data"]["id"]),
+        )
+        order = my_cursor.fetchone()
+        if order is None:
+            return jsonify({"error": True, "message": MESSAGES["order_not_found"]}), 404
+        return jsonify({"data": {
+            "number": order["order_no"],
+            "status": order["order_status"],
+        }}), 200
+    except Exception as err:
+        print(f"ERROR: {err}")
+        return jsonify({"error": True, "message": MESSAGES["order_get_failed"]}), 500
     finally:
         if my_cursor is not None:
             my_cursor.close()

@@ -1,27 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>台北一日遊</title>
+    <link rel="stylesheet" href="../static/scss/css/style.css" />
+    <script type="module" src="../static/js/order/thankyou.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>台北一日遊</title>
-  <link rel="stylesheet" href="../static/scss/css/style.css" />
-  <script type="module" src="../static/js/order/thankyou.js"></script>
-</head>
+  <body>
+    {% include './shared/header.html' %}
 
-<body>
-  {% include './shared/header.html' %}
-
-  <section class="container thankyou">
-    <div class="message body">
-      <h3 class="message__title dialog__title weight-bold">訂單成立</h3>
-      <span class="message__icon"></span>
-      <p class="message__description">訂單編號：</p>
-      <a href="/orders" class="default-button button">查看我的訂單</a>
-      <!-- <p class="message__description weight-bold">付款狀態：</p> -->
-    </div>
-  </section>
-  {% include './shared/footer.html' %}
-</body>
-
+    <section id="orderResult" class="container thankyou hidden">
+      <div class="message body">
+        <h3 class="message__title dialog__title weight-bold">訂單成立</h3>
+        <span
+          class="message__icon message__icon--success"
+          aria-hidden="true"
+        ></span>
+        <p class="message__description">訂單編號：<span id="orderNumber"></span></p>
+        <a href="/orders" class="default-button button">查看我的訂單</a>
+      </div>
+    </section>
+    <section id="orderError" class="container thankyou hidden">
+      <div class="message body">
+        <h3 class="message__title dialog__title weight-bold">無法載入訂單</h3>
+        <span
+          class="message__icon message__icon--warning"
+          aria-hidden="true"
+        ></span>
+        <p>請前往「我的訂單」確認付款狀態</p>
+        <a href="/orders" class="default-button button">查看我的訂單</a>
+      </div>
+    </section>
+    {% include './shared/footer.html' %}
+  </body>
 </html>
