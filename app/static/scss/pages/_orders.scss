@@ -1,8 +1,9 @@
+@use "../base/variables" as vars;
+
 .orders {
   flex: 1;
   max-width: 1000px;
   padding: 0 10px 50px;
-  margin-top: 95px;
   line-height: 1.6;
 
   &__list {
@@ -11,9 +12,10 @@
   }
 
   &__state {
+    height: 240px;
     padding: 80px 20px;
     border-radius: 5px;
-    background: $gray-20;
+    background: vars.$gray-20;
     text-align: center;
 
     p {
@@ -23,17 +25,12 @@
     .default-button {
       display: inline-block;
     }
-
-    .default-button:disabled {
-      opacity: 0.6;
-      cursor: wait;
-    }
   }
 }
 
 .order-card {
   padding: 25px;
-  border: 1px solid $gray-20;
+  border: 1px solid vars.$gray-20;
   border-radius: 5px;
 
   &__header {
@@ -43,7 +40,7 @@
     gap: 15px;
     padding-bottom: 15px;
     margin-bottom: 15px;
-    border-bottom: 1px solid $gray-20;
+    border-bottom: 1px solid vars.$gray-20;
   }
 
   &__number {
@@ -56,7 +53,7 @@
     padding: 4px 12px;
     border-radius: 5px;
     font-size: 14px;
-    font-weight: $weight-bold;
+    font-weight: vars.$weight-bold;
 
     &--paid {
       background: #e4f2f1;
@@ -75,7 +72,7 @@
   }
 
   &__title {
-    color: $cyan-70;
+    color: vars.$cyan-70;
     font-size: 20px;
     margin-bottom: 18px;
   }
@@ -87,7 +84,7 @@
 
     dt {
       font-size: 14px;
-      color: $gray-50;
+      color: vars.$gray-50;
       margin-bottom: 4px;
     }
 

@@ -1,3 +1,5 @@
+@use "../base/variables" as vars;
+
 .info-form__title {
   margin-bottom: 20px;
 }
@@ -10,13 +12,13 @@
     width: 200px;
     height: 38px;
     padding: 10px;
-    border: 1px solid $gray-20;
+    border: 1px solid vars.$gray-20;
     border-radius: 5px;
 
     color: black;
 
     &::placeholder {
-      color: $gray-50;
+      color: vars.$gray-50;
     }
   }
 
@@ -47,7 +49,7 @@
     padding: 5px 10px;
 
     border-radius: 5px;
-    background-color: $cyan-50;
+    background-color: vars.$cyan-50;
     color: white;
 
     font-size: 14px;
@@ -66,7 +68,7 @@
   border-radius: 5px;
 
   font-size: 14px;
-  background-color: $gray-20;
+  background-color: vars.$gray-20;
 
   .info-form__demo-card-title {
     margin-bottom: 8px;
@@ -89,16 +91,5 @@
   .confirm-info {
     display: flex;
     margin-bottom: 22px;
-  }
-}
-
-.confirm-info__btn {
-  &--not-ready {
-    background-color: $gray-70;
-    cursor: default;
-  }
-
-  &--submitting {
-    cursor: wait;
   }
 }

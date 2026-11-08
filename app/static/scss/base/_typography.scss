@@ -1,3 +1,5 @@
+@use "variables" as vars;
+
 .headline {
   font-weight: bold;
   font-size: 30px;
@@ -5,18 +7,18 @@
 }
 
 .slogan__title {
-  font-weight: $weight-bold;
+  font-weight: vars.$weight-bold;
   font-size: 28px;
   line-height: 24px;
 
   @media (max-width: 768px) {
-    line-height: $lh-default;
+    line-height: vars.$lh-default;
   }
 }
 
 .dialog__title {
   font-size: 24px;
-  line-height: $lh-default;
+  line-height: vars.$lh-default;
 }
 
 .page-title,
@@ -26,22 +28,25 @@
 }
 
 .page-title {
+  margin-bottom: 30px;
+
   @media (max-width: 480px) {
-    font-size: $size-default;
-    line-height: $lh-default;
+    font-size: vars.$size-default;
+    line-height: vars.$lh-default;
+    margin-bottom: 20px;
   }
 }
 
 .content {
-  font-size: $size-default;
+  font-size: vars.$size-default;
 }
 
 .body {
-  font-size: $size-default;
+  font-size: vars.$size-default;
   line-height: 13.3px;
 
   @media (max-width: 768px) {
-    line-height: $lh-default;
+    line-height: vars.$lh-default;
   }
 }
 .button-small {

@@ -94,13 +94,6 @@ function updateConfirmButtonState() {
   const isCardNotReady = !paymentState.canGetPrime;
 
   confirmBtn.disabled = isCardNotReady || paymentState.isSubmitting;
-
-  confirmBtn.classList.toggle("confirm-info__btn--not-ready", isCardNotReady);
-
-  confirmBtn.classList.toggle(
-    "confirm-info__btn--submitting",
-    paymentState.isSubmitting,
-  );
 }
 
 TPDirect.card.onUpdate(function (update) {
