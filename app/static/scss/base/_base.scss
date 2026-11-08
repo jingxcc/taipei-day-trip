@@ -44,6 +44,11 @@ button {
   background-color: transparent;
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline-color: $cyan-70;
+}
+
 .default-button {
   padding: 10px 20px;
 
@@ -115,10 +120,30 @@ header {
   .nav-menu__item {
     padding: 10px;
     text-align: center;
+    white-space: nowrap;
+  }
+
+  .nav-menu__item[aria-current="page"] {
+    color: $cyan-70;
+    font-weight: $weight-bold;
   }
 
   #navMenuItemLogIn {
     width: 92px;
+  }
+
+  @media (max-width: 480px) {
+    .headline {
+      font-size: 22px;
+      line-height: 30px;
+    }
+    .nav-menu__item {
+      font-size: 14px;
+      padding: 8px 6px;
+    }
+    #navMenuItemLogIn {
+      width: auto;
+    }
   }
 }
 
@@ -133,7 +158,7 @@ footer {
 
 .seperator {
   border-top: 1px;
-  border-color: $gray-20;
+  border-color: $gray-50;
   margin-bottom: 40px;
 }
 
@@ -237,29 +262,36 @@ footer {
 
 // loading
 .bouncing-loader {
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  z-index: 99;
 
-  div {
+  > div {
     width: 1rem;
     height: 1rem;
-    margin: 3rem 0.2rem;
+    margin: 0 0.2rem;
     background: $cyan-50;
     border-radius: 50%;
     animation: bouncing-loader 0.5s infinite alternate;
   }
-  div:nth-child(2) {
+  > div:nth-child(2) {
     animation-delay: 0.1s;
   }
-  div:nth-child(3) {
+  > div:nth-child(3) {
     animation-delay: 0.2s;
+  }
+
+  // 付款時使用全螢幕遮罩。
+  &--fullscreen {
+    position: fixed;
+    inset: 0;
+    background-color: white;
+    z-index: 99;
+  }
+
+  // 查詢資料時在內容區顯示。
+  &--inline {
+    min-height: 120px;
   }
 }
 @keyframes bouncing-loader {

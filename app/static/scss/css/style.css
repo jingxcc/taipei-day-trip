@@ -156,12 +156,15 @@ table {
   line-height: normal;
 }
 
+.page-title,
 .button {
   font-size: 19px;
   line-height: 16px;
 }
-@media (max-width: 768px) {
-  .button {
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 16px;
     line-height: normal;
   }
 }
@@ -180,8 +183,9 @@ table {
   }
 }
 
-.category-list {
+.button-small {
   font-size: 14px;
+  line-height: 1.5;
 }
 
 body {
@@ -223,6 +227,11 @@ button {
   padding: 0;
   cursor: pointer;
   background-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline-color: #448899;
 }
 
 .default-button {
@@ -297,9 +306,27 @@ header .nav-menu {
 header .nav-menu__item {
   padding: 10px;
   text-align: center;
+  white-space: nowrap;
+}
+header .nav-menu__item[aria-current=page] {
+  color: #448899;
+  font-weight: 700;
 }
 header #navMenuItemLogIn {
   width: 92px;
+}
+@media (max-width: 480px) {
+  header .headline {
+    font-size: 22px;
+    line-height: 30px;
+  }
+  header .nav-menu__item {
+    font-size: 14px;
+    padding: 8px 6px;
+  }
+  header #navMenuItemLogIn {
+    width: auto;
+  }
 }
 
 footer {
@@ -312,7 +339,7 @@ footer {
 
 .seperator {
   border-top: 1px;
-  border-color: #e8e8e8;
+  border-color: #757575;
   margin-bottom: 40px;
 }
 
@@ -397,29 +424,32 @@ footer {
 }
 
 .bouncing-loader {
-  position: fixed;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white;
-  z-index: 99;
 }
-.bouncing-loader div {
+.bouncing-loader > div {
   width: 1rem;
   height: 1rem;
-  margin: 3rem 0.2rem;
+  margin: 0 0.2rem;
   background: #66aabb;
   border-radius: 50%;
   animation: bouncing-loader 0.5s infinite alternate;
 }
-.bouncing-loader div:nth-child(2) {
+.bouncing-loader > div:nth-child(2) {
   animation-delay: 0.1s;
 }
-.bouncing-loader div:nth-child(3) {
+.bouncing-loader > div:nth-child(3) {
   animation-delay: 0.2s;
+}
+.bouncing-loader--fullscreen {
+  position: fixed;
+  inset: 0;
+  background-color: white;
+  z-index: 99;
+}
+.bouncing-loader--inline {
+  min-height: 120px;
 }
 
 @keyframes bouncing-loader {
@@ -1123,6 +1153,116 @@ footer {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+.orders {
+  flex: 1;
+  max-width: 1000px;
+  padding: 0 10px 50px;
+  margin-top: 95px;
+  line-height: 1.6;
+}
+.orders__list {
+  display: grid;
+  gap: 20px;
+}
+.orders__state {
+  padding: 80px 20px;
+  border-radius: 5px;
+  background: #e8e8e8;
+  text-align: center;
+}
+.orders__state p {
+  margin-bottom: 20px;
+}
+.orders__state .default-button {
+  display: inline-block;
+}
+.orders__state .default-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.order-card {
+  padding: 25px;
+  border: 1px solid #e8e8e8;
+  border-radius: 5px;
+}
+.order-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.order-card__number {
+  overflow-wrap: anywhere;
+  font-size: 14px;
+}
+.order-card__status {
+  flex-shrink: 0;
+  padding: 4px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 700;
+}
+.order-card__status--paid {
+  background: #e4f2f1;
+  color: #337788;
+}
+.order-card__status--failed {
+  background: #fcebea;
+  color: #a63d35;
+}
+.order-card__status--pending {
+  background: #fff3d9;
+  color: #856018;
+}
+.order-card__title {
+  color: #448899;
+  font-size: 20px;
+  margin-bottom: 18px;
+}
+.order-card__details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+}
+.order-card__details dt {
+  font-size: 14px;
+  color: #757575;
+  margin-bottom: 4px;
+}
+.order-card__details dd {
+  overflow-wrap: anywhere;
+}
+.order-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-top: 22px;
+}
+.order-card__note {
+  font-size: 14px;
+}
+.order-card__retry {
+  flex-shrink: 0;
+}
+@media (max-width: 600px) {
+  .order-card {
+    padding: 18px;
+  }
+  .order-card__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .order-card__details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .booking-headline {
