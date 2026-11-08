@@ -231,7 +231,7 @@ button {
   background-color: #448899;
   color: white;
 }
-.default-button.disabled {
+.default-button--disabled {
   background-color: #666666;
   cursor: default;
 }
@@ -250,7 +250,8 @@ input::-moz-placeholder {
   color: #666666;
 }
 
-input, input::placeholder {
+input,
+input::placeholder {
   font-family: "Noto Sans TC", sans-serif;
   font-size: 16px;
   font-weight: 500;
@@ -374,7 +375,9 @@ footer {
   border-radius: 5px;
   background-color: #448899;
 }
-.dialog__main input, .dialog__main button, .dialog__main a {
+.dialog__main input,
+.dialog__main button,
+.dialog__main a {
   width: 100%;
   margin-bottom: 10px;
 }
@@ -956,6 +959,14 @@ footer {
 .confirm .confirm-info {
   display: flex;
   margin-bottom: 22px;
+}
+
+.confirm-info__btn--not-ready {
+  background-color: #666666;
+  cursor: default;
+}
+.confirm-info__btn--submitting {
+  cursor: wait;
 }
 
 #cartList {

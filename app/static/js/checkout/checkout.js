@@ -59,7 +59,6 @@ async function displayBookingData() {
 
   try {
     let bookingData = await fetchBookingById();
-    localStorage.setItem("bookingData", JSON.stringify(bookingData));
 
     if (bookingData["data"]) {
       mainContent.classList.remove("hidden");
