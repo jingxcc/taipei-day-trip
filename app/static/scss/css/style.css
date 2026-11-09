@@ -1152,12 +1152,18 @@ footer {
 
 .message__icon {
   display: block;
-  width: 160px;
-  height: 160px;
-  background-image: url("../../images/order/complete.svg");
+  width: 140px;
+  height: 140px;
+  margin-bottom: 20px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+.message__icon--success {
+  background-image: url("../../images/order/complete.svg");
+}
+.message__icon--warning {
+  background-image: url("../../images/order/warning.svg");
 }
 
 .orders {

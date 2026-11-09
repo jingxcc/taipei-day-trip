@@ -1,6 +1,8 @@
 import { checkEmptyFields, checkValidEmail } from "./utils.js";
 import { PROTECTED_PATHS, PROTECTED_PATH_PREFIXES } from "./constants.js";
 
+const LOGIN_TOKEN_STORAGE_KEY = "logInToken";
+
 const navMenuItemLogIn = document.getElementById("navMenuItemLogIn");
 const navMenuItemCart = document.getElementById("navMenuItemCart");
 const navMenuItemOrders = document.getElementById("navMenuItemOrders");
@@ -165,7 +167,7 @@ async function getLogInData() {
 logInBtn.addEventListener("click", async () => {
   try {
     const result = await getLogInData();
-    localStorage.setItem("logInToken", result.token);
+    localStorage.setItem(LOGIN_TOKEN_STORAGE_KEY, result.token);
 
     activeDialog = "dialogLogIn";
     closeDialog(activeDialog);
@@ -209,7 +211,7 @@ async function decodeLogInToken() {
 
 async function checkLogInStatus() {
   isLogin = false;
-  const logInToken = localStorage.getItem("logInToken");
+  const logInToken = localStorage.getItem(LOGIN_TOKEN_STORAGE_KEY);
   let userInfo = { data: null };
 
   if (logInToken !== null) {
@@ -218,7 +220,7 @@ async function checkLogInStatus() {
       if (userInfo.data) {
         isLogin = true;
       } else {
-        clearLocalStorage();
+        logOut();
       }
     } catch (err) {
       console.error(`Error: ${err}`);
@@ -239,14 +241,13 @@ async function checkLogInStatus() {
 }
 
 function getAuthHeaders() {
-  const token = localStorage.getItem("logInToken");
+  const token = localStorage.getItem(LOGIN_TOKEN_STORAGE_KEY);
 
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-// clear local storage data
-function clearLocalStorage() {
-  localStorage.clear();
+function logOut() {
+  localStorage.removeItem(LOGIN_TOKEN_STORAGE_KEY);
   location.reload();
 }
 
@@ -255,7 +256,7 @@ navMenuItemLogIn.addEventListener("click", () => {
   if (!isLogin) {
     showDialog();
   } else {
-    clearLocalStorage();
+    logOut();
   }
 });
 

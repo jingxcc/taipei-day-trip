@@ -91,6 +91,12 @@ def get_booking(login_data):
                 LEFT JOIN image_url i \
                     ON i.id = first_image.image_id \
                 WHERE b.user_id = %s \
+                AND NOT EXISTS ( \
+                    SELECT 1 \
+                    FROM `order` o \
+                    WHERE o.booking_id = b.id \
+                    AND o.user_id = b.user_id \
+                ) \
                 ORDER BY b.id DESC"
         val = (login_data["data"]["id"],)
         my_cursor.execute(sql, val)
